@@ -1681,7 +1681,7 @@ body::before {
 
 <script>
 // ─────────────────────────────────────────────────────────────
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxifa9QnaV3WQ2BhTx9nxsx4YYjHwj3I7N7DfiLJrjuuQgQ7BR-0r_Nb9l6F-pumO9Utw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUo4oK7es5Y3OQjOWmVv9vsU9hIU3MhJtBNJoi19pd530GaNIUwX8bm57J9jVWEy7HVg/exec';
 const NDB_PRICE_PER_INSTANCE_YEAR = 975;
 
 const FALLBACK_CLOUD_DATA = {
@@ -1711,7 +1711,7 @@ let calcResults = null;
 
 // ─── Load pricing from Google Sheets ───
 function loadPricing() {
-  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwUo4oK7es5Y3OQjOWmVv9vsU9hIU3MhJtBNJoi19pd530GaNIUwX8bm57J9jVWEy7HVg/exec') return;
   try {
     const cb = 'pricing_cb_' + Date.now();
     window[cb] = function(data) {
@@ -2008,7 +2008,7 @@ function generateSummary() {
 
 // ─── Save lead ───
 function saveLead(data) {
-  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwUo4oK7es5Y3OQjOWmVv9vsU9hIU3MhJtBNJoi19pd530GaNIUwX8bm57J9jVWEy7HVg/exec') return;
   try {
     const cb = 'save_cb_' + Date.now();
     window[cb] = function() { delete window[cb]; };
