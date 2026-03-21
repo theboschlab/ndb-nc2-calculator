@@ -2010,12 +2010,12 @@ function generateSummary() {
 function saveLead(data) {
   if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
   try {
-    const cb = 'save_cb_' + Date.now();
-    window[cb] = function() { delete window[cb]; };
-    const s = document.createElement('script');
-    const params = new URLSearchParams({ action: 'save', callback: cb, ...data });
-    s.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
-    s.onerror = () => { delete window[cb]; };
+    const cb      = 'save_cb_' + Date.now();
+    window[cb]    = function(res) { delete window[cb]; };
+    const s       = document.createElement('script');
+    const encoded = encodeURIComponent(JSON.stringify(data));
+    s.src         = `${GOOGLE_SCRIPT_URL}?action=save&callback=${cb}&data=${encoded}`;
+    s.onerror     = () => { delete window[cb]; };
     document.head.appendChild(s);
   } catch(e) { /* silent */ }
 }
