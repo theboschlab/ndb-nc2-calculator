@@ -1,4 +1,4 @@
-x<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -842,6 +842,83 @@ body::before {
   .method-grid { grid-template-columns: 1fr; }
   .step-label { display: none; }
 }
+
+/* ─── Discount field ─── */
+.discount-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg1);
+  border: 1.5px solid var(--border-hi);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.discount-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  flex-shrink: 0;
+}
+.discount-label span { color: var(--accent); font-weight: 600; }
+.discount-input-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.discount-input-wrap input[type=number] {
+  width: 68px;
+  background: var(--bg2);
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 6px 10px;
+  text-align: center;
+  outline: none;
+  transition: border-color .2s;
+  -moz-appearance: textfield;
+}
+.discount-input-wrap input[type=number]:focus { border-color: var(--accent); }
+.discount-input-wrap input[type=number]::-webkit-outer-spin-button,
+.discount-input-wrap input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+.discount-pct-symbol { font-family: var(--font-mono); font-size: 15px; color: var(--accent); font-weight: 600; }
+
+/* ─── Datacenter field ─── */
+.dc-row {
+  background: var(--bg1);
+  border: 1.5px solid var(--border-hi);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.dc-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.dc-label span { color: var(--accent); font-weight: 600; }
+.dc-select-wrap { flex: 1; min-width: 200px; }
+.dc-select-wrap select {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color .2s;
+  cursor: pointer;
+}
+.dc-select-wrap select:focus { border-color: var(--accent); }
+.dc-select-wrap select option { background: var(--bg2); color: var(--text); }
 </style>
 </head>
 <body>
@@ -857,50 +934,90 @@ body::before {
 
   <!-- Top bar -->
   <div class="topbar">
-    <div class="logo">
-      <div class="logo-dot"></div>
-      Nutanix NC2 + NDB
-    </div>
+    <div class="logo"></div>
     <div class="badge">TCO Calculator v2.0</div>
   </div>
 
   <!-- Assumptions -->
-  <div class="assumptions-bar">
-    <span class="assumptions-bar-label">Key Assumptions</span>
-    <span class="assumption-pill">Frankfurt (EU Central) pricing</span>
-    <span class="assumption-pill">0% discount — 3-year committed</span>
-    <span class="assumption-pill">N+1 node redundancy + RF2</span>
-    <span class="assumption-pill">Physical-to-virtual ratio 1:3</span>
-    <span class="assumption-pill">PostgreSQL CE support via NDB (≈ EDB Community 360)</span>
-  </div>
+
 
   <!-- Hero -->
   <div class="hero">
     <div class="hero-eyebrow">Database Infrastructure Cost Estimator</div>
     <h1>Public Cloud Database<br>Infrastructure Calculator</h1>
-    <p>Estimate your Nutanix NC2 + NDB total cost of ownership across AWS, Azure, and GCP for enterprise database workloads.</p>
+    <p>TCO calculator for database workloads across AWS, Azure, and GCP, comparing bare-metal vs shared infrastructure.</p>
   </div>
 
   <!-- Steps nav -->
   <div class="steps-nav">
     <div class="step-item active" id="nav-step1">
       <div class="step-num">01</div>
-      <div class="step-label">Cloud & Database</div>
+      <div class="step-label">Your Cloud & Database</div>
     </div>
     <div class="step-line"></div>
     <div class="step-item" id="nav-step2">
       <div class="step-num">02</div>
-      <div class="step-label">Your Details</div>
+      <div class="step-label">Your Estimate</div>
     </div>
     <div class="step-line"></div>
     <div class="step-item" id="nav-step3">
       <div class="step-num">03</div>
-      <div class="step-label">Your Estimate</div>
+      <div class="step-label">Your Personal Data</div>
     </div>
   </div>
 
   <!-- ═══════════════ STEP 1 ═══════════════ -->
   <div class="section visible" id="step1">
+
+
+    <!-- Datacenter location -->
+    <div class="dc-row">
+      <div class="dc-label">Database workloads datacenter <span>*</span></div>
+      <div class="dc-select-wrap">
+        <select id="dc-location">
+          <option value="">— Select datacenter location —</option>
+          <optgroup label="EMEA">
+            <option value="EMEA — Frankfurt">Frankfurt</option>
+            <option value="EMEA — Ireland">Ireland</option>
+            <option value="EMEA — London">London</option>
+            <option value="EMEA — Milan">Milan</option>
+            <option value="EMEA — Stockholm">Stockholm</option>
+            <option value="EMEA — Spain">Spain</option>
+            <option value="EMEA — Netherlands">Netherlands (Amsterdam)</option>
+            <option value="EMEA — Belgium">Belgium</option>
+            <option value="EMEA — Germany West Central">Germany West Central</option>
+            <option value="EMEA — Paris">Paris</option>
+            <option value="EMEA — Qatar">Qatar</option>
+            <option value="EMEA — UAE">UAE</option>
+            <option value="EMEA — Israel">Israel (Tel Aviv)</option>
+            <option value="EMEA — Bahrain">Bahrain</option>
+            <option value="EMEA — South Africa">South Africa (Cape Town)</option>
+            <option value="EMEA — Other">Other EMEA</option>
+          </optgroup>
+          <optgroup label="US">
+            <option value="US — Northern Virginia">US East (Northern Virginia)</option>
+            <option value="US — Ohio">US East (Ohio)</option>
+            <option value="US — Oregon">US West (Oregon)</option>
+            <option value="US — Northern California">US West (Northern California)</option>
+            <option value="US — Canada Central">Canada (Central)</option>
+            <option value="US — Canada Calgary">Canada West (Calgary)</option>
+            <option value="US — Other">Other US</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC — Tokyo">Tokyo</option>
+            <option value="APAC — Sydney">Sydney</option>
+            <option value="APAC — Singapore">Singapore</option>
+            <option value="APAC — Seoul">Seoul</option>
+            <option value="APAC — Jakarta">Jakarta</option>
+            <option value="APAC — Mumbai">Mumbai</option>
+            <option value="APAC — Osaka">Osaka</option>
+            <option value="APAC — Hong Kong">Hong Kong</option>
+            <option value="APAC — Malaysia">Malaysia</option>
+            <option value="APAC — Other">Other APAC</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
 
     <div class="section-title">Select Cloud Provider</div>
     <div class="cloud-grid">
@@ -909,8 +1026,8 @@ body::before {
         <div class="cloud-name">AWS</div>
         <div class="cloud-instance">i7ie.metal-24xl</div>
         <div class="cloud-specs">
-          <div class="cloud-spec">vCPU / node <span>108</span></div>
-          <div class="cloud-spec">Storage / node <span>30,720 GB</span></div>
+          <div class="cloud-spec">Core / node <span>48</span></div>
+          <div class="cloud-spec">Available Storage / node <span>30 TB</span></div>
           <div class="cloud-spec">3-yr node price <span>$137,179</span></div>
         </div>
       </div>
@@ -919,8 +1036,8 @@ body::before {
         <div class="cloud-name">Azure</div>
         <div class="cloud-instance">AN36P</div>
         <div class="cloud-specs">
-          <div class="cloud-spec">vCPU / node <span>72</span></div>
-          <div class="cloud-spec">Storage / node <span>10,598 GB</span></div>
+          <div class="cloud-spec">Core / node <span>36</span></div>
+          <div class="cloud-spec">Available Storage / node <span>10 TB</span></div>
           <div class="cloud-spec">3-yr node price <span>$72,795</span></div>
         </div>
       </div>
@@ -929,13 +1046,29 @@ body::before {
         <div class="cloud-name">GCP</div>
         <div class="cloud-instance">z3-highmem-192-highlssd-metal</div>
         <div class="cloud-specs">
-          <div class="cloud-spec">vCPU / node <span>252</span></div>
-          <div class="cloud-spec">Storage / node <span>36,864 GB</span></div>
+          <div class="cloud-spec">Core / node <span>96</span></div>
+          <div class="cloud-spec">Available Storage / node <span>37 TB</span></div>
           <div class="cloud-spec">3-yr node price <span>$345,582</span></div>
         </div>
       </div>
     </div>
 
+    <!-- Discount -->
+    <div class="discount-row">
+      <div class="discount-label">Negotiated discount with the <span>Cloud Provider</span></div>
+      <div class="discount-input-wrap">
+        <input type="number" id="discount-pct" value="0" min="0" max="60" step="1">
+        <span class="discount-pct-symbol">%</span>
+      </div>
+    </div>
+
+    <div class="assumptions-bar" style="margin:14px 0 0;">
+      <span class="assumptions-bar-label">Key Assumptions</span>
+      <span class="assumption-pill">Frankfurt (EU Central)</span>
+      <span class="assumption-pill">3-year committed pricing</span>
+    </div>
+
+    <div style="height:12px;"></div>
     <div class="section-title">Select Database Engines</div>
     <div class="db-grid">
 
@@ -1039,11 +1172,36 @@ body::before {
         </div>
       </div>
 
+      <div class="db-card" id="db-others">
+        <div class="db-header" onclick="toggleDB('others')">
+          <div class="db-info">
+            <div class="db-name">Others</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="others-vms" placeholder="e.g. 5" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="others-vcpu" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="others-storage" placeholder="e.g. 1024" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="step-actions">
       <button class="btn-primary" onclick="goToStep2()">
-        Continue to Details
+        Calculate My Estimate
         <span>→</span>
       </button>
     </div>
@@ -1052,69 +1210,241 @@ body::before {
   <!-- ═══════════════ STEP 2 ═══════════════ -->
   <div class="section" id="step2">
 
-    <div class="section-title">Your Details</div>
 
-    <div class="form-grid">
-      <div class="form-field">
-        <label>First Name <span class="req">*</span></label>
-        <input type="text" id="f-firstname" placeholder="John">
-      </div>
-      <div class="form-field">
-        <label>Last Name <span class="req">*</span></label>
-        <input type="text" id="f-lastname" placeholder="Doe">
-      </div>
-      <div class="form-field">
-        <label>Business Email <span class="req">*</span></label>
-        <input type="email" id="f-email" placeholder="john.doe@company.com">
-      </div>
-      <div class="form-field">
-        <label>Company <span class="req">*</span></label>
-        <input type="text" id="f-company" placeholder="Acme Corp">
-      </div>
-      <div class="form-field">
-        <label>Country <span class="req">*</span></label>
-        <select id="f-country">
-          <option value="">— Select country —</option>
-          <option>Austria</option><option>Belgium</option><option>Bulgaria</option>
-          <option>Croatia</option><option>Cyprus</option><option>Czech Republic</option>
-          <option>Denmark</option><option>Estonia</option><option>Finland</option>
-          <option>France</option><option>Germany</option><option>Greece</option>
-          <option>Hungary</option><option>Ireland</option><option>Italy</option>
-          <option>Latvia</option><option>Lithuania</option><option>Luxembourg</option>
-          <option>Malta</option><option>Netherlands</option><option>Poland</option>
-          <option>Portugal</option><option>Romania</option><option>Slovakia</option>
-          <option>Slovenia</option><option>Spain</option><option>Sweden</option>
-          <option>Switzerland</option><option>Turkey</option><option>United Kingdom</option>
-          <option>UAE</option><option>Saudi Arabia</option><option>Israel</option>
-          <option>South Africa</option><option>Egypt</option>
+    <!-- Datacenter location -->
+    <div class="dc-row">
+      <div class="dc-label">Database workloads datacenter <span>*</span></div>
+      <div class="dc-select-wrap">
+        <select id="dc-location">
+          <option value="">— Select datacenter location —</option>
+          <optgroup label="EMEA">
+            <option value="EMEA — Frankfurt">Frankfurt</option>
+            <option value="EMEA — Ireland">Ireland</option>
+            <option value="EMEA — London">London</option>
+            <option value="EMEA — Milan">Milan</option>
+            <option value="EMEA — Stockholm">Stockholm</option>
+            <option value="EMEA — Spain">Spain</option>
+            <option value="EMEA — Netherlands">Netherlands (Amsterdam)</option>
+            <option value="EMEA — Belgium">Belgium</option>
+            <option value="EMEA — Germany West Central">Germany West Central</option>
+            <option value="EMEA — Paris">Paris</option>
+            <option value="EMEA — Qatar">Qatar</option>
+            <option value="EMEA — UAE">UAE</option>
+            <option value="EMEA — Israel">Israel (Tel Aviv)</option>
+            <option value="EMEA — Bahrain">Bahrain</option>
+            <option value="EMEA — South Africa">South Africa (Cape Town)</option>
+            <option value="EMEA — Other">Other EMEA</option>
+          </optgroup>
+          <optgroup label="US">
+            <option value="US — Northern Virginia">US East (Northern Virginia)</option>
+            <option value="US — Ohio">US East (Ohio)</option>
+            <option value="US — Oregon">US West (Oregon)</option>
+            <option value="US — Northern California">US West (Northern California)</option>
+            <option value="US — Canada Central">Canada (Central)</option>
+            <option value="US — Canada Calgary">Canada West (Calgary)</option>
+            <option value="US — Other">Other US</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC — Tokyo">Tokyo</option>
+            <option value="APAC — Sydney">Sydney</option>
+            <option value="APAC — Singapore">Singapore</option>
+            <option value="APAC — Seoul">Seoul</option>
+            <option value="APAC — Jakarta">Jakarta</option>
+            <option value="APAC — Mumbai">Mumbai</option>
+            <option value="APAC — Osaka">Osaka</option>
+            <option value="APAC — Hong Kong">Hong Kong</option>
+            <option value="APAC — Malaysia">Malaysia</option>
+            <option value="APAC — Other">Other APAC</option>
+          </optgroup>
         </select>
-      </div>
-      <div class="form-field">
-        <label>Job Title</label>
-        <input type="text" id="f-jobtitle" placeholder="IT Director">
-      </div>
-      <div class="form-field full">
-        <label>Phone</label>
-        <input type="tel" id="f-phone" placeholder="+39 02 000 0000">
       </div>
     </div>
 
-    <div class="gdpr-box">
-      <div class="gdpr-check" id="check-gdpr1" onclick="toggleCheck('gdpr1')">
-        <div class="check-box" id="checkBox-gdpr1"></div>
-        <div class="gdpr-text">
-          <strong>Data Processing Consent <span class="req" style="color:var(--danger)">*</span></strong>
-          <p>I consent to my personal data being processed solely to calculate and deliver this TCO estimate, in accordance with GDPR regulations.</p>
+    <div class="section-title">Select Cloud Provider</div>
+    <div class="cloud-grid">
+      <div class="cloud-card" data-cloud="aws" onclick="selectCloud('aws')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">AWS</div>
+        <div class="cloud-instance">i7ie.metal-24xl</div>
+        <div class="cloud-specs">
+          <div class="cloud-spec">Core / node <span>48</span></div>
+          <div class="cloud-spec">Available Storage / node <span>30 TB</span></div>
+          <div class="cloud-spec">3-yr node price <span>$137,179</span></div>
         </div>
-        <span class="gdpr-required-tag">Required</span>
+      </div>
+      <div class="cloud-card" data-cloud="azure" onclick="selectCloud('azure')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">Azure</div>
+        <div class="cloud-instance">AN36P</div>
+        <div class="cloud-specs">
+          <div class="cloud-spec">Core / node <span>36</span></div>
+          <div class="cloud-spec">Available Storage / node <span>10 TB</span></div>
+          <div class="cloud-spec">3-yr node price <span>$72,795</span></div>
+        </div>
+      </div>
+      <div class="cloud-card" data-cloud="gcp" onclick="selectCloud('gcp')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">GCP</div>
+        <div class="cloud-instance">z3-highmem-192-highlssd-metal</div>
+        <div class="cloud-specs">
+          <div class="cloud-spec">Core / node <span>96</span></div>
+          <div class="cloud-spec">Available Storage / node <span>37 TB</span></div>
+          <div class="cloud-spec">3-yr node price <span>$345,582</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discount -->
+    <div class="discount-row">
+      <div class="discount-label">Negotiated discount with the <span>Cloud Provider</span></div>
+      <div class="discount-input-wrap">
+        <input type="number" id="discount-pct" value="0" min="0" max="60" step="1">
+        <span class="discount-pct-symbol">%</span>
+      </div>
+    </div>
+
+    <div class="assumptions-bar" style="margin:14px 0 0;">
+      <span class="assumptions-bar-label">Key Assumptions</span>
+      <span class="assumption-pill">Frankfurt (EU Central)</span>
+      <span class="assumption-pill">3-year committed pricing</span>
+    </div>
+
+    <div style="height:12px;"></div>
+    <div class="section-title">Select Database Engines</div>
+    <div class="db-grid">
+
+      <div class="db-card" id="db-postgresql">
+        <div class="db-header" onclick="toggleDB('postgresql')">
+          <div class="db-info">
+            <div class="db-name">PostgreSQL</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="postgresql-vms" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="postgresql-vcpu" placeholder="e.g. 8" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="postgresql-storage" placeholder="e.g. 2048" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-oracle">
+        <div class="db-header" onclick="toggleDB('oracle')">
+          <div class="db-info">
+            <div class="db-name">Oracle</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="oracle-vms" placeholder="e.g. 2" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="oracle-vcpu" placeholder="e.g. 16" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="oracle-storage" placeholder="e.g. 5120" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-sqlserver">
+        <div class="db-header" onclick="toggleDB('sqlserver')">
+          <div class="db-info">
+            <div class="db-name">SQL Server</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="sqlserver-vms" placeholder="e.g. 3" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="sqlserver-vcpu" placeholder="e.g. 8" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="sqlserver-storage" placeholder="e.g. 1024" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-mongodb">
+        <div class="db-header" onclick="toggleDB('mongodb')">
+          <div class="db-info">
+            <div class="db-name">MongoDB</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="mongodb-vms" placeholder="e.g. 3" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="mongodb-vcpu" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="mongodb-storage" placeholder="e.g. 512" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-others">
+        <div class="db-header" onclick="toggleDB('others')">
+          <div class="db-info">
+            <div class="db-name">Others</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="others-vms" placeholder="e.g. 5" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="others-vcpu" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="others-storage" placeholder="e.g. 1024" min="1">
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
 
     <div class="step-actions">
       <button class="btn-secondary" onclick="goToStep(1)">← Back</button>
-      <button class="btn-primary" id="btn-unlock" onclick="unlockEstimate()">
-        Calculate My Estimate →
+      <button class="btn-primary" onclick="goToStep2()">
+        Calculate My Estimate
+        <span>→</span>
       </button>
     </div>
   </div>
@@ -1128,13 +1458,6 @@ body::before {
     </div>
 
     <div class="blur-wrap">
-      <div class="blur-overlay" id="blur-overlay">
-        <div class="blur-overlay-inner">
-          <span class="lock-icon">🔐</span>
-          <h3>Your estimate is ready</h3>
-          <p>Complete Step 2 to unlock your personalized cost breakdown</p>
-        </div>
-      </div>
 
       <!-- KPI Row 1: Nodes, Annual, 3yr -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;">
@@ -1144,14 +1467,14 @@ body::before {
           <div class="kpi-sub">N+1 failover cluster</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Annual Infrastructure Cost</div>
+          <div class="kpi-label">Annual DBaaS Cost</div>
           <div class="kpi-value accent" id="kpi-annual">$0</div>
-          <div class="kpi-sub">HW + NDB licensing</div>
+          <div class="kpi-sub">Baremetal and NDB licensing</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">3-Year Total Investment</div>
+          <div class="kpi-label">3-Years DBaaS Cost</div>
           <div class="kpi-value accent2" id="kpi-3yr">$0</div>
-          <div class="kpi-sub">Committed pricing</div>
+          <div class="kpi-sub">Baremetal and NDB licensing</div>
         </div>
       </div>
 
@@ -1159,7 +1482,7 @@ body::before {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
         <div class="kpi-card">
           <div class="kpi-label">CPU Utilization</div>
-          <div class="kpi-value" id="kpi-util">0%</div>
+          <div class="kpi-value accent" id="kpi-util">0%</div>
           <div class="kpi-sub" id="kpi-util-sub">of cluster capacity</div>
         </div>
         <div class="kpi-card">
@@ -1178,7 +1501,7 @@ body::before {
               <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">CPU</span>
               <div style="display:flex;align-items:baseline;gap:8px;">
                 <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent);" id="kpi-cpu-pct">0%</span>
-                <span class="kpi-sub" id="kpi-cpu-detail">0 / 0 cores</span>
+
               </div>
             </div>
             <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-cpu" style="width:0%"></div></div>
@@ -1188,7 +1511,7 @@ body::before {
               <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">Storage</span>
               <div style="display:flex;align-items:baseline;gap:8px;">
                 <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent2);" id="kpi-storage-pct">0%</span>
-                <span class="kpi-sub" id="kpi-storage-detail">0 / 0 TB</span>
+
               </div>
             </div>
             <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-storage" style="background:linear-gradient(90deg,var(--accent2),#0055cc);width:0%"></div></div>
@@ -1203,7 +1526,6 @@ body::before {
           <div class="th">VMs</div>
           <div class="th">vCPUs</div>
           <div class="th">Storage</div>
-          <div class="th">CPU Utilization</div>
         </div>
         <div id="results-table-body"></div>
       </div>
@@ -1225,7 +1547,7 @@ body::before {
           <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
             <div style="display:flex;align-items:center;gap:8px;">
               <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🗂</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text);">DB Catalog</span>
+              <span style="font-size:12px;font-weight:700;color:var(--accent2);">DB Catalog</span>
             </div>
             <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Centralized inventory of all database instances across engines and environments.</p>
           </div>
@@ -1233,7 +1555,7 @@ body::before {
           <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
             <div style="display:flex;align-items:center;gap:8px;">
               <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">⚡</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text);">Provisioning</span>
+              <span style="font-size:12px;font-weight:700;color:var(--accent2);">Provisioning</span>
             </div>
             <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">One-click deployment of database instances with standardized profiles and policies.</p>
           </div>
@@ -1241,7 +1563,7 @@ body::before {
           <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
             <div style="display:flex;align-items:center;gap:8px;">
               <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,133,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔧</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text);">Patching</span>
+              <span style="font-size:12px;font-weight:700;color:var(--accent2);">Patching</span>
             </div>
             <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Automated patch management with rollback capabilities and zero-downtime scheduling.</p>
           </div>
@@ -1249,7 +1571,7 @@ body::before {
           <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
             <div style="display:flex;align-items:center;gap:8px;">
               <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,133,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🧬</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text);">Thin Cloning</span>
+              <span style="font-size:12px;font-weight:700;color:var(--accent2);">Thin Cloning</span>
             </div>
             <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Instant space-efficient clones via redirect-on-write — no storage duplication required.</p>
           </div>
@@ -1257,7 +1579,7 @@ body::before {
           <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
             <div style="display:flex;align-items:center;gap:8px;">
               <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🛡</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text);">Data Protection & Instant Restore</span>
+              <span style="font-size:12px;font-weight:700;color:var(--accent2);">Data Protection & Instant Restore</span>
             </div>
             <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Continuous protection with Time Machine and point-in-time recovery to any snapshot.</p>
           </div>
@@ -1275,7 +1597,7 @@ body::before {
 
       <!-- Methodology -->
       <div class="method-box">
-        <div class="method-title">📐 Methodology & Assumptions</div>
+        <div class="method-title">Assumptions</div>
         <div class="method-grid" id="method-content"></div>
       </div>
 
@@ -1283,8 +1605,74 @@ body::before {
 
     <div class="step-actions">
       <button class="btn-secondary" onclick="goToStep(1)">← Recalculate</button>
-      <button class="btn-primary" onclick="downloadSummary()">
-        ⬇ Download Summary
+      <button class="btn-primary" onclick="goToStep(4)">
+        Generate Summary →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STEP 4 ═══════════════ -->
+  <div class="section" id="step4">
+
+    <div class="section-title">Your Details — Generate Summary</div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label>First Name <span class="req">*</span></label>
+        <input type="text" id="f-firstname" placeholder="John">
+      </div>
+      <div class="form-field">
+        <label>Last Name <span class="req">*</span></label>
+        <input type="text" id="f-lastname" placeholder="Doe">
+      </div>
+      <div class="form-field">
+        <label>Business Email <span class="req">*</span></label>
+        <input type="email" id="f-email" placeholder="john.doe@company.com">
+      </div>
+      <div class="form-field">
+        <label>Company <span class="req">*</span></label>
+        <input type="text" id="f-company" placeholder="Acme Corp">
+      </div>
+      <div class="form-field">
+        <label>Report Name <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — identify this estimate)</span></label>
+        <input type="text" id="f-reportname" placeholder="e.g. AWS Frankfurt Q2 2026">
+      </div>
+      <div class="form-field">
+        <label>Country <span class="req">*</span></label>
+        <select id="f-country">
+          <option value="">— Select country —</option>
+          <option>Austria</option><option>Belgium</option><option>Bulgaria</option>
+          <option>Croatia</option><option>Cyprus</option><option>Czech Republic</option>
+          <option>Denmark</option><option>Estonia</option><option>Finland</option>
+          <option>France</option><option>Germany</option><option>Greece</option>
+          <option>Hungary</option><option>Ireland</option><option>Italy</option>
+          <option>Latvia</option><option>Lithuania</option><option>Luxembourg</option>
+          <option>Malta</option><option>Netherlands</option><option>Poland</option>
+          <option>Portugal</option><option>Romania</option><option>Slovakia</option>
+          <option>Slovenia</option><option>Spain</option><option>Sweden</option>
+          <option>Switzerland</option><option>Turkey</option><option>United Kingdom</option>
+          <option>UAE</option><option>Saudi Arabia</option><option>Israel</option>
+          <option>South Africa</option><option>Egypt</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="gdpr-box">
+      <div class="gdpr-check" id="check-gdpr1" onclick="toggleCheck('gdpr1')">
+        <div class="check-box" id="checkBox-gdpr1"></div>
+        <div class="gdpr-text">
+          <strong>Data Processing Consent <span class="req" style="color:var(--danger)">*</span></strong>
+          <p>I consent to my personal data being processed solely to calculate and deliver this TCO estimate, in accordance with GDPR regulations.</p>
+        </div>
+        <span class="gdpr-required-tag">Required</span>
+      </div>
+
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-secondary" onclick="goToStep(2)">← Back</button>
+      <button class="btn-primary" id="btn-generate" onclick="generateSummary()">
+        Continue & Generate →
       </button>
     </div>
   </div>
@@ -1373,10 +1761,105 @@ function toggleCheck(id) {
   }
 }
 
+
+
+// ─── Trigger save after calculation ───
+function triggerSaveLead() {
+  const firstname = document.getElementById('f-firstname').value.trim();
+  const lastname  = document.getElementById('f-lastname').value.trim();
+  const email     = document.getElementById('f-email').value.trim();
+  const company   = document.getElementById('f-company').value.trim();
+  const country   = document.getElementById('f-country').value;
+  const r = calcResults;
+  if (!r) return;
+
+  const dbDetail = r.dbs
+    ? r.dbs.map(db => `${db.name}: ${db.vms} VMs x ${db.vcpu} vCPU = ${db.vms * db.vcpu} vCPU, ${db.storage} GB`).join(' | ')
+    : '';
+  const dbTechs = r.dbs ? r.dbs.map(db => db.name).join(', ') : '';
+
+  saveLead({
+    submitted_at:            new Date().toISOString(),
+    datacenter:              (document.getElementById('dc-location') ? document.getElementById('dc-location').value : '') || 'Unknown',
+    report_name:             (document.getElementById('f-reportname') ? document.getElementById('f-reportname').value.trim() : '') || 'My Estimate',
+    first_name:              firstname,
+    last_name:               lastname,
+    email:                   email,
+    company:                 company,
+    job_title:               '',
+    country:                 country,
+    phone:                   '',
+    consent_data_processing: 'YES',
+    consent_marketing:       gdprChecks.gdpr2 ? 'YES' : 'NO',
+    cloud_provider:          r.cloud || selectedCloud,
+    cloud_instance:          CLOUD_DATA[selectedCloud] ? CLOUD_DATA[selectedCloud].instance : '',
+    region:                  'Frankfurt (EU)',
+    discount_pct:            (getDiscount() * 100).toFixed(0) + '%',
+    db_technologies:         dbTechs,
+    db_detail:               dbDetail,
+    total_nodes:             r.nodes,
+    annual_cost_usd:         Math.round(r.totalAnnual).toLocaleString('en-US'),
+    total_3yr_cost_usd:      Math.round(r.total3yr).toLocaleString('en-US'),
+    hw_cost_3yr_usd:         Math.round((r.hwAnnual || 0) * 3).toLocaleString('en-US'),
+    ndb_cost_3yr_usd:        Math.round((r.ndbAnnual || 0) * 3).toLocaleString('en-US'),
+    tool_version:            'NC2-NDB-Calc-v1.7'
+  });
+}
+
+// ─── Validate details and proceed to Cloud & Database step ───
+function goToStep2FromDetails() {
+  const firstname = document.getElementById('f-firstname').value.trim();
+  const lastname  = document.getElementById('f-lastname').value.trim();
+  const email     = document.getElementById('f-email').value.trim();
+  const country   = document.getElementById('f-country').value;
+  if (!firstname || !lastname || !email || !country) {
+    showToast('Please fill all required fields', 'error'); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid email address', 'error'); return;
+  }
+  if (!isBusinessEmail(email)) {
+    showToast('Please use your business email — personal domains not accepted', 'error'); return;
+  }
+  if (!gdprChecks.gdpr1) {
+    showToast('Please accept the data processing consent', 'error'); return;
+  }
+  goToStep(2);
+}
+
+
+// ─── Email validation ───
+const PERSONAL_DOMAINS = new Set([
+  'gmail.com','googlemail.com','yahoo.com','yahoo.co.uk','yahoo.it','yahoo.fr',
+  'yahoo.de','yahoo.es','ymail.com','hotmail.com','hotmail.it','hotmail.co.uk',
+  'hotmail.fr','hotmail.de','outlook.com','outlook.it','live.com','live.it',
+  'msn.com','icloud.com','me.com','mac.com','aol.com','protonmail.com',
+  'proton.me','pm.me','tutanota.com','tutamail.com','tuta.io','zoho.com',
+  'mail.com','email.com','gmx.com','gmx.net','gmx.de','gmx.it','gmx.fr',
+  'libero.it','virgilio.it','alice.it','tin.it','tiscali.it','fastweb.it',
+  'poste.it','aruba.it','katamail.com','inwind.it','iol.it',
+  'web.de','t-online.de','freenet.de','laposte.net','wanadoo.fr','orange.fr',
+  'free.fr','sfr.fr','bbox.fr','numericable.fr',
+  'seznam.cz','centrum.cz','wp.pl','onet.pl','interia.pl',
+  'mail.ru','yandex.ru','yandex.com','rambler.ru','inbox.ru',
+  'rediffmail.com','163.com','126.com','qq.com','sina.com',
+  'naver.com','daum.net','hanmail.net',
+  'terra.com.br','uol.com.br','bol.com.br',
+  'trashmail.com','guerrillamail.com','mailinator.com','throwam.com',
+  'temp-mail.org','fakeinbox.com','sharklasers.com','dispostable.com'
+]);
+
+function isBusinessEmail(email) {
+  if (!email || !email.includes('@')) return false;
+  const domain = email.split('@')[1].toLowerCase().trim();
+  return !PERSONAL_DOMAINS.has(domain);
+}
+
 // ─── Step navigation ───
 function goToStep(n) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-  document.getElementById('step' + n).classList.add('visible');
+  const target = document.getElementById('step' + n);
+  if (target) target.classList.add('visible');
   document.querySelectorAll('.step-item').forEach((item, i) => {
     item.classList.remove('active', 'done');
     if (i + 1 < n) item.classList.add('done');
@@ -1386,6 +1869,8 @@ function goToStep(n) {
 }
 
 function goToStep2() {
+  const dcLocation = document.getElementById('dc-location').value;
+  if (!dcLocation) { showToast('Please select your datacenter location', 'error'); return; }
   if (!selectedCloud) { showToast('Please select a cloud provider', 'error'); return; }
   const dbs = getDBInputs();
   if (dbs.length === 0) { showToast('Please select at least one database engine', 'error'); return; }
@@ -1397,7 +1882,11 @@ function goToStep2() {
   // Pre-calculate
   calcResults = calculate(dbs);
   renderResults();
-  goToStep(2);
+  // Save anonymous stats immediately
+  triggerSaveStats();
+  // Remove blur — results always visible now
+  const _bo = document.getElementById('blur-overlay'); if (_bo) _bo.classList.add('hidden');
+  goToStep(3);
 }
 
 function unlockEstimate() {
@@ -1407,11 +1896,14 @@ function unlockEstimate() {
   const company   = document.getElementById('f-company').value.trim();
   const country   = document.getElementById('f-country').value;
 
-  if (!firstname || !lastname || !email || !company || !country) {
+  if (!firstname || !lastname || !email || !country) {
     showToast('Please fill all required fields', 'error'); return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showToast('Please enter a valid business email', 'error'); return;
+  }
+  if (!isBusinessEmail(email)) {
+    showToast('Please use your business email address', 'error'); return;
   }
   if (!gdprChecks.gdpr1) {
     showToast('Please accept the data processing consent', 'error'); return;
@@ -1424,8 +1916,6 @@ function unlockEstimate() {
 
   saveLead({
     firstname, lastname, email, company, country,
-    jobtitle: document.getElementById('f-jobtitle').value,
-    phone: document.getElementById('f-phone').value,
     gdpr_marketing: gdprChecks.gdpr2,
     cloud: selectedCloud,
     results: JSON.stringify(calcResults)
@@ -1435,10 +1925,85 @@ function unlockEstimate() {
     btn.innerHTML = orig;
     btn.disabled = false;
     resultsUnlocked = true;
-    document.getElementById('blur-overlay').classList.add('hidden');
+    const _bo = document.getElementById('blur-overlay'); if (_bo) _bo.classList.add('hidden');
     goToStep(3);
     showToast('Estimate unlocked! ✅', 'success');
   }, 1200);
+}
+
+
+// ─── Discount ───
+function getDiscount() {
+  const el = document.getElementById('discount-pct');
+  if (!el) return 0;
+  return Math.min(Math.max(parseFloat(el.value) || 0, 0), 60) / 100;
+}
+
+
+// ─── Save anonymous stats (no personal data) ───
+function triggerSaveStats() {
+  const r = calcResults;
+  if (!r) return;
+  const dbDetail = r.dbs
+    ? r.dbs.map(db => `${db.name}: ${db.vms} VMs x ${db.vcpu} vCPU, ${db.storage} GB`).join(' | ')
+    : '';
+  const dbTechs = r.dbs ? r.dbs.map(db => db.name).join(', ') : '';
+  const dcLocation = document.getElementById('dc-location') ? document.getElementById('dc-location').value : '';
+
+  saveLead({
+    submitted_at:            new Date().toISOString(),
+    first_name:              'anonymous',
+    last_name:               '',
+    email:                   '',
+    company:                 '',
+    job_title:               '',
+    country:                 '',
+    phone:                   '',
+    consent_data_processing: 'STATS_ONLY',
+    consent_marketing:       'NO',
+    cloud_provider:          r.cloud || selectedCloud,
+    cloud_instance:          CLOUD_DATA[selectedCloud] ? CLOUD_DATA[selectedCloud].instance : '',
+    datacenter:              dcLocation,
+    region:                  'Frankfurt (EU)',
+    discount_pct:            (getDiscount() * 100).toFixed(0) + '%',
+    db_technologies:         dbTechs,
+    db_detail:               dbDetail,
+    total_nodes:             r.nodes,
+    annual_cost_usd:         Math.round(r.totalAnnual).toLocaleString('en-US'),
+    total_3yr_cost_usd:      Math.round(r.total3yr).toLocaleString('en-US'),
+    hw_cost_3yr_usd:         Math.round((r.hwAnnual || 0) * 3).toLocaleString('en-US'),
+    ndb_cost_3yr_usd:        Math.round((r.ndbAnnual || 0) * 3).toLocaleString('en-US'),
+    tool_version:            'NC2-NDB-Calc-v1.8'
+  });
+}
+
+
+// ─── Generate Summary: validate details, save full lead, open PDF ───
+function generateSummary() {
+  const firstname = document.getElementById('f-firstname').value.trim();
+  const lastname  = document.getElementById('f-lastname').value.trim();
+  const email     = document.getElementById('f-email').value.trim();
+  const company   = document.getElementById('f-company').value.trim();
+  const country   = document.getElementById('f-country').value;
+
+  if (!firstname || !lastname || !email || !company || !country) {
+    showToast('Please fill all required fields', 'error'); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid email address', 'error'); return;
+  }
+  if (!isBusinessEmail(email)) {
+    showToast('Please use your business email — personal domains not accepted', 'error'); return;
+  }
+  if (!gdprChecks.gdpr1) {
+    showToast('Please accept the data processing consent', 'error'); return;
+  }
+
+  // Save full lead with personal data
+  triggerSaveLead();
+
+  // Open print window
+  downloadSummary();
 }
 
 // ─── Save lead ───
@@ -1457,8 +2022,8 @@ function saveLead(data) {
 
 // ─── Get DB inputs ───
 function getDBInputs() {
-  const dbNames = { postgresql:'PostgreSQL', oracle:'Oracle', sqlserver:'SQL Server', mongodb:'MongoDB' };
-  const dbEmojis = { postgresql:'🐘', oracle:'🔴', sqlserver:'🟦', mongodb:'🍃' };
+  const dbNames = { postgresql:'PostgreSQL', oracle:'Oracle', sqlserver:'SQL Server', mongodb:'MongoDB', others:'Others' };
+  const dbEmojis = { postgresql:'🐘', oracle:'🔴', sqlserver:'🟦', mongodb:'🍃', others:'⚙️' };
   return Object.keys(selectedDBs).map(db => ({
     id: db,
     name: dbNames[db],
@@ -1496,10 +2061,12 @@ function calculate(dbs) {
     hw3yr          += cloud.node1.priceHW3YR;
   }
 
-  const ndbAnnual = totalVMs * NDB_PRICE_PER_INSTANCE_YEAR;
-  const hwAnnual  = hw3yr / 3;
+  const discount    = getDiscount();
+  const hw3yr_net   = hw3yr * (1 - discount);
+  const ndbAnnual   = totalVMs * NDB_PRICE_PER_INSTANCE_YEAR;
+  const hwAnnual    = hw3yr_net / 3;
   const totalAnnual = hwAnnual + ndbAnnual;
-  const total3yr    = hw3yr + (ndbAnnual * 3);
+  const total3yr    = hw3yr_net + (ndbAnnual * 3);
 
   const vcpuUtil    = Math.min(100, Math.round((totalVcpu    / clusterVcpu)    * 100));
   const storageUtil = Math.min(100, Math.round((totalStorage / clusterStorage) * 100));
@@ -1509,7 +2076,7 @@ function calculate(dbs) {
     nodes, clusterVcpu, clusterStorage,
     totalVcpu, totalStorage,
     vcpuUtil, storageUtil,
-    hwAnnual, ndbAnnual, totalAnnual, total3yr, totalVMs,
+    hwAnnual, ndbAnnual, totalAnnual, total3yr, totalVMs, discount, hw3yr_net,
     dbs: dbs.map(db => ({
       ...db,
       clusterPct: clusterVcpu > 0
@@ -1538,12 +2105,10 @@ function renderResults() {
 
   // CPU utilization bar
   document.getElementById('kpi-cpu-pct').textContent    = r.vcpuUtil + '%';
-  document.getElementById('kpi-cpu-detail').textContent = `${r.totalVcpu} / ${r.clusterVcpu} cores`;
   document.getElementById('bar-cpu').style.width         = r.vcpuUtil + '%';
 
   // Storage utilization bar
   document.getElementById('kpi-storage-pct').textContent    = r.storageUtil + '%';
-  document.getElementById('kpi-storage-detail').textContent = `${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}`;
   document.getElementById('bar-storage').style.width         = r.storageUtil + '%';
 
   // Table
@@ -1552,12 +2117,9 @@ function renderResults() {
     <div class="table-row">
       <div class="td td-db">${db.name}</div>
       <div class="td mono">${db.vms}</div>
-      <div class="td mono">${db.vms * db.vcpu} CPU</div>
+      <div class="td mono">${db.vms * db.vcpu}</div>
       <div class="td mono">${fmtGB(db.storage)}</div>
-      <div class="td">
-        <div class="util-pct">${db.clusterPct}%</div>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${db.clusterPct}%"></div></div>
-      </div>
+
     </div>
   `).join('');
 
@@ -1565,9 +2127,10 @@ function renderResults() {
   const cloud = CLOUD_DATA[selectedCloud];
   document.getElementById('method-content').innerHTML = [
     `N+1 Failover Cluster configuration`,
-    `Hardware pricing: 3-year committed, Frankfurt region, 0% discount`,
+    `Hardware pricing: 3-year committed, Frankfurt region, ${Math.round((r.discount||0)*100)}% discount applied`,
     `Storage: RF2 replication — ${fmtGB(r.clusterStorage)} raw available`,
-    `PostgreSQL Community Edition support included`
+    `NDB: $975/instance/year · PostgreSQL CE support included`,
+    `Average physical-to-virtual consolidation ratio 1:3 on NDB`
   ].map(t => `<div class="method-item">${t}</div>`).join('');
 }
 
@@ -1583,6 +2146,8 @@ function fmtGB(n) {
 function downloadSummary() {
   if (!calcResults) return;
   const r = calcResults;
+  const reportName = (document.getElementById('f-reportname') ? document.getElementById('f-reportname').value.trim() : '') || 'My Estimate';
+  const discountPct = Math.round((r.discount || 0) * 100);
   const date = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
 
   // ── DB table rows ──
@@ -1592,14 +2157,6 @@ function downloadSummary() {
       <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#8a95a8;">${db.vms}</td>
       <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#8a95a8;">${db.vms * db.vcpu}</td>
       <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#8a95a8;">${fmtGB(db.storage)}</td>
-      <td style="padding:12px 14px;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="flex:1;height:4px;background:#1e2535;border-radius:4px;overflow:hidden;min-width:60px;">
-            <div style="width:${db.clusterPct}%;height:100%;background:linear-gradient(90deg,#00c9a7,#0085ff);border-radius:4px;"></div>
-          </div>
-          <span style="font-family:'DM Mono',monospace;font-size:11px;color:#00c9a7;min-width:32px;text-align:right;">${db.clusterPct}%</span>
-        </div>
-      </td>
     </tr>`).join('');
 
   // ── NDB feature cards ──
@@ -1624,10 +2181,11 @@ function downloadSummary() {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NC2 + NDB · ${r.cloud} · ${date}</title>
+<title>${reportName} · ${r.cloud} · ${date}</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   @page { size: A4; margin: 0; }
+  @media print { .no-print { display: none !important; } }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body {
     background-color: #0a0c10 !important;
@@ -1645,6 +2203,16 @@ function downloadSummary() {
 </style>
 </head>
 <body style="background-color:#0a0c10;">
+
+<!-- Print button — hidden during actual printing -->
+<div style="position:fixed;bottom:32px;right:32px;z-index:999;display:flex;gap:10px;" class="no-print">
+  <button onclick="window.print()" style="background:linear-gradient(135deg,#00c9a7,#0085ff);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;padding:12px 28px;border:none;border-radius:10px;cursor:pointer;box-shadow:0 4px 20px rgba(0,201,167,0.35);">
+    🖨 Print / Save as PDF
+  </button>
+  <button onclick="window.close()" style="background:rgba(255,255,255,0.06);color:#8a95a8;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;padding:12px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;">
+    ✕ Close
+  </button>
+</div>
 
 <!-- ══════════════════ COVER ══════════════════ -->
 <div class="page-break" style="background-color:#0a0c10;min-height:100vh;padding:56px 64px 48px;display:flex;flex-direction:column;position:relative;overflow:hidden;">
@@ -1669,6 +2237,7 @@ function downloadSummary() {
       Public Cloud Database Infrastructure
       <div style="height:1px;width:32px;background:#00c9a7;"></div>
     </div>
+    <div style="font-family:'DM Mono',monospace;font-size:13px;color:#00c9a7;margin-bottom:10px;letter-spacing:.04em;">${reportName}</div>
     <h1 style="font-size:52px;font-weight:800;line-height:1.08;letter-spacing:-.025em;margin-bottom:24px;color:#e8edf5;">
       Your Estimate<br>
       <span style="color:#00c9a7;">on Public Cloud</span><br>
@@ -1718,15 +2287,15 @@ function downloadSummary() {
     </div>
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
       <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Annual Infrastructure Cost</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Annual DBaaS Cost</div>
       <div style="font-size:28px;font-weight:800;color:#00c9a7;line-height:1;">${fmtUSD(r.totalAnnual)}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">Hardware + NDB licensing</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">${discountPct > 0 ? discountPct + "% discount applied · " : ""}Hardware + NDB licensing</div>
     </div>
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
       <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">3-Year Total Investment</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">3-Years DBaaS Cost</div>
       <div style="font-size:28px;font-weight:800;color:#0085ff;line-height:1;">${fmtUSD(r.total3yr)}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">3-year committed pricing</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">Baremetal and NDB licensing</div>
     </div>
   </div>
 
@@ -1771,7 +2340,7 @@ function downloadSummary() {
           <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">VMs</th>
           <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">CPU Cores</th>
           <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">Storage</th>
-          <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">CPU Share</th>
+
         </tr>
       </thead>
       <tbody>${dbRows}</tbody>
@@ -1784,11 +2353,11 @@ function downloadSummary() {
     <div style="flex:1;height:1px;background:#1a2030;"></div>
   </div>
   <div style="display:flex;flex-direction:column;gap:0;">
-    ${['Frankfurt (EU Central) pricing · 0% discount · 3-year committed',
-       'N+1 Failover Cluster configuration · RF2 storage replication',
-       'Base cluster: 4 nodes · scaling by single nodes up to 28',
-       'NDB: $975 / instance / year · covers all managed database engines',
-       'PostgreSQL Community Edition support included in NDB subscription'
+    ${[
+       'Frankfurt (EU Central) · 3-year committed pricing' + (discountPct > 0 ? ' · ' + discountPct + '% bare metal discount applied' : ' · 0% discount'),
+       'N+1 Failover Cluster · RF2 storage replication · base 4 nodes, scales by single node up to 28',
+       'NDB: $975 / instance / year · includes PostgreSQL CE support',
+       'Average physical-to-virtual consolidation ratio 1:3 on NDB'
       ].map(a => `<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#8a95a8;line-height:1.55;padding:8px 0;border-bottom:1px solid #131720;">
         <span style="color:#0085ff;flex-shrink:0;">→</span>${a}</div>`).join('')}
   </div>
@@ -1868,7 +2437,7 @@ function downloadSummary() {
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();
-  w.onload = () => { w.focus(); w.print(); };
+  w.focus();
   showToast('Summary ready — Print → Save as PDF ✅', 'success');
 }
 // ─── Toast ───
