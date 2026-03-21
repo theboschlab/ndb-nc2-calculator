@@ -1711,7 +1711,7 @@ let calcResults = null;
 
 // ─── Load pricing from Google Sheets ───
 function loadPricing() {
-  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwUo4oK7es5Y3OQjOWmVv9vsU9hIU3MhJtBNJoi19pd530GaNIUwX8bm57J9jVWEy7HVg/exec') return;
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
   try {
     const cb = 'pricing_cb_' + Date.now();
     window[cb] = function(data) {
@@ -2008,7 +2008,7 @@ function generateSummary() {
 
 // ─── Save lead ───
 function saveLead(data) {
-  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbwUo4oK7es5Y3OQjOWmVv9vsU9hIU3MhJtBNJoi19pd530GaNIUwX8bm57J9jVWEy7HVg/exec') return;
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
   try {
     const cb = 'save_cb_' + Date.now();
     window[cb] = function() { delete window[cb]; };
