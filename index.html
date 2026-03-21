@@ -1,0 +1,1887 @@
+x<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Public Cloud Database Infrastructure Calculator — Nutanix NC2 + NDB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:        #0a0c10;
+  --bg1:       #0e1117;
+  --bg2:       #131720;
+  --bg3:       #1a2030;
+  --border:    rgba(255,255,255,0.07);
+  --border-hi: rgba(255,255,255,0.14);
+  --accent:    #00c9a7;
+  --accent2:   #0085ff;
+  --accent-glow: rgba(0,201,167,0.18);
+  --accent2-glow: rgba(0,133,255,0.18);
+  --text:      #e8edf5;
+  --text2:     #8a95a8;
+  --text3:     #545f72;
+  --danger:    #ff4d6a;
+  --warn:      #ffaa00;
+  --radius:    12px;
+  --radius-lg: 18px;
+  --font-head: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin:0; padding:0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-head);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Grid noise overlay ─── */
+body::before {
+  content:'';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: .5;
+}
+
+/* ─── Ambient glows ─── */
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-orb.a { width:600px; height:600px; background:rgba(0,201,167,0.06); top:-200px; right:-100px; }
+.glow-orb.b { width:500px; height:500px; background:rgba(0,133,255,0.05); bottom:-100px; left:-150px; }
+
+/* ─── Layout ─── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Top bar ─── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 18px;
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+.logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 10px var(--accent);
+}
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border-hi);
+  color: var(--text2);
+  letter-spacing: .04em;
+}
+
+/* ─── Assumptions header ─── */
+.assumptions-bar {
+  margin: 18px 0;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+}
+.assumptions-bar-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.assumption-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.assumption-pill::before {
+  content: '·';
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ─── Hero ─── */
+.hero {
+  padding: 52px 0 36px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content:'';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent));
+}
+.hero-eyebrow::after { background: linear-gradient(90deg, var(--accent), transparent); }
+.hero h1 {
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #e8edf5 30%, #7a9abf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--text2);
+  font-size: 15px;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* ─── Step indicator ─── */
+.steps-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 36px 0 40px;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: default;
+}
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1.5px solid var(--border-hi);
+  color: var(--text3);
+  transition: all .3s ease;
+  flex-shrink: 0;
+}
+.step-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text3);
+  transition: color .3s ease;
+  white-space: nowrap;
+}
+.step-line {
+  width: 60px;
+  height: 1px;
+  background: var(--border-hi);
+  margin: 0 8px;
+}
+.step-item.active .step-num {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+.step-item.active .step-label { color: var(--text); }
+.step-item.done .step-num {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+.step-item.done .step-label { color: var(--accent); }
+
+/* ─── Section ─── */
+.section {
+  display: none;
+  animation: fadeUp .4s ease;
+}
+.section.visible { display: block; }
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content:'';
+  flex:1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── Cloud cards ─── */
+.cloud-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.cloud-card {
+  background: var(--bg1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  cursor: pointer;
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.cloud-card::before {
+  content:'';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-glow), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.cloud-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.cloud-card:hover::before { opacity: .5; }
+.cloud-card.selected {
+  border-color: var(--accent);
+  background: var(--bg2);
+  box-shadow: 0 0 0 1px var(--accent), 0 8px 32px var(--accent-glow);
+}
+.cloud-card.selected::before { opacity: 1; }
+.cloud-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+  display: block;
+}
+.cloud-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.cloud-instance {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: .02em;
+}
+.cloud-specs {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cloud-spec {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  display: flex;
+  justify-content: space-between;
+}
+.cloud-spec span { color: var(--accent); }
+.check-badge {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity .2s;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+.cloud-card.selected .check-badge { opacity: 1; }
+
+/* ─── DB cards ─── */
+.db-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.db-card {
+  background: var(--bg1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color .25s;
+}
+.db-card.selected { border-color: var(--accent2); box-shadow: 0 0 0 1px var(--accent2), 0 8px 32px var(--accent2-glow); }
+.db-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.db-header:hover { background: var(--bg2); }
+.db-icon { font-size: 22px; }
+.db-info { flex:1; }
+.db-name { font-size: 15px; font-weight: 700; }
+.db-desc { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.db-toggle {
+  width: 40px; height: 22px;
+  border-radius: 11px;
+  background: var(--bg3);
+  border: 1.5px solid var(--border-hi);
+  position: relative;
+  transition: all .25s;
+  flex-shrink: 0;
+}
+.db-toggle::after {
+  content:'';
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--text3);
+  top: 2px; left: 2px;
+  transition: all .25s;
+}
+.db-card.selected .db-toggle {
+  background: var(--accent2);
+  border-color: var(--accent2);
+}
+.db-card.selected .db-toggle::after {
+  left: 20px;
+  background: #fff;
+}
+.db-fields {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+  animation: expandDown .25s ease;
+}
+.db-card.selected .db-fields { display: block; }
+@keyframes expandDown {
+  from { opacity:0; transform: scaleY(0.9); transform-origin: top; }
+  to   { opacity:1; transform: scaleY(1); }
+}
+.fields-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.field-group label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.field-group input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--border-hi);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+}
+.field-group input:focus { border-color: var(--accent2); }
+.field-group input::placeholder { color: var(--text3); }
+
+/* ─── CTA button ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all .25s ease;
+  box-shadow: 0 4px 24px rgba(0,201,167,0.25);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,201,167,0.35);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--text2);
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 13px 24px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-hi);
+  cursor: pointer;
+  transition: all .25s ease;
+}
+.btn-secondary:hover { border-color: var(--text2); color: var(--text); }
+
+.step-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── GDPR Form ─── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field.full { grid-column: 1/-1; }
+.form-field label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.form-field label .req { color: var(--accent); }
+.form-field input,
+.form-field select {
+  background: var(--bg1);
+  border: 1.5px solid var(--border-hi);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: var(--font-head);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%238a95a8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.form-field select option { background: var(--bg2); }
+.form-field input:focus,
+.form-field select:focus { border-color: var(--accent); }
+.form-field input::placeholder { color: var(--text3); }
+
+.gdpr-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gdpr-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg1);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.gdpr-check:hover { border-color: var(--border-hi); }
+.gdpr-check input[type=checkbox] { display: none; }
+.check-box {
+  width: 18px; height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-hi);
+  background: var(--bg3);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  margin-top: 1px;
+}
+.gdpr-check input:checked ~ .check-box,
+.gdpr-check.checked .check-box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.gdpr-check input:checked ~ .check-box::after,
+.gdpr-check.checked .check-box::after {
+  content: '✓';
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.gdpr-text { flex: 1; }
+.gdpr-text strong { font-size: 13px; font-weight: 600; display: block; margin-bottom: 3px; }
+.gdpr-text p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.gdpr-required-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(0,201,167,0.1);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ─── Results ─── */
+.results-header {
+  text-align: center;
+  padding: 32px 0 36px;
+}
+.results-header h2 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.results-header p { color: var(--text2); font-size: 14px; }
+
+/* ─── KPI Cards ─── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.kpi-card {
+  background: var(--bg1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content:'';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  opacity: 0;
+  transition: opacity .3s;
+}
+.kpi-card:hover::before { opacity: 1; }
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+.kpi-value {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.kpi-value.accent { color: var(--accent); }
+.kpi-value.accent2 { color: var(--accent2); }
+.kpi-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* ─── Blurred overlay ─── */
+.blur-wrap {
+  position: relative;
+}
+.blur-overlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(10,12,16,0.5);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: opacity .5s ease;
+}
+.blur-overlay.hidden { opacity:0; pointer-events:none; }
+.blur-overlay-inner {
+  text-align: center;
+  padding: 24px;
+}
+.lock-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+.blur-overlay-inner h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.blur-overlay-inner p { font-size: 13px; color: var(--text2); }
+
+/* ─── Table ─── */
+.table-wrap {
+  background: var(--bg1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.table-head {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+  gap: 0;
+  padding: 12px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.table-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+  gap: 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  transition: background .2s;
+}
+.table-row:last-child { border-bottom: none; }
+.table-row:hover { background: var(--bg2); }
+.td { font-size: 13px; }
+.td.mono { font-family: var(--font-mono); color: var(--text2); }
+.td-db { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.bar-wrap {
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 1s ease;
+}
+.util-pct {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* ─── Methodology box ─── */
+.method-box {
+  background: var(--bg1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 40px;
+}
+.method-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
+}
+.method-item {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.55;
+  display: flex;
+  gap: 8px;
+}
+.method-item::before { content:'→'; color: var(--accent2); flex-shrink: 0; }
+
+/* ─── NDB badge ─── */
+.ndb-banner {
+  background: linear-gradient(135deg, rgba(0,201,167,0.08), rgba(0,133,255,0.08));
+  border: 1.5px solid rgba(0,201,167,0.2);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.ndb-info { font-size: 13px; }
+.ndb-info strong { color: var(--accent); font-size: 15px; }
+.ndb-price {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--accent);
+}
+.ndb-price small { font-size: 12px; color: var(--text2); }
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--bg2);
+  border: 1.5px solid var(--border-hi);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 13px;
+  color: var(--text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  z-index: 1000;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all .35s ease;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: var(--accent); }
+.toast.error   { border-color: var(--danger); }
+
+/* ─── Spinner ─── */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .cloud-grid { grid-template-columns: 1fr; }
+  .db-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+  .fields-row { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-field.full { grid-column: 1; }
+  .table-head, .table-row {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+  .th:nth-child(4), .th:nth-child(5),
+  .td:nth-child(4), .td:nth-child(5) { display: none; }
+  .method-grid { grid-template-columns: 1fr; }
+  .step-label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Ambient orbs -->
+<div class="glow-orb a"></div>
+<div class="glow-orb b"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div class="container">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      Nutanix NC2 + NDB
+    </div>
+    <div class="badge">TCO Calculator v2.0</div>
+  </div>
+
+  <!-- Assumptions -->
+  <div class="assumptions-bar">
+    <span class="assumptions-bar-label">Key Assumptions</span>
+    <span class="assumption-pill">Frankfurt (EU Central) pricing</span>
+    <span class="assumption-pill">0% discount — 3-year committed</span>
+    <span class="assumption-pill">N+1 node redundancy + RF2</span>
+    <span class="assumption-pill">Physical-to-virtual ratio 1:3</span>
+    <span class="assumption-pill">PostgreSQL CE support via NDB (≈ EDB Community 360)</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Database Infrastructure Cost Estimator</div>
+    <h1>Public Cloud Database<br>Infrastructure Calculator</h1>
+    <p>Estimate your Nutanix NC2 + NDB total cost of ownership across AWS, Azure, and GCP for enterprise database workloads.</p>
+  </div>
+
+  <!-- Steps nav -->
+  <div class="steps-nav">
+    <div class="step-item active" id="nav-step1">
+      <div class="step-num">01</div>
+      <div class="step-label">Cloud & Database</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item" id="nav-step2">
+      <div class="step-num">02</div>
+      <div class="step-label">Your Details</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item" id="nav-step3">
+      <div class="step-num">03</div>
+      <div class="step-label">Your Estimate</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STEP 1 ═══════════════ -->
+  <div class="section visible" id="step1">
+
+    <div class="section-title">Select Cloud Provider</div>
+    <div class="cloud-grid">
+      <div class="cloud-card" data-cloud="aws" onclick="selectCloud('aws')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">AWS</div>
+        <div class="cloud-instance">i7ie.metal-24xl</div>
+        <div class="cloud-specs">
+          <div class="cloud-spec">vCPU / node <span>108</span></div>
+          <div class="cloud-spec">Storage / node <span>30,720 GB</span></div>
+          <div class="cloud-spec">3-yr node price <span>$137,179</span></div>
+        </div>
+      </div>
+      <div class="cloud-card" data-cloud="azure" onclick="selectCloud('azure')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">Azure</div>
+        <div class="cloud-instance">AN36P</div>
+        <div class="cloud-specs">
+          <div class="cloud-spec">vCPU / node <span>72</span></div>
+          <div class="cloud-spec">Storage / node <span>10,598 GB</span></div>
+          <div class="cloud-spec">3-yr node price <span>$72,795</span></div>
+        </div>
+      </div>
+      <div class="cloud-card" data-cloud="gcp" onclick="selectCloud('gcp')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">GCP</div>
+        <div class="cloud-instance">z3-highmem-192-highlssd-metal</div>
+        <div class="cloud-specs">
+          <div class="cloud-spec">vCPU / node <span>252</span></div>
+          <div class="cloud-spec">Storage / node <span>36,864 GB</span></div>
+          <div class="cloud-spec">3-yr node price <span>$345,582</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Select Database Engines</div>
+    <div class="db-grid">
+
+      <div class="db-card" id="db-postgresql">
+        <div class="db-header" onclick="toggleDB('postgresql')">
+          <div class="db-info">
+            <div class="db-name">PostgreSQL</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="postgresql-vms" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="postgresql-vcpu" placeholder="e.g. 8" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="postgresql-storage" placeholder="e.g. 2048" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-oracle">
+        <div class="db-header" onclick="toggleDB('oracle')">
+          <div class="db-info">
+            <div class="db-name">Oracle</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="oracle-vms" placeholder="e.g. 2" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="oracle-vcpu" placeholder="e.g. 16" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="oracle-storage" placeholder="e.g. 5120" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-sqlserver">
+        <div class="db-header" onclick="toggleDB('sqlserver')">
+          <div class="db-info">
+            <div class="db-name">SQL Server</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="sqlserver-vms" placeholder="e.g. 3" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="sqlserver-vcpu" placeholder="e.g. 8" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="sqlserver-storage" placeholder="e.g. 1024" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card" id="db-mongodb">
+        <div class="db-header" onclick="toggleDB('mongodb')">
+          <div class="db-info">
+            <div class="db-name">MongoDB</div>
+          </div>
+          <div class="db-toggle"></div>
+        </div>
+        <div class="db-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Number of VMs</label>
+              <input type="number" id="mongodb-vms" placeholder="e.g. 3" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg vCPU / VM</label>
+              <input type="number" id="mongodb-vcpu" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Total Storage (GB)</label>
+              <input type="number" id="mongodb-storage" placeholder="e.g. 512" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-primary" onclick="goToStep2()">
+        Continue to Details
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STEP 2 ═══════════════ -->
+  <div class="section" id="step2">
+
+    <div class="section-title">Your Details</div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label>First Name <span class="req">*</span></label>
+        <input type="text" id="f-firstname" placeholder="John">
+      </div>
+      <div class="form-field">
+        <label>Last Name <span class="req">*</span></label>
+        <input type="text" id="f-lastname" placeholder="Doe">
+      </div>
+      <div class="form-field">
+        <label>Business Email <span class="req">*</span></label>
+        <input type="email" id="f-email" placeholder="john.doe@company.com">
+      </div>
+      <div class="form-field">
+        <label>Company <span class="req">*</span></label>
+        <input type="text" id="f-company" placeholder="Acme Corp">
+      </div>
+      <div class="form-field">
+        <label>Country <span class="req">*</span></label>
+        <select id="f-country">
+          <option value="">— Select country —</option>
+          <option>Austria</option><option>Belgium</option><option>Bulgaria</option>
+          <option>Croatia</option><option>Cyprus</option><option>Czech Republic</option>
+          <option>Denmark</option><option>Estonia</option><option>Finland</option>
+          <option>France</option><option>Germany</option><option>Greece</option>
+          <option>Hungary</option><option>Ireland</option><option>Italy</option>
+          <option>Latvia</option><option>Lithuania</option><option>Luxembourg</option>
+          <option>Malta</option><option>Netherlands</option><option>Poland</option>
+          <option>Portugal</option><option>Romania</option><option>Slovakia</option>
+          <option>Slovenia</option><option>Spain</option><option>Sweden</option>
+          <option>Switzerland</option><option>Turkey</option><option>United Kingdom</option>
+          <option>UAE</option><option>Saudi Arabia</option><option>Israel</option>
+          <option>South Africa</option><option>Egypt</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Job Title</label>
+        <input type="text" id="f-jobtitle" placeholder="IT Director">
+      </div>
+      <div class="form-field full">
+        <label>Phone</label>
+        <input type="tel" id="f-phone" placeholder="+39 02 000 0000">
+      </div>
+    </div>
+
+    <div class="gdpr-box">
+      <div class="gdpr-check" id="check-gdpr1" onclick="toggleCheck('gdpr1')">
+        <div class="check-box" id="checkBox-gdpr1"></div>
+        <div class="gdpr-text">
+          <strong>Data Processing Consent <span class="req" style="color:var(--danger)">*</span></strong>
+          <p>I consent to my personal data being processed solely to calculate and deliver this TCO estimate, in accordance with GDPR regulations.</p>
+        </div>
+        <span class="gdpr-required-tag">Required</span>
+      </div>
+
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-secondary" onclick="goToStep(1)">← Back</button>
+      <button class="btn-primary" id="btn-unlock" onclick="unlockEstimate()">
+        Calculate My Estimate →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STEP 3 ═══════════════ -->
+  <div class="section" id="step3">
+
+    <div class="results-header">
+      <h2>Your Estimate on Public Cloud<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">with Nutanix Database Service</span></h2>
+      <p id="results-subtitle" style="display:none"></p>
+    </div>
+
+    <div class="blur-wrap">
+      <div class="blur-overlay" id="blur-overlay">
+        <div class="blur-overlay-inner">
+          <span class="lock-icon">🔐</span>
+          <h3>Your estimate is ready</h3>
+          <p>Complete Step 2 to unlock your personalized cost breakdown</p>
+        </div>
+      </div>
+
+      <!-- KPI Row 1: Nodes, Annual, 3yr -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;">
+        <div class="kpi-card">
+          <div class="kpi-label">NC2 Nodes Required</div>
+          <div class="kpi-value" id="kpi-nodes">0</div>
+          <div class="kpi-sub">N+1 failover cluster</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Annual Infrastructure Cost</div>
+          <div class="kpi-value accent" id="kpi-annual">$0</div>
+          <div class="kpi-sub">HW + NDB licensing</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">3-Year Total Investment</div>
+          <div class="kpi-value accent2" id="kpi-3yr">$0</div>
+          <div class="kpi-sub">Committed pricing</div>
+        </div>
+      </div>
+
+      <!-- KPI Row 2: CPU + Storage numbers -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="kpi-card">
+          <div class="kpi-label">CPU Utilization</div>
+          <div class="kpi-value" id="kpi-util">0%</div>
+          <div class="kpi-sub" id="kpi-util-sub">of cluster capacity</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Storage Utilization</div>
+          <div class="kpi-value accent2" id="kpi-storage-kpi">0%</div>
+          <div class="kpi-sub" id="kpi-storage-kpi-sub">of cluster capacity</div>
+        </div>
+      </div>
+
+      <!-- KPI Row 3: Utilization bars -->
+      <div class="kpi-card" style="padding:20px 24px;margin-bottom:20px;">
+        <div class="kpi-label" style="margin-bottom:16px;">Utilization</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">CPU</span>
+              <div style="display:flex;align-items:baseline;gap:8px;">
+                <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent);" id="kpi-cpu-pct">0%</span>
+                <span class="kpi-sub" id="kpi-cpu-detail">0 / 0 cores</span>
+              </div>
+            </div>
+            <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-cpu" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">Storage</span>
+              <div style="display:flex;align-items:baseline;gap:8px;">
+                <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent2);" id="kpi-storage-pct">0%</span>
+                <span class="kpi-sub" id="kpi-storage-detail">0 / 0 TB</span>
+              </div>
+            </div>
+            <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-storage" style="background:linear-gradient(90deg,var(--accent2),#0055cc);width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="th">Database</div>
+          <div class="th">VMs</div>
+          <div class="th">vCPUs</div>
+          <div class="th">Storage</div>
+          <div class="th">CPU Utilization</div>
+        </div>
+        <div id="results-table-body"></div>
+      </div>
+
+      <!-- PostgreSQL CE highlight -->
+      <div style="background:linear-gradient(135deg,rgba(0,201,167,0.1),rgba(0,133,255,0.07));border:1.5px solid rgba(0,201,167,0.3);border-radius:var(--radius-lg);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
+        <div style="font-size:22px;flex-shrink:0;">🐘</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:3px;">PostgreSQL Community Edition support included</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;">NDB subscription covers CE support for all managed PostgreSQL instances running in the cluster</div>
+        </div>
+      </div>
+
+      <!-- NDB Automations -->
+      <div style="background:var(--bg1);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:16px;">
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">NDB Automation Capabilities</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+
+          <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🗂</div>
+              <span style="font-size:12px;font-weight:700;color:var(--text);">DB Catalog</span>
+            </div>
+            <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Centralized inventory of all database instances across engines and environments.</p>
+          </div>
+
+          <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">⚡</div>
+              <span style="font-size:12px;font-weight:700;color:var(--text);">Provisioning</span>
+            </div>
+            <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">One-click deployment of database instances with standardized profiles and policies.</p>
+          </div>
+
+          <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,133,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔧</div>
+              <span style="font-size:12px;font-weight:700;color:var(--text);">Patching</span>
+            </div>
+            <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Automated patch management with rollback capabilities and zero-downtime scheduling.</p>
+          </div>
+
+          <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,133,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🧬</div>
+              <span style="font-size:12px;font-weight:700;color:var(--text);">Thin Cloning</span>
+            </div>
+            <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Instant space-efficient clones via redirect-on-write — no storage duplication required.</p>
+          </div>
+
+          <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hi)'">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🛡</div>
+              <span style="font-size:12px;font-weight:700;color:var(--text);">Data Protection & Instant Restore</span>
+            </div>
+            <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Continuous protection with Time Machine and point-in-time recovery to any snapshot.</p>
+          </div>
+
+          <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent2)'" onmouseout="this.style.borderColor='var(--border-hi)'">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:7px;background:rgba(0,133,255,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">⚙️</div>
+              <span style="font-size:12px;font-weight:700;color:var(--accent2);">Self Service via API / NDB Operator</span>
+            </div>
+            <p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">REST API and Kubernetes Operator for GitOps-driven, developer self-service database workflows.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Methodology -->
+      <div class="method-box">
+        <div class="method-title">📐 Methodology & Assumptions</div>
+        <div class="method-grid" id="method-content"></div>
+      </div>
+
+    </div><!-- end blur-wrap -->
+
+    <div class="step-actions">
+      <button class="btn-secondary" onclick="goToStep(1)">← Recalculate</button>
+      <button class="btn-primary" onclick="downloadSummary()">
+        ⬇ Download Summary
+      </button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ─────────────────────────────────────────────────────────────
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxifa9QnaV3WQ2BhTx9nxsx4YYjHwj3I7N7DfiLJrjuuQgQ7BR-0r_Nb9l6F-pumO9Utw/exec';
+const NDB_PRICE_PER_INSTANCE_YEAR = 975;
+
+const FALLBACK_CLOUD_DATA = {
+  aws: {
+    name: 'AWS', instance: 'i7ie.metal-24xl',
+    cluster4: { vcpu: 324, storageGB: 92160, priceHW3YR: 548712 },
+    node1:    { vcpu: 108, storageGB: 30720, priceHW3YR: 137179 }
+  },
+  azure: {
+    name: 'Azure', instance: 'AN36P',
+    cluster4: { vcpu: 216, storageGB: 31795, priceHW3YR: 291180 },
+    node1:    { vcpu: 72,  storageGB: 10598, priceHW3YR: 72795  }
+  },
+  gcp: {
+    name: 'GCP', instance: 'z3-highmem-192-highlssd-metal',
+    cluster4: { vcpu: 756, storageGB: 110592, priceHW3YR: 1382328 },
+    node1:    { vcpu: 252, storageGB: 36864,  priceHW3YR: 345582  }
+  }
+};
+
+let CLOUD_DATA = { ...FALLBACK_CLOUD_DATA };
+let selectedCloud = null;
+let selectedDBs = {};
+let gdprChecks = { gdpr1: false, gdpr2: false };
+let resultsUnlocked = false;
+let calcResults = null;
+
+// ─── Load pricing from Google Sheets ───
+function loadPricing() {
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
+  try {
+    const cb = 'pricing_cb_' + Date.now();
+    window[cb] = function(data) {
+      if (data && data.aws && data.azure && data.gcp) {
+        CLOUD_DATA = data;
+      }
+      delete window[cb];
+    };
+    const s = document.createElement('script');
+    s.src = `${GOOGLE_SCRIPT_URL}?action=pricing&callback=${cb}`;
+    s.onerror = () => { delete window[cb]; };
+    document.head.appendChild(s);
+  } catch(e) { /* silent fallback */ }
+}
+
+// ─── Cloud selection ───
+function selectCloud(cloud) {
+  selectedCloud = cloud;
+  document.querySelectorAll('.cloud-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-cloud="${cloud}"]`).classList.add('selected');
+}
+
+// ─── DB toggle ───
+function toggleDB(db) {
+  const card = document.getElementById('db-' + db);
+  const isSelected = card.classList.contains('selected');
+  if (isSelected) {
+    card.classList.remove('selected');
+    delete selectedDBs[db];
+  } else {
+    card.classList.add('selected');
+    selectedDBs[db] = true;
+  }
+}
+
+// ─── GDPR checkbox ───
+function toggleCheck(id) {
+  gdprChecks[id] = !gdprChecks[id];
+  const el = document.getElementById('check-' + id);
+  const box = document.getElementById('checkBox-' + id);
+  if (gdprChecks[id]) {
+    el.classList.add('checked');
+    if (box) { box.innerHTML = '<span style="color:#fff;font-size:11px;font-weight:700;">✓</span>'; box.style.background='var(--accent)'; box.style.borderColor='var(--accent)'; }
+  } else {
+    el.classList.remove('checked');
+    if (box) { box.innerHTML = ''; box.style.background=''; box.style.borderColor=''; }
+  }
+}
+
+// ─── Step navigation ───
+function goToStep(n) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById('step' + n).classList.add('visible');
+  document.querySelectorAll('.step-item').forEach((item, i) => {
+    item.classList.remove('active', 'done');
+    if (i + 1 < n) item.classList.add('done');
+    else if (i + 1 === n) item.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToStep2() {
+  if (!selectedCloud) { showToast('Please select a cloud provider', 'error'); return; }
+  const dbs = getDBInputs();
+  if (dbs.length === 0) { showToast('Please select at least one database engine', 'error'); return; }
+  for (const db of dbs) {
+    if (!db.vms || !db.vcpu || !db.storage) {
+      showToast(`Please fill all fields for ${db.name}`, 'error'); return;
+    }
+  }
+  // Pre-calculate
+  calcResults = calculate(dbs);
+  renderResults();
+  goToStep(2);
+}
+
+function unlockEstimate() {
+  const firstname = document.getElementById('f-firstname').value.trim();
+  const lastname  = document.getElementById('f-lastname').value.trim();
+  const email     = document.getElementById('f-email').value.trim();
+  const company   = document.getElementById('f-company').value.trim();
+  const country   = document.getElementById('f-country').value;
+
+  if (!firstname || !lastname || !email || !company || !country) {
+    showToast('Please fill all required fields', 'error'); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Please enter a valid business email', 'error'); return;
+  }
+  if (!gdprChecks.gdpr1) {
+    showToast('Please accept the data processing consent', 'error'); return;
+  }
+
+  const btn = document.getElementById('btn-unlock');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Saving...';
+  btn.disabled = true;
+
+  saveLead({
+    firstname, lastname, email, company, country,
+    jobtitle: document.getElementById('f-jobtitle').value,
+    phone: document.getElementById('f-phone').value,
+    gdpr_marketing: gdprChecks.gdpr2,
+    cloud: selectedCloud,
+    results: JSON.stringify(calcResults)
+  });
+
+  setTimeout(() => {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+    resultsUnlocked = true;
+    document.getElementById('blur-overlay').classList.add('hidden');
+    goToStep(3);
+    showToast('Estimate unlocked! ✅', 'success');
+  }, 1200);
+}
+
+// ─── Save lead ───
+function saveLead(data) {
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') return;
+  try {
+    const cb = 'save_cb_' + Date.now();
+    window[cb] = function() { delete window[cb]; };
+    const s = document.createElement('script');
+    const params = new URLSearchParams({ action: 'save', callback: cb, ...data });
+    s.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
+    s.onerror = () => { delete window[cb]; };
+    document.head.appendChild(s);
+  } catch(e) { /* silent */ }
+}
+
+// ─── Get DB inputs ───
+function getDBInputs() {
+  const dbNames = { postgresql:'PostgreSQL', oracle:'Oracle', sqlserver:'SQL Server', mongodb:'MongoDB' };
+  const dbEmojis = { postgresql:'🐘', oracle:'🔴', sqlserver:'🟦', mongodb:'🍃' };
+  return Object.keys(selectedDBs).map(db => ({
+    id: db,
+    name: dbNames[db],
+    emoji: dbEmojis[db],
+    vms: parseInt(document.getElementById(db+'-vms').value) || 0,
+    vcpu: parseInt(document.getElementById(db+'-vcpu').value) || 0,
+    storage: parseInt(document.getElementById(db+'-storage').value) || 0
+  }));
+}
+
+// ─── Core calculation ───
+function calculate(dbs) {
+  const cloud = CLOUD_DATA[selectedCloud];
+  // NC2 is bare-metal: vCPUs entered by user map 1:1 to physical cores
+  // No virtualisation ratio applied to sizing
+
+  let totalVcpu = 0, totalStorage = 0, totalVMs = 0;
+  dbs.forEach(db => {
+    totalVcpu    += db.vms * db.vcpu;
+    totalStorage += db.storage;
+    totalVMs     += db.vms;
+  });
+
+  // Start with base cluster (4 nodes)
+  let nodes = 4;
+  let clusterVcpu = cloud.cluster4.vcpu;
+  let clusterStorage = cloud.cluster4.storageGB;
+  let hw3yr = cloud.cluster4.priceHW3YR;
+
+  // Add single nodes until capacity sufficient (max 28)
+  while ((clusterVcpu < totalVcpu || clusterStorage < totalStorage) && nodes < 28) {
+    nodes++;
+    clusterVcpu    += cloud.node1.vcpu;
+    clusterStorage += cloud.node1.storageGB;
+    hw3yr          += cloud.node1.priceHW3YR;
+  }
+
+  const ndbAnnual = totalVMs * NDB_PRICE_PER_INSTANCE_YEAR;
+  const hwAnnual  = hw3yr / 3;
+  const totalAnnual = hwAnnual + ndbAnnual;
+  const total3yr    = hw3yr + (ndbAnnual * 3);
+
+  const vcpuUtil    = Math.min(100, Math.round((totalVcpu    / clusterVcpu)    * 100));
+  const storageUtil = Math.min(100, Math.round((totalStorage / clusterStorage) * 100));
+
+  return {
+    cloud: cloud.name,
+    nodes, clusterVcpu, clusterStorage,
+    totalVcpu, totalStorage,
+    vcpuUtil, storageUtil,
+    hwAnnual, ndbAnnual, totalAnnual, total3yr, totalVMs,
+    dbs: dbs.map(db => ({
+      ...db,
+      clusterPct: clusterVcpu > 0
+        ? Math.round(((db.vms * db.vcpu) / clusterVcpu) * 100)
+        : 0
+    }))
+  };
+}
+
+// ─── Render results ───
+function renderResults() {
+  if (!calcResults) return;
+  const r = calcResults;
+
+  document.getElementById('kpi-annual').textContent = fmtUSD(r.totalAnnual);
+  document.getElementById('kpi-3yr').textContent    = fmtUSD(r.total3yr);
+  document.getElementById('kpi-nodes').textContent  = r.nodes;
+
+  // CPU KPI tile
+  document.getElementById('kpi-util').textContent      = r.vcpuUtil + '%';
+  document.getElementById('kpi-util-sub').textContent  = `${r.totalVcpu} / ${r.clusterVcpu} cores`;
+
+  // Storage KPI tile
+  document.getElementById('kpi-storage-kpi').textContent     = r.storageUtil + '%';
+  document.getElementById('kpi-storage-kpi-sub').textContent = `${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}`;
+
+  // CPU utilization bar
+  document.getElementById('kpi-cpu-pct').textContent    = r.vcpuUtil + '%';
+  document.getElementById('kpi-cpu-detail').textContent = `${r.totalVcpu} / ${r.clusterVcpu} cores`;
+  document.getElementById('bar-cpu').style.width         = r.vcpuUtil + '%';
+
+  // Storage utilization bar
+  document.getElementById('kpi-storage-pct').textContent    = r.storageUtil + '%';
+  document.getElementById('kpi-storage-detail').textContent = `${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}`;
+  document.getElementById('bar-storage').style.width         = r.storageUtil + '%';
+
+  // Table
+  const tbody = document.getElementById('results-table-body');
+  tbody.innerHTML = r.dbs.map(db => `
+    <div class="table-row">
+      <div class="td td-db">${db.name}</div>
+      <div class="td mono">${db.vms}</div>
+      <div class="td mono">${db.vms * db.vcpu} CPU</div>
+      <div class="td mono">${fmtGB(db.storage)}</div>
+      <div class="td">
+        <div class="util-pct">${db.clusterPct}%</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${db.clusterPct}%"></div></div>
+      </div>
+    </div>
+  `).join('');
+
+  // Methodology
+  const cloud = CLOUD_DATA[selectedCloud];
+  document.getElementById('method-content').innerHTML = [
+    `N+1 Failover Cluster configuration`,
+    `Hardware pricing: 3-year committed, Frankfurt region, 0% discount`,
+    `Storage: RF2 replication — ${fmtGB(r.clusterStorage)} raw available`,
+    `PostgreSQL Community Edition support included`
+  ].map(t => `<div class="method-item">${t}</div>`).join('');
+}
+
+// ─── Formatters ───
+function fmtUSD(n) {
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+function fmtGB(n) {
+  return n >= 1024 ? (n/1024).toFixed(1) + ' TB' : n + ' GB';
+}
+
+// ─── Download summary ───
+function downloadSummary() {
+  if (!calcResults) return;
+  const r = calcResults;
+  const date = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+  // ── DB table rows ──
+  const dbRows = r.dbs.map(db => `
+    <tr style="border-bottom:1px solid #1e2535;">
+      <td style="padding:12px 14px;font-size:12px;color:#e8edf5;font-weight:600;">${db.name}</td>
+      <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#8a95a8;">${db.vms}</td>
+      <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#8a95a8;">${db.vms * db.vcpu}</td>
+      <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#8a95a8;">${fmtGB(db.storage)}</td>
+      <td style="padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;height:4px;background:#1e2535;border-radius:4px;overflow:hidden;min-width:60px;">
+            <div style="width:${db.clusterPct}%;height:100%;background:linear-gradient(90deg,#00c9a7,#0085ff);border-radius:4px;"></div>
+          </div>
+          <span style="font-family:'DM Mono',monospace;font-size:11px;color:#00c9a7;min-width:32px;text-align:right;">${db.clusterPct}%</span>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  // ── NDB feature cards ──
+  const ndbFeatures = [
+    ['🗂', 'DB Catalog',       'Centralized inventory of all database instances across engines and environments.'],
+    ['⚡', 'Provisioning',     'One-click deployment with standardized profiles and policies.'],
+    ['🔧', 'Patching',         'Automated patch management with rollback and zero-downtime scheduling.'],
+    ['🧬', 'Thin Cloning',     'Instant space-efficient clones via redirect-on-write — no storage duplication.'],
+    ['🛡', 'Data Protection & Instant Restore', 'Continuous protection with Time Machine and point-in-time recovery.'],
+    ['⚙️', 'Self Service via API / NDB Operator', 'REST API and Kubernetes Operator for GitOps-driven developer workflows.'],
+  ];
+  const featCards = ndbFeatures.map(([icon, name, desc]) => `
+    <div style="background:#131720;border:1px solid #1e2535;border-radius:10px;padding:14px 16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span style="font-size:16px;">${icon}</span>
+        <span style="font-size:12px;font-weight:700;color:#e8edf5;">${name}</span>
+      </div>
+      <p style="font-size:11px;color:#8a95a8;line-height:1.55;margin:0;">${desc}</p>
+    </div>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NC2 + NDB · ${r.cloud} · ${date}</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body {
+    background-color: #0a0c10 !important;
+    color: #e8edf5;
+    font-family: 'Syne', sans-serif;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  @media print {
+    html, body { background-color: #0a0c10 !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+  .page-break { page-break-after: always; }
+</style>
+</head>
+<body style="background-color:#0a0c10;">
+
+<!-- ══════════════════ COVER ══════════════════ -->
+<div class="page-break" style="background-color:#0a0c10;min-height:100vh;padding:56px 64px 48px;display:flex;flex-direction:column;position:relative;overflow:hidden;">
+
+  <!-- Glow orbs (print-friendly: subtle borders) -->
+  <div style="position:absolute;top:-80px;right:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,201,167,0.15) 0%,transparent 65%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-80px;left:-60px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(0,133,255,0.12) 0%,transparent 65%);pointer-events:none;"></div>
+
+  <!-- Top bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid #1a2030;margin-bottom:auto;">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a95a8;">
+      <div style="width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#00c9a7,#0085ff);flex-shrink:0;"></div>
+      NC2 + NDB · Infrastructure Estimate
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#545f72;border:1px solid #1e2535;padding:3px 12px;border-radius:20px;">Personal Analysis · Not for Distribution</div>
+  </div>
+
+  <!-- Hero body -->
+  <div style="padding:70px 0 56px;flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#00c9a7;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+      <div style="height:1px;width:32px;background:#00c9a7;"></div>
+      Public Cloud Database Infrastructure
+      <div style="height:1px;width:32px;background:#00c9a7;"></div>
+    </div>
+    <h1 style="font-size:52px;font-weight:800;line-height:1.08;letter-spacing:-.025em;margin-bottom:24px;color:#e8edf5;">
+      Your Estimate<br>
+      <span style="color:#00c9a7;">on Public Cloud</span><br>
+      with Nutanix<br>
+      <span style="color:#0085ff;">Database Service</span>
+    </h1>
+    <p style="font-size:14px;color:#8a95a8;line-height:1.7;max-width:480px;margin-bottom:48px;">
+      This document summarises an infrastructure sizing and cost estimate for running enterprise database workloads on Nutanix Cloud Clusters (NC2) managed by Nutanix Database Service (NDB). Numbers are indicative, based on 3-year committed pricing at Frankfurt (EU Central).
+    </p>
+    <div style="display:inline-flex;align-items:center;gap:12px;background:rgba(0,201,167,0.08);border:1.5px solid rgba(0,201,167,0.25);border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;color:#e8edf5;width:fit-content;">
+      Cloud Provider: <span style="color:#00c9a7;">${r.cloud}</span>
+      &nbsp;·&nbsp; ${r.nodes} NC2 Nodes
+      &nbsp;·&nbsp; N+1 Failover Cluster
+    </div>
+  </div>
+
+  <!-- Cover footer -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid #1a2030;">
+    <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">Generated ${date}</span>
+    <span style="font-size:11px;color:#545f72;font-style:italic;">Personal estimate · Independent analysis</span>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 1 — Cost Summary ══════════════════ -->
+<div class="page-break" style="background-color:#0a0c10;padding:52px 64px;">
+
+  <!-- Page header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#00c9a7,#0085ff);flex-shrink:0;"></div>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">NC2 + NDB · Cost Summary</span>
+    </div>
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
+  </div>
+
+  <!-- Section: Investment Overview -->
+  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    Investment Overview
+    <div style="flex:1;height:1px;background:#1a2030;"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
+    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">NC2 Nodes Required</div>
+      <div style="font-size:32px;font-weight:800;color:#e8edf5;line-height:1;">${r.nodes}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">N+1 failover cluster · RF2</div>
+    </div>
+    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Annual Infrastructure Cost</div>
+      <div style="font-size:28px;font-weight:800;color:#00c9a7;line-height:1;">${fmtUSD(r.totalAnnual)}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">Hardware + NDB licensing</div>
+    </div>
+    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">3-Year Total Investment</div>
+      <div style="font-size:28px;font-weight:800;color:#0085ff;line-height:1;">${fmtUSD(r.total3yr)}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;margin-top:6px;">3-year committed pricing</div>
+    </div>
+  </div>
+
+  <!-- Section: Cluster Utilization -->
+  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    Cluster Utilization
+    <div style="flex:1;height:1px;background:#1a2030;"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;">
+    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">CPU Utilization</div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
+        <span style="font-size:28px;font-weight:800;color:#00c9a7;">${r.vcpuUtil}%</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${r.totalVcpu} / ${r.clusterVcpu} cores</span>
+      </div>
+      <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
+        <div style="width:${r.vcpuUtil}%;height:100%;background:linear-gradient(90deg,#00c9a7,#0085ff);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Storage Utilization</div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
+        <span style="font-size:28px;font-weight:800;color:#0085ff;">${r.storageUtil}%</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}</span>
+      </div>
+      <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
+        <div style="width:${r.storageUtil}%;height:100%;background:linear-gradient(90deg,#0085ff,#00c9a7);border-radius:4px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: DB Breakdown -->
+  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    Database Breakdown
+    <div style="flex:1;height:1px;background:#1a2030;"></div>
+  </div>
+  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;overflow:hidden;margin-bottom:28px;">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:#131720;">
+          <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">Database Engine</th>
+          <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">VMs</th>
+          <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">CPU Cores</th>
+          <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">Storage</th>
+          <th style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">CPU Share</th>
+        </tr>
+      </thead>
+      <tbody>${dbRows}</tbody>
+    </table>
+  </div>
+
+  <!-- Section: Assumptions -->
+  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+    Sizing Assumptions
+    <div style="flex:1;height:1px;background:#1a2030;"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:0;">
+    ${['Frankfurt (EU Central) pricing · 0% discount · 3-year committed',
+       'N+1 Failover Cluster configuration · RF2 storage replication',
+       'Base cluster: 4 nodes · scaling by single nodes up to 28',
+       'NDB: $975 / instance / year · covers all managed database engines',
+       'PostgreSQL Community Edition support included in NDB subscription'
+      ].map(a => `<div style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#8a95a8;line-height:1.55;padding:8px 0;border-bottom:1px solid #131720;">
+        <span style="color:#0085ff;flex-shrink:0;">→</span>${a}</div>`).join('')}
+  </div>
+
+  <!-- Page footer -->
+  <div style="margin-top:28px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;">${date}</span>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 2 — Capabilities ══════════════════ -->
+<div style="background-color:#0a0c10;padding:52px 64px;">
+
+  <!-- Page header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#00c9a7,#0085ff);flex-shrink:0;"></div>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">NC2 + NDB · Platform Capabilities</span>
+    </div>
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
+  </div>
+
+  <!-- Section title -->
+  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    What NDB Manages for You
+    <div style="flex:1;height:1px;background:#1a2030;"></div>
+  </div>
+
+  <!-- PG banner -->
+  <div style="background:linear-gradient(135deg,rgba(0,201,167,0.12),rgba(0,133,255,0.08));border:1.5px solid rgba(0,201,167,0.3);border-radius:14px;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
+    <div style="font-size:22px;flex-shrink:0;">🐘</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#00c9a7;margin-bottom:5px;">PostgreSQL Community Edition support included</div>
+      <div style="font-size:12px;color:#8a95a8;line-height:1.55;">NDB subscription covers CE support for all managed PostgreSQL instances running in the cluster — no additional licensing cost compared to IaaS deployments.</div>
+    </div>
+  </div>
+
+  <!-- Feature grid -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;">${featCards}</div>
+
+  <!-- Narrative -->
+  <p style="font-size:13px;color:#8a95a8;line-height:1.75;margin-bottom:24px;">
+    Running databases on bare-metal NC2 nodes through NDB means your team stops managing infrastructure and starts managing outcomes. Provisioning that took days becomes minutes. Patching windows that required manual coordination become scheduled, automated events. Clones for dev and test — once a DBA bottleneck — become instant, self-service operations available to any authorised developer through the NDB portal or API.
+    <br><br>
+    The result is a simpler operational model, predictable costs, and a database platform that scales with your workloads rather than against them.
+  </p>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,rgba(0,201,167,0.1),rgba(0,133,255,0.1));border:1.5px solid rgba(0,201,167,0.25);border-radius:14px;padding:28px 32px;text-align:center;margin-bottom:20px;">
+    <h3 style="font-size:18px;font-weight:800;color:#e8edf5;margin-bottom:10px;">Explore Nutanix Database Service</h3>
+    <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin-bottom:20px;max-width:460px;margin-left:auto;margin-right:auto;">
+      This estimate is a starting point. NDB covers Oracle, SQL Server, PostgreSQL, MongoDB and more — with a single operational model across on-prem and public cloud. Full documentation, demo environment, and sizing guides at the link below.
+    </p>
+    <a href="https://www.nutanix.com/products/database-service" style="display:inline-block;background:linear-gradient(135deg,#00c9a7,#0085ff);color:#fff;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:12px 28px;border-radius:8px;text-decoration:none;">
+      nutanix.com/products/database-service →
+    </a>
+  </div>
+
+  <!-- Disclaimer -->
+  <div style="background:#0e1117;border:1px solid #1a2030;border-radius:10px;padding:14px 18px;margin-bottom:20px;">
+    <p style="font-size:10px;color:#3a4455;line-height:1.6;">
+      This document is a personal infrastructure estimate prepared for informational purposes only. It is not an official Nutanix publication, quote, or commitment. Prices are indicative, based on publicly available 3-year committed rates for Frankfurt (EU Central) at the time of generation. Actual costs may vary based on negotiated discounts, region, workload characteristics, and configuration.
+    </p>
+  </div>
+
+  <!-- Page footer -->
+  <div style="margin-top:16px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
+    <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;">${date}</span>
+  </div>
+</div>
+
+</body>
+</html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => { w.focus(); w.print(); };
+  showToast('Summary ready — Print → Save as PDF ✅', 'success');
+}
+// ─── Toast ───
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => { t.classList.remove('show'); }, 3500);
+}
+
+// ─── Init ───
+loadPricing();
+</script>
+
+</body>
+</html>
