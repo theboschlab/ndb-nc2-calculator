@@ -1680,7 +1680,7 @@ function loadPricing() {
       var cloud = (f['cloud'] || '').toLowerCase().trim();
       if (!newData[cloud]) return;
 
-      var nvmeTB       = parseFloat(f['nvme_tb'])          || 0;
+      var nvmeTB       = parseFloat(f['nvm_e_tb'])          || 0;
       var storageGB    = Math.round(nvmeTB * 1024 * 0.5);
       var ndbPerCore3yr = parseFloat(f['ndb_per_core_3yr']) || 999;
 
