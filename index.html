@@ -1145,6 +1145,25 @@ body::before {
   <!-- ═══════════════ STEP 1 ═══════════════ -->
   <div class="section visible" id="step1">
 
+    <div class="section-title">Select Cloud Provider</div>
+    <div class="cloud-grid">
+      <div class="cloud-card" data-cloud="aws" onclick="selectCloud('aws')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">AWS</div>
+        <div class="cloud-instance" style="color:var(--text3);font-size:12px;margin-top:4px;">Amazon Web Services</div>
+      </div>
+      <div class="cloud-card" data-cloud="azure" onclick="selectCloud('azure')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">Azure</div>
+        <div class="cloud-instance" style="color:var(--text3);font-size:12px;margin-top:4px;">Microsoft Azure</div>
+      </div>
+      <div class="cloud-card" data-cloud="gcp" onclick="selectCloud('gcp')">
+        <div class="check-badge">✓</div>
+        <div class="cloud-name">GCP</div>
+        <div class="cloud-instance" style="color:var(--text3);font-size:12px;margin-top:4px;">Google Cloud Platform</div>
+      </div>
+    </div>
+
     <!-- Datacenter location -->
     <div class="dc-row">
       <div class="dc-label">Current datacenter location <span>*</span></div>
@@ -1194,25 +1213,6 @@ body::before {
       </div>
     </div>
 
-    <div class="section-title">Select Cloud Provider</div>
-    <div class="cloud-grid">
-      <div class="cloud-card" data-cloud="aws" onclick="selectCloud('aws')">
-        <div class="check-badge">✓</div>
-        <div class="cloud-name">AWS</div>
-        <div class="cloud-instance" style="color:var(--text3);font-size:12px;margin-top:4px;">Amazon Web Services</div>
-      </div>
-      <div class="cloud-card" data-cloud="azure" onclick="selectCloud('azure')">
-        <div class="check-badge">✓</div>
-        <div class="cloud-name">Azure</div>
-        <div class="cloud-instance" style="color:var(--text3);font-size:12px;margin-top:4px;">Microsoft Azure</div>
-      </div>
-      <div class="cloud-card" data-cloud="gcp" onclick="selectCloud('gcp')">
-        <div class="check-badge">✓</div>
-        <div class="cloud-name">GCP</div>
-        <div class="cloud-instance" style="color:var(--text3);font-size:12px;margin-top:4px;">Google Cloud Platform</div>
-      </div>
-    </div>
-
     <div class="section-title">Select Database Engines</div>
     <div class="db-grid">
 
@@ -1227,7 +1227,7 @@ body::before {
           <div class="fields-row">
             <div class="field-group">
               <label>Number of VMs</label>
-              <input type="number" id="postgresql-vms" placeholder="e.g. 4" min="1">
+              <input type="number" id="postgresql-vms" placeholder="e.g. 48" min="1">
             </div>
             <div class="field-group">
               <label>Avg vCPU / VM</label>
@@ -1252,7 +1252,7 @@ body::before {
           <div class="fields-row">
             <div class="field-group">
               <label>Number of VMs</label>
-              <input type="number" id="oracle-vms" placeholder="e.g. 2" min="1">
+              <input type="number" id="oracle-vms" placeholder="e.g. 24" min="1">
             </div>
             <div class="field-group">
               <label>Avg vCPU / VM</label>
@@ -1277,7 +1277,7 @@ body::before {
           <div class="fields-row">
             <div class="field-group">
               <label>Number of VMs</label>
-              <input type="number" id="sqlserver-vms" placeholder="e.g. 3" min="1">
+              <input type="number" id="sqlserver-vms" placeholder="e.g. 96" min="1">
             </div>
             <div class="field-group">
               <label>Avg vCPU / VM</label>
@@ -1302,7 +1302,7 @@ body::before {
           <div class="fields-row">
             <div class="field-group">
               <label>Number of VMs</label>
-              <input type="number" id="mongodb-vms" placeholder="e.g. 3" min="1">
+              <input type="number" id="mongodb-vms" placeholder="e.g. 48" min="1">
             </div>
             <div class="field-group">
               <label>Avg vCPU / VM</label>
