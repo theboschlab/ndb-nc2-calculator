@@ -346,6 +346,8 @@ body::before {
   box-shadow: 0 0 10px var(--accent-glow);
 }
 .cloud-card.selected .check-badge { opacity: 1; }
+.cloud-specs { display: none; }
+.cloud-card.selected .cloud-specs { display: flex; flex-direction: column; }
 
 /* ─── DB cards ─── */
 .db-grid {
@@ -413,9 +415,10 @@ body::before {
 }
 .fields-row {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(4,1fr);
   gap: 12px;
   margin-top: 16px;
+  align-items: end;
 }
 .field-group label {
   display: block;
@@ -425,6 +428,10 @@ body::before {
   text-transform: uppercase;
   color: var(--text3);
   margin-bottom: 6px;
+  min-height: 36px;
+  display: flex;
+  align-items: flex-end;
+  line-height: 1.3;
 }
 .field-group input {
   width: 100%;
@@ -1234,6 +1241,10 @@ body::before {
               <input type="number" id="postgresql-vcpu" placeholder="e.g. 8" min="1">
             </div>
             <div class="field-group">
+              <label>Avg RAM / VM (GB)</label>
+              <input type="number" id="postgresql-ram" placeholder="e.g. 32" min="1">
+            </div>
+            <div class="field-group">
               <label>Total Storage (GB)</label>
               <input type="number" id="postgresql-storage" placeholder="e.g. 2048" min="1">
             </div>
@@ -1257,6 +1268,10 @@ body::before {
             <div class="field-group">
               <label>Avg vCPU / VM</label>
               <input type="number" id="oracle-vcpu" placeholder="e.g. 16" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg RAM / VM (GB)</label>
+              <input type="number" id="oracle-ram" placeholder="e.g. 64" min="1">
             </div>
             <div class="field-group">
               <label>Total Storage (GB)</label>
@@ -1284,6 +1299,10 @@ body::before {
               <input type="number" id="sqlserver-vcpu" placeholder="e.g. 8" min="1">
             </div>
             <div class="field-group">
+              <label>Avg RAM / VM (GB)</label>
+              <input type="number" id="sqlserver-ram" placeholder="e.g. 32" min="1">
+            </div>
+            <div class="field-group">
               <label>Total Storage (GB)</label>
               <input type="number" id="sqlserver-storage" placeholder="e.g. 1024" min="1">
             </div>
@@ -1307,6 +1326,10 @@ body::before {
             <div class="field-group">
               <label>Avg vCPU / VM</label>
               <input type="number" id="mongodb-vcpu" placeholder="e.g. 4" min="1">
+            </div>
+            <div class="field-group">
+              <label>Avg RAM / VM (GB)</label>
+              <input type="number" id="mongodb-ram" placeholder="e.g. 16" min="1">
             </div>
             <div class="field-group">
               <label>Total Storage (GB)</label>
@@ -1338,31 +1361,31 @@ body::before {
       <div class="cloud-card" id="s2-cloud-aws" data-cloud="aws" onclick="selectCloudLive('aws')">
         <div class="check-badge">✓</div>
         <div class="cloud-name">AWS</div>
-        <div class="cloud-instance">i7ie.metal-24xl</div>
+        <div class="cloud-instance" id="s2-aws-instance">i7ie.metal-24xl</div>
         <div class="cloud-specs">
-          <div class="cloud-spec">Physical cores / node <span>48</span></div>
-          <div class="cloud-spec">Storage / node <span>30 TB</span></div>
-          <div class="cloud-spec">3-yr node price <span>$137,179</span></div>
+          <div class="cloud-spec">Physical cores / node <span id="s2-aws-cores">48</span></div>
+          <div class="cloud-spec">Memory / node <span id="s2-aws-ram">768 GB</span></div>
+          <div class="cloud-spec">Storage / node <span id="s2-aws-storage">30 TB</span></div>
         </div>
       </div>
       <div class="cloud-card" id="s2-cloud-azure" data-cloud="azure" onclick="selectCloudLive('azure')">
         <div class="check-badge">✓</div>
         <div class="cloud-name">Azure</div>
-        <div class="cloud-instance">AN36P</div>
+        <div class="cloud-instance" id="s2-azure-instance">AN36P</div>
         <div class="cloud-specs">
-          <div class="cloud-spec">Physical cores / node <span>36</span></div>
-          <div class="cloud-spec">Storage / node <span>10 TB</span></div>
-          <div class="cloud-spec">3-yr node price <span>$72,795</span></div>
+          <div class="cloud-spec">Physical cores / node <span id="s2-azure-cores">36</span></div>
+          <div class="cloud-spec">Memory / node <span id="s2-azure-ram">768 GB</span></div>
+          <div class="cloud-spec">Storage / node <span id="s2-azure-storage">10 TB</span></div>
         </div>
       </div>
       <div class="cloud-card" id="s2-cloud-gcp" data-cloud="gcp" onclick="selectCloudLive('gcp')">
         <div class="check-badge">✓</div>
         <div class="cloud-name">GCP</div>
-        <div class="cloud-instance">z3-highmem-192-highlssd-metal</div>
+        <div class="cloud-instance" id="s2-gcp-instance">z3-highmem-192-highlssd-metal</div>
         <div class="cloud-specs">
-          <div class="cloud-spec">Physical cores / node <span>96</span></div>
-          <div class="cloud-spec">Storage / node <span>37 TB</span></div>
-          <div class="cloud-spec">3-yr node price <span>$345,582</span></div>
+          <div class="cloud-spec">Physical cores / node <span id="s2-gcp-cores">96</span></div>
+          <div class="cloud-spec">Memory / node <span id="s2-gcp-ram">1,536 GB</span></div>
+          <div class="cloud-spec">Storage / node <span id="s2-gcp-storage">37 TB</span></div>
         </div>
       </div>
     </div>
@@ -1435,7 +1458,7 @@ body::before {
     </div>
 
     <!-- KPI Row 2: CPU + Storage -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
       <div class="kpi-card">
         <div class="kpi-label">CPU Utilization</div>
         <div class="kpi-value accent" id="kpi-util">0%</div>
@@ -1446,6 +1469,11 @@ body::before {
         <div class="kpi-value accent2" id="kpi-storage-kpi">0%</div>
         <div class="kpi-sub" id="kpi-storage-kpi-sub">of cluster capacity</div>
       </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Memory Utilization</div>
+        <div class="kpi-value" style="color:#06b6d4;" id="kpi-ram-kpi">0%</div>
+        <div class="kpi-sub" id="kpi-ram-kpi-sub">of cluster capacity</div>
+      </div>
     </div>
 
     <!-- Utilization bars -->
@@ -1455,26 +1483,43 @@ body::before {
         <div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">CPU</span>
-            <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent);" id="kpi-cpu-pct">0%</span>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent);" id="kpi-cpu-pct">0%</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);" id="kpi-cpu-detail-bar"></span>
+            </div>
           </div>
           <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-cpu" style="width:0%"></div></div>
         </div>
         <div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">Storage</span>
-            <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent2);" id="kpi-storage-pct">0%</span>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent2);" id="kpi-storage-pct">0%</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);" id="kpi-storage-detail-bar"></span>
+            </div>
           </div>
           <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-storage" style="background:linear-gradient(90deg,var(--accent2),#0055cc);width:0%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">Memory</span>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:#06b6d4;" id="kpi-ram-pct">0%</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);" id="kpi-ram-detail-bar"></span>
+            </div>
+          </div>
+          <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-ram" style="background:linear-gradient(90deg,#06b6d4,#0078c8);width:0%"></div></div>
         </div>
       </div>
     </div>
 
     <!-- DB Table -->
     <div class="table-wrap" style="margin-bottom:20px;">
-      <div class="table-head" style="grid-template-columns:1.5fr 1fr 1fr 1fr;">
+      <div class="table-head" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;">
         <div class="th">Database</div>
         <div class="th">VMs</div>
         <div class="th">vCPUs</div>
+        <div class="th">RAM</div>
         <div class="th">Storage</div>
       </div>
       <div id="results-table-body"></div>
@@ -1768,7 +1813,7 @@ function goToStep2() {
   const dbs = getDBInputs();
   if (dbs.length === 0) { showToast('Please select at least one database engine', 'error'); return; }
   for (const db of dbs) {
-    if (!db.vms || !db.vcpu || !db.storage) {
+    if (!db.vms || !db.vcpu || !db.ram || !db.storage) {
       showToast('Please fill all fields for ' + db.name, 'error'); return;
     }
   }
@@ -1859,6 +1904,9 @@ function selectModel(cloud, idx) {
 function updateStep2ModelBadge() {
   const node = getActiveNode();
   if (!node) return;
+
+  // Update model badge with usable RAM (90%)
+  const usableRam = Math.floor(node.ramGB * 0.90);
   const badge = document.getElementById('s2-model-badge');
   if (badge) {
     badge.innerHTML =
@@ -1868,9 +1916,27 @@ function updateStep2ModelBadge() {
       '<span style="color:var(--accent2);">' + node.physicalCores + ' cores</span>' +
       '<span style="color:var(--text3);margin:0 4px;">·</span>' +
       '<span style="color:var(--text2);">' + node.ramGB + ' GB RAM</span>' +
+      '<span style="color:var(--text3);margin:0 3px;font-size:10px;">(' + usableRam + ' GB usable)</span>' +
       '<span style="color:var(--text3);margin:0 4px;">·</span>' +
       '<span style="color:var(--text2);">' + node.nvmeTB + ' TB NVMe</span>';
   }
+
+  // Update each cloud card specs with the default model for that provider
+  ['aws', 'azure', 'gcp'].forEach(function(cloud) {
+    const provider = CLOUD_DATA[cloud];
+    if (!provider || !provider.models) return;
+    const idx = selectedModels[cloud] || 0;
+    const m = provider.models[idx] || provider.models[0];
+    const usable = Math.floor(m.ramGB * 0.90);
+    const storageFmt = m.storageGB >= 1024 ? (m.storageGB/1024).toFixed(0) + ' TB' : m.storageGB + ' GB';
+    const el = function(id) { return document.getElementById(id); };
+    if (el('s2-'+cloud+'-instance')) el('s2-'+cloud+'-instance').textContent = m.instance;
+    if (el('s2-'+cloud+'-cores'))    el('s2-'+cloud+'-cores').textContent    = m.physicalCores;
+    if (el('s2-'+cloud+'-ram'))      el('s2-'+cloud+'-ram').textContent      = m.ramGB.toLocaleString('en-US') + ' GB';
+    if (el('s2-'+cloud+'-storage'))  el('s2-'+cloud+'-storage').textContent  = storageFmt;
+    // price no longer shown in card
+  });
+
   // Sync cloud grid selection in step2
   document.querySelectorAll('#cloud-grid-step2 .cloud-card').forEach(function(card) {
     card.classList.toggle('selected', card.dataset.cloud === selectedCloud);
@@ -1908,19 +1974,22 @@ function findBestModel(cloud, dbs) {
 
   provider.models.forEach((model, idx) => {
     const vcpuPerNode = (model.physicalCores - CVM_CORES) * p2vRatio;
-    let totalVcpu = 0, totalStorage = 0;
-    dbs.forEach(db => { totalVcpu += db.vms * db.vcpu; totalStorage += db.storage; });
+    const ramPerNode  = Math.floor(model.ramGB * 0.90);
+    let totalVcpu = 0, totalStorage = 0, totalRam = 0;
+    dbs.forEach(db => { totalVcpu += db.vms * db.vcpu; totalStorage += db.storage; totalRam += db.vms * db.ram; });
 
     let nodes = 3;
-    let clusterVcpu    = vcpuPerNode    * 3;
-    let clusterStorage = model.storageGB * 3;
-    let hw3yr          = model.priceHW3YR * 3;
+    let clusterVcpu    = vcpuPerNode         * 3;
+    let clusterStorage = model.storageGB     * 3;
+    let clusterRam     = ramPerNode          * 3;
+    let hw3yr          = model.priceHW3YR    * 3;
     let clusterCores   = model.physicalCores * 3;
 
-    while ((clusterVcpu < totalVcpu || clusterStorage < totalStorage) && nodes < 28) {
+    while ((clusterVcpu < totalVcpu || clusterStorage < totalStorage || clusterRam < totalRam) && nodes < 28) {
       nodes++;
       clusterVcpu    += vcpuPerNode;
       clusterStorage += model.storageGB;
+      clusterRam     += ramPerNode;
       hw3yr          += model.priceHW3YR;
       clusterCores   += model.physicalCores;
     }
@@ -2102,6 +2171,7 @@ function getDBInputs() {
     emoji: dbEmojis[db],
     vms: parseInt(document.getElementById(db+'-vms').value) || 0,
     vcpu: parseInt(document.getElementById(db+'-vcpu').value) || 0,
+    ram: parseInt(document.getElementById(db+'-ram').value) || 0,
     storage: parseInt(document.getElementById(db+'-storage').value) || 0
   }));
 }
@@ -2166,34 +2236,43 @@ function calculate(dbs) {
   const CVM_CORES   = 12;
   const vcpuPerNode = (node.physicalCores - CVM_CORES) * p2vRatio;
 
-  let totalVcpu = 0, totalStorage = 0, totalVMs = 0;
+  let totalVcpu = 0, totalStorage = 0, totalVMs = 0, totalRam = 0;
   dbs.forEach(db => {
     totalVcpu    += db.vms * db.vcpu;
     totalStorage += db.storage;
     totalVMs     += db.vms;
+    totalRam     += db.vms * db.ram;
   });
+
+  // RAM: 90% of node ramGB is usable
+  const RAM_USABLE_PCT = 0.90;
+  const ramPerNode = Math.floor(node.ramGB * RAM_USABLE_PCT);
 
   // Minimum 3 nodes, scale by 1 up to 28
   let nodes          = 3;
   let clusterVcpu    = vcpuPerNode              * 3;
   let clusterStorage = node.storageGB     * 3;
+  let clusterRam     = ramPerNode         * 3;
   let hw3yr          = node.priceHW3YR    * 3;
   let clusterCores   = node.physicalCores * 3;
 
-  while ((clusterVcpu < totalVcpu || clusterStorage < totalStorage) && nodes < 28) {
+  while ((clusterVcpu < totalVcpu || clusterStorage < totalStorage || clusterRam < totalRam) && nodes < 28) {
     nodes++;
     clusterVcpu    += vcpuPerNode;
     clusterStorage += node.storageGB;
+    clusterRam     += ramPerNode;
     hw3yr          += node.priceHW3YR;
     clusterCores   += node.physicalCores;
   }
 
-  // Fault Tolerance N+1: spare node in cost, not in capacity
+  // Fault Tolerance N+1: spare node in cost only, not in usable capacity
   const ftEnabled = isFaultTolerant();
   if (ftEnabled) {
     nodes++;
     hw3yr        += node.priceHW3YR;
     clusterCores += node.physicalCores;
+    // clusterVcpu, clusterStorage, clusterRam NOT incremented:
+    // the spare node is reserved for failover, not available capacity
   }
 
   const discount    = getDiscount();
@@ -2205,13 +2284,14 @@ function calculate(dbs) {
 
   const vcpuUtil    = Math.min(100, Math.round((totalVcpu    / clusterVcpu)    * 100));
   const storageUtil = Math.min(100, Math.round((totalStorage / clusterStorage) * 100));
+  const ramUtil     = Math.min(100, Math.round((totalRam     / clusterRam)     * 100));
 
   return {
     cloud: cloud.name,
     cloudModel: node.instance,
-    nodes, clusterVcpu, clusterStorage,
-    totalVcpu, totalStorage,
-    vcpuUtil, storageUtil,
+    nodes, clusterVcpu, clusterStorage, clusterRam,
+    totalVcpu, totalStorage, totalRam,
+    vcpuUtil, storageUtil, ramUtil,
     hwAnnual, ndbAnnual, totalAnnual, total3yr, totalVMs,
     discount, hw3yr_net, clusterCores, p2vRatio, ftEnabled,
     dbs: dbs.map(db => ({
@@ -2262,25 +2342,34 @@ function renderResults() {
   // CPU tiles
   setText('kpi-util',            r.vcpuUtil + '%', true);
   setText('kpi-util-sub',        r.totalVcpu + ' / ' + r.clusterVcpu + ' cores');
+  setText('kpi-cpu-detail-bar',  r.totalVcpu + ' / ' + r.clusterVcpu + ' cores');
   setText('kpi-cpu-pct',         r.vcpuUtil + '%', true);
 
   // Storage tiles
   setText('kpi-storage-kpi',     r.storageUtil + '%', true);
   setText('kpi-storage-kpi-sub', fmtGB(r.totalStorage) + ' / ' + fmtGB(r.clusterStorage));
   setText('kpi-storage-pct',     r.storageUtil + '%', true);
+  setText('kpi-storage-detail-bar', fmtGB(r.totalStorage) + ' / ' + fmtGB(r.clusterStorage));
+
+  setText('kpi-ram-kpi',         r.ramUtil + '%', true);
+  setText('kpi-ram-kpi-sub',     fmtGB(r.totalRam) + ' / ' + fmtGB(r.clusterRam));
+  setText('kpi-ram-pct',         r.ramUtil + '%', true);
+  setText('kpi-ram-detail-bar',  fmtGB(r.totalRam) + ' / ' + fmtGB(r.clusterRam));
 
   // Bars
   setWidth('bar-cpu',     r.vcpuUtil + '%');
   setWidth('bar-storage', r.storageUtil + '%');
+  setWidth('bar-ram',     r.ramUtil + '%');
 
   // Table
   const tbody = document.getElementById('results-table-body');
   if (tbody) {
     tbody.innerHTML = r.dbs.map(db => `
-      <div class="table-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr;">
+      <div class="table-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;">
         <div class="td td-db">${db.name}</div>
         <div class="td mono">${db.vms}</div>
         <div class="td mono">${db.vms * db.vcpu}</div>
+        <div class="td mono">${fmtGB(db.vms * db.ram)}</div>
         <div class="td mono">${fmtGB(db.storage)}</div>
       </div>
     `).join('');
@@ -2295,6 +2384,7 @@ function renderResults() {
       'Hardware: estimated 3-year committed pricing · ' + (discountPct > 0 ? discountPct + '% discount applied' : 'no discount'),
       'Storage Replication: RF2',
       'Average Physical-to-Virtual ratio 1:' + r.p2vRatio,
+      'Memory: 10% reserved for OS and hypervisor overhead',
       'PostgreSQL Community Edition support included in NDB licensing'
     ].map(t => '<div class="method-item">' + t + '</div>').join('');
   }
@@ -2319,18 +2409,11 @@ function downloadSummary() {
   // ── DB table rows ──
   const dbRows = r.dbs.map(db => `
     <tr style="border-bottom:1px solid #1e2535;">
-      <td style="padding:12px 14px;font-size:14px;color:#e8edf5;font-weight:600;">${db.name}</td>
-      <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${db.vms}</td>
-      <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${db.vms * db.vcpu}</td>
-      <td style="padding:12px 14px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${fmtGB(db.storage)}</td>
-      <td style="padding:12px 14px;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="flex:1;height:4px;background:#1e2535;border-radius:4px;overflow:hidden;min-width:60px;">
-            <div style="width:${db.clusterPct}%;height:100%;background:linear-gradient(90deg,#00c9a7,#0085ff);border-radius:4px;"></div>
-          </div>
-          <span style="font-family:'DM Mono',monospace;font-size:13px;color:#00c9a7;min-width:32px;text-align:right;">${db.clusterPct}%</span>
-        </div>
-      </td>
+      <td style="padding:14px 20px;font-size:14px;color:#e8edf5;font-weight:600;">${db.name}</td>
+      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${db.vms}</td>
+      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${db.vms * db.vcpu}</td>
+      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${fmtGB(db.vms * db.ram)}</td>
+      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${fmtGB(db.storage)}</td>
     </tr>`).join('');
 
   // ── NDB feature cards ──
@@ -2464,12 +2547,12 @@ function downloadSummary() {
     Cluster Utilization
     <div style="flex:1;height:1px;background:#1a2030;"></div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:32px;">
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
       <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">CPU Utilization</div>
       <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:28px;font-weight:800;color:#00c9a7;">${r.vcpuUtil}%</span>
-        <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">${r.totalVcpu} / ${r.clusterVcpu} cores</span>
+        <span style="font-size:24px;font-weight:800;color:#00c9a7;">${r.vcpuUtil}%</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${r.totalVcpu} / ${r.clusterVcpu} cores</span>
       </div>
       <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
         <div style="width:${r.vcpuUtil}%;height:100%;background:linear-gradient(90deg,#00c9a7,#0085ff);border-radius:4px;"></div>
@@ -2478,11 +2561,21 @@ function downloadSummary() {
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
       <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Storage Utilization</div>
       <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:28px;font-weight:800;color:#0085ff;">${r.storageUtil}%</span>
-        <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}</span>
+        <span style="font-size:24px;font-weight:800;color:#0085ff;">${r.storageUtil}%</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}</span>
       </div>
       <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
         <div style="width:${r.storageUtil}%;height:100%;background:linear-gradient(90deg,#0085ff,#00c9a7);border-radius:4px;"></div>
+      </div>
+    </div>
+    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
+      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Memory Utilization</div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
+        <span style="font-size:24px;font-weight:800;color:#06b6d4;">${r.ramUtil}%</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${fmtGB(r.totalRam)} / ${fmtGB(r.clusterRam)}</span>
+      </div>
+      <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
+        <div style="width:${r.ramUtil}%;height:100%;background:linear-gradient(90deg,#06b6d4,#0078c8);border-radius:4px;"></div>
       </div>
     </div>
   </div>
@@ -2496,11 +2589,11 @@ function downloadSummary() {
     <table style="width:100%;border-collapse:collapse;">
       <thead>
         <tr style="background:#131720;">
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">Database Engine</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">VMs</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">vCPUs</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">Storage</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:12px 16px;text-align:left;">CPU Share</th>
+          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Database Engine</th>
+          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">VMs</th>
+          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">vCPUs</th>
+          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">RAM</th>
+          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Storage</th>
         </tr>
       </thead>
       <tbody>${dbRows}</tbody>
@@ -2518,6 +2611,7 @@ function downloadSummary() {
        'Cluster: ' + (r.ftEnabled ? 'N+1 Fault Tolerant — ' + r.nodes + ' nodes (' + (r.nodes-1) + ' active + 1 reserved for recovery)' : 'N — all ' + r.nodes + ' nodes active'),
        'Storage: RF2 replication · ' + fmtGB(r.clusterStorage) + ' raw available',
        'Physical-to-virtual ratio 1:' + r.p2vRatio + ' · 12 cores/node reserved for CVM',
+       'Memory: 10% reserved for OS and hypervisor overhead',
        'PostgreSQL Community Edition support included in NDB licensing'
       ].map(a => `<div style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#8a95a8;line-height:1.55;padding:8px 0;border-bottom:1px solid #131720;">
         <span style="color:#0085ff;flex-shrink:0;">→</span>${a}</div>`).join('')}
