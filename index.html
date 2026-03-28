@@ -1928,7 +1928,7 @@ function updateStep2ModelBadge() {
     const idx = selectedModels[cloud] || 0;
     const m = provider.models[idx] || provider.models[0];
     const usable = Math.floor(m.ramGB * 0.90);
-    const storageFmt = m.storageGB >= 1024 ? (m.storageGB/1024).toFixed(0) + ' TB' : m.storageGB + ' GB';
+    const storageFmt = m.nvmeTB >= 1 ? m.nvmeTB + ' TB' : Math.round(m.nvmeTB * 1024) + ' GB';
     const el = function(id) { return document.getElementById(id); };
     if (el('s2-'+cloud+'-instance')) el('s2-'+cloud+'-instance').textContent = m.instance;
     if (el('s2-'+cloud+'-cores'))    el('s2-'+cloud+'-cores').textContent    = m.physicalCores;
