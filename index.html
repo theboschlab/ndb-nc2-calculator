@@ -6,29 +6,30 @@
 <title>Public Cloud Database Infrastructure Calculator — Nutanix NC2 + NDB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg:        #0a0c10;
-  --bg1:       #0e1117;
-  --bg2:       #131720;
-  --bg3:       #1a2030;
-  --border:    rgba(255,255,255,0.07);
-  --border-hi: rgba(255,255,255,0.14);
-  --accent:    #00c9a7;
-  --accent2:   #0085ff;
-  --accent-glow: rgba(0,201,167,0.18);
-  --accent2-glow: rgba(0,133,255,0.18);
-  --text:      #e8edf5;
-  --text2:     #8a95a8;
-  --text3:     #545f72;
+  --bg:        #131313;
+  --bg1:       #1a1a1a;
+  --bg2:       #222222;
+  --bg3:       #2a2a2a;
+  --border:    rgba(255,255,255,0.09);
+  --border-hi: rgba(255,255,255,0.16);
+  --accent:    #1FDDE9;
+  --accent2:   #7855FA;
+  --accent-glow: rgba(120,85,250,0.16);
+  --accent2-glow: rgba(120,85,250,0.16);
+  --text:      #F2F2F2;
+  --text2:     #9E9E9E;
+  --text3:     #616161;
   --danger:    #ff4d6a;
   --warn:      #ffaa00;
   --radius:    12px;
   --radius-lg: 18px;
-  --font-head: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --font-head: 'Montserrat', sans-serif;
+  --font-mono: 'Montserrat', sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 
 *,*::before,*::after { box-sizing: border-box; margin:0; padding:0; }
@@ -62,8 +63,8 @@ body::before {
   pointer-events: none;
   z-index: 0;
 }
-.glow-orb.a { width:600px; height:600px; background:rgba(0,201,167,0.06); top:-200px; right:-100px; }
-.glow-orb.b { width:500px; height:500px; background:rgba(0,133,255,0.05); bottom:-100px; left:-150px; }
+.glow-orb.a { width:600px; height:600px; background:rgba(120,85,250,0.07); top:-200px; right:-100px; }
+.glow-orb.b { width:500px; height:500px; background:rgba(120,85,250,0.05); bottom:-100px; left:-150px; }
 
 /* ─── Layout ─── */
 .container {
@@ -95,8 +96,8 @@ body::before {
 .logo-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 10px var(--accent);
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  box-shadow: 0 0 12px rgba(120,85,250,0.5);
 }
 .badge {
   font-family: var(--font-mono);
@@ -125,7 +126,7 @@ body::before {
   font-size: 10px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent2);
   white-space: nowrap;
 }
 .assumption-pill {
@@ -138,7 +139,7 @@ body::before {
 }
 .assumption-pill::before {
   content: '·';
-  color: var(--accent);
+  color: var(--accent2);
   font-size: 16px;
   line-height: 1;
 }
@@ -153,7 +154,7 @@ body::before {
   font-size: 12px;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent2);
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -164,16 +165,16 @@ body::before {
   content:'';
   width: 40px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent));
+  background: linear-gradient(90deg, transparent, var(--accent2));
 }
-.hero-eyebrow::after { background: linear-gradient(90deg, var(--accent), transparent); }
+.hero-eyebrow::after { background: linear-gradient(90deg, var(--accent2), transparent); }
 .hero h1 {
   font-size: clamp(28px, 4vw, 46px);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -.02em;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #e8edf5 30%, #7a9abf);
+  background: linear-gradient(135deg, #F2F2F2 40%, #C6BEFE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -228,18 +229,18 @@ body::before {
   margin: 0 8px;
 }
 .step-item.active .step-num {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--accent2), #391699);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 16px var(--accent-glow);
+  box-shadow: 0 0 16px rgba(120,85,250,0.3);
 }
 .step-item.active .step-label { color: var(--text); }
 .step-item.done .step-num {
-  background: var(--accent);
+  background: var(--accent2);
   border-color: transparent;
   color: #fff;
 }
-.step-item.done .step-label { color: var(--accent); }
+.step-item.done .step-label { color: var(--accent2); }
 
 /* ─── Section ─── */
 .section {
@@ -291,18 +292,19 @@ body::before {
   content:'';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--accent-glow), transparent);
+  background: linear-gradient(135deg, var(--accent2-glow), transparent);
   opacity: 0;
   transition: opacity .3s;
 }
 .cloud-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
 .cloud-card:hover::before { opacity: .5; }
 .cloud-card.selected {
-  border-color: var(--accent);
+  border-color: var(--accent2);
   background: var(--bg2);
-  box-shadow: 0 0 0 1px var(--accent), 0 8px 32px var(--accent-glow);
+  box-shadow: 0 0 0 1px var(--accent2), 0 8px 32px var(--accent2-glow);
 }
 .cloud-card.selected::before { opacity: 1; }
+.cloud-card.selected .check-badge { background: var(--accent2); box-shadow: 0 0 10px rgba(120,85,250,0.5); }
 .cloud-icon {
   font-size: 28px;
   margin-bottom: 12px;
@@ -332,13 +334,13 @@ body::before {
   display: flex;
   justify-content: space-between;
 }
-.cloud-spec span { color: var(--accent); }
+.cloud-spec span { color: var(--accent2); }
 .check-badge {
   position: absolute;
   top: 14px; right: 14px;
   width: 22px; height: 22px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent2);
   display: flex; align-items: center; justify-content: center;
   font-size: 12px;
   opacity: 0;
@@ -347,7 +349,9 @@ body::before {
 }
 .cloud-card.selected .check-badge { opacity: 1; }
 .cloud-specs { display: none; }
+.cloud-instance { display: none; }
 .cloud-card.selected .cloud-specs { display: flex; flex-direction: column; }
+.cloud-card.selected .cloud-instance { display: block; }
 
 /* ─── DB cards ─── */
 .db-grid {
@@ -362,7 +366,7 @@ body::before {
   overflow: hidden;
   transition: border-color .25s;
 }
-.db-card.selected { border-color: var(--accent2); box-shadow: 0 0 0 1px var(--accent2), 0 8px 32px var(--accent2-glow); }
+.db-card.selected { border-color: var(--accent2); box-shadow: 0 0 0 1.5px var(--accent2), 0 8px 32px var(--accent2-glow); }
 .db-header {
   display: flex;
   align-items: center;
@@ -442,6 +446,7 @@ body::before {
   font-family: var(--font-mono);
   font-size: 13px;
   color: var(--text);
+  font-variant-numeric: tabular-nums;
   outline: none;
   transition: border-color .2s;
 }
@@ -453,7 +458,7 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, #7855FA, #391699);
   color: #fff;
   font-family: var(--font-head);
   font-size: 14px;
@@ -465,11 +470,11 @@ body::before {
   border: none;
   cursor: pointer;
   transition: all .25s ease;
-  box-shadow: 0 4px 24px rgba(0,201,167,0.25);
+  box-shadow: 0 4px 24px rgba(120,85,250,0.3);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,201,167,0.35);
+  box-shadow: 0 8px 32px rgba(120,85,250,0.45);
 }
 .btn-primary:active { transform: translateY(0); }
 .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
@@ -522,7 +527,7 @@ body::before {
   text-transform: uppercase;
   color: var(--text3);
 }
-.form-field label .req { color: var(--accent); }
+.form-field label .req { color: var(--accent2); }
 .form-field input,
 .form-field select {
   background: var(--bg1);
@@ -545,7 +550,7 @@ body::before {
 }
 .form-field select option { background: var(--bg2); }
 .form-field input:focus,
-.form-field select:focus { border-color: var(--accent); }
+.form-field select:focus { border-color: var(--accent2); }
 .form-field input::placeholder { color: var(--text3); }
 
 .gdpr-box {
@@ -579,8 +584,8 @@ body::before {
 }
 .gdpr-check input:checked ~ .check-box,
 .gdpr-check.checked .check-box {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent2);
+  border-color: var(--accent2);
 }
 .gdpr-check input:checked ~ .check-box::after,
 .gdpr-check.checked .check-box::after {
@@ -600,8 +605,8 @@ body::before {
   font-size: 10px;
   padding: 2px 7px;
   border-radius: 4px;
-  background: rgba(0,201,167,0.1);
-  color: var(--accent);
+  background: rgba(120,85,250,0.1);
+  color: var(--accent2);
   flex-shrink: 0;
 }
 
@@ -642,7 +647,7 @@ body::before {
   position: absolute;
   bottom: 0; left: 0;
   width: 100%; height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  background: linear-gradient(90deg, var(--accent2), #BBA8FF);
   opacity: 0;
   transition: opacity .3s;
 }
@@ -663,8 +668,8 @@ body::before {
   margin-bottom: 4px;
   color: var(--text);
 }
-.kpi-value.accent { color: var(--accent); }
-.kpi-value.accent2 { color: var(--accent2); }
+.kpi-value.accent { color: #7855FA; }
+.kpi-value.accent2 { color: #9B7DFF; }
 .kpi-sub {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -744,13 +749,13 @@ body::before {
 .bar-fill {
   height: 100%;
   border-radius: 4px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  background: linear-gradient(90deg, #7855FA, #391699);
   transition: width 1s ease;
 }
 .util-pct {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--accent);
+  color: var(--accent2);
 }
 
 /* ─── Methodology box ─── */
@@ -766,7 +771,7 @@ body::before {
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent2);
   margin-bottom: 16px;
 }
 .method-grid {
@@ -776,7 +781,7 @@ body::before {
 }
 .method-item {
   font-size: 12px;
-  color: var(--text2);
+  color: #F2F2F2;
   line-height: 1.55;
   display: flex;
   gap: 8px;
@@ -785,8 +790,8 @@ body::before {
 
 /* ─── NDB badge ─── */
 .ndb-banner {
-  background: linear-gradient(135deg, rgba(0,201,167,0.08), rgba(0,133,255,0.08));
-  border: 1.5px solid rgba(0,201,167,0.2);
+  background: linear-gradient(135deg, rgba(120,85,250,0.08), rgba(120,85,250,0.05));
+  border: 1.5px solid rgba(120,85,250,0.25);
   border-radius: var(--radius-lg);
   padding: 18px 24px;
   display: flex;
@@ -795,12 +800,12 @@ body::before {
   margin-bottom: 20px;
 }
 .ndb-info { font-size: 13px; }
-.ndb-info strong { color: var(--accent); font-size: 15px; }
+.ndb-info strong { color: var(--accent2); font-size: 15px; }
 .ndb-price {
   font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--accent2);
 }
 .ndb-price small { font-size: 12px; color: var(--text2); }
 
@@ -822,7 +827,7 @@ body::before {
   transition: all .35s ease;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { border-color: var(--accent); }
+.toast.success { border-color: var(--accent2); }
 .toast.error   { border-color: var(--danger); }
 
 /* ─── Spinner ─── */
@@ -886,7 +891,7 @@ body::before {
   display: flex; align-items: center; gap: 16px;
 }
 .model-card:hover { border-color: var(--border-hi); }
-.model-card.selected { border-color: var(--accent); background: var(--bg3); box-shadow: 0 0 0 1px var(--accent); }
+.model-card.selected { border-color: var(--accent2); background: var(--bg3); box-shadow: 0 0 0 1px var(--accent2); }
 .model-card-radio {
   width: 18px; height: 18px; border-radius: 50%;
   border: 2px solid var(--border-hi);
@@ -895,8 +900,8 @@ body::before {
   transition: all .2s;
 }
 .model-card.selected .model-card-radio {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent2);
+  background: var(--accent2);
 }
 .model-card.selected .model-card-radio::after {
   content: ''; width: 6px; height: 6px;
@@ -914,23 +919,10 @@ body::before {
   display: flex; flex-direction: column; gap: 2px;
 }
 .model-spec-label { color: var(--text3); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
-.model-spec-value { color: var(--accent); font-weight: 500; }
+.model-spec-value { color: var(--accent2); font-weight: 500; }
 .model-change-btn {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--accent2);
-  letter-spacing: .04em;
-  cursor: pointer;
-  margin-top: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  opacity: .8;
-  transition: opacity .2s;
+  display: none;
 }
-.model-change-btn:hover { opacity: 1; }
 
 
 /* ─── KPI update pulse ─── */
@@ -942,7 +934,7 @@ body::before {
 }
 @keyframes kpiFlash {
   0%   { background: transparent; }
-  25%  { background: rgba(0,201,167,0.15); border-color: var(--accent); }
+  25%  { background: rgba(120,85,250,0.15); border-color: var(--accent2); }
   100% { background: transparent; }
 }
 .kpi-card.updated {
@@ -989,7 +981,7 @@ body::before {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.dc-label span { color: var(--accent); font-weight: 600; }
+.dc-label span { color: var(--accent2); font-weight: 600; }
 .dc-select-wrap { flex: 1; min-width: 200px; }
 .dc-select-wrap select {
   width: 100%;
@@ -1006,7 +998,7 @@ body::before {
   -webkit-appearance: none;
   appearance: none;
 }
-.dc-select-wrap select:focus { border-color: var(--accent); }
+.dc-select-wrap select:focus { border-color: var(--accent2); }
 .dc-select-wrap select option { background: var(--bg2); color: var(--text); }
 
 /* ─── Discount / config row ─── */
@@ -1020,14 +1012,17 @@ body::before {
   padding: 12px 20px;
   margin-top: 10px;
   flex-wrap: wrap;
+  cursor: default;
+  transition: border-color .2s;
 }
+.discount-row:hover { border-color: var(--accent2); }
 .discount-label {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text2);
   flex-shrink: 0;
 }
-.discount-label span { color: var(--accent); font-weight: 600; }
+.discount-label span { color: var(--accent2); font-weight: 600; }
 .discount-input-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .discount-input-wrap input[type=number] {
   width: 68px;
@@ -1044,10 +1039,10 @@ body::before {
   transition: border-color .2s;
   -moz-appearance: textfield;
 }
-.discount-input-wrap input[type=number]:focus { border-color: var(--accent); }
+.discount-input-wrap input[type=number]:focus { border-color: var(--accent2); }
 .discount-input-wrap input[type=number]::-webkit-outer-spin-button,
 .discount-input-wrap input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
-.discount-pct-symbol { font-family: var(--font-mono); font-size: 15px; color: var(--accent); font-weight: 600; }
+.discount-pct-symbol { font-family: var(--font-mono); font-size: 15px; color: var(--accent2); font-weight: 600; }
 
 /* ─── Fault Tolerance toggle ─── */
 .ft-row {
@@ -1063,8 +1058,8 @@ body::before {
   transition: border-color .2s, background .2s;
   user-select: none;
 }
-.ft-row:hover { border-color: var(--accent); }
-.ft-row.active { border-color: var(--accent); background: var(--bg2); }
+.ft-row:hover { border-color: var(--accent2); }
+.ft-row.active { border-color: var(--accent2); background: var(--bg2); }
 .ft-toggle-wrap { flex-shrink: 0; margin-top: 2px; }
 .ft-toggle {
   position: relative;
@@ -1092,9 +1087,9 @@ body::before {
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .ft-toggle input:checked + .ft-slider {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-glow);
+  background: var(--accent2);
+  border-color: var(--accent2);
+  box-shadow: 0 0 8px var(--accent2-glow);
 }
 .ft-toggle input:checked + .ft-slider::after {
   left: 19px;
@@ -1103,6 +1098,65 @@ body::before {
 .ft-text { flex: 1; }
 .ft-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
 .ft-desc  { font-size: 11px; color: var(--text2); line-height: 1.6; }
+
+/* ─── Info tooltip ─── */
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: rgba(120,85,250,0.15);
+  border: 1px solid rgba(120,85,250,0.4);
+  color: var(--accent2);
+  font-family: var(--font-head);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: default;
+  flex-shrink: 0;
+  margin-left: 6px;
+  vertical-align: middle;
+  transition: background .2s;
+}
+.info-tooltip:hover { background: rgba(120,85,250,0.28); }
+.info-tooltip .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  background: #1a1a1a;
+  border: 1px solid rgba(120,85,250,0.35);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: var(--font-head);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text2);
+  line-height: 1.55;
+  text-transform: none;
+  letter-spacing: 0;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  transition: opacity .2s, visibility .2s;
+}
+.info-tooltip .tooltip-text::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(120,85,250,0.35);
+}
+.info-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -1128,7 +1182,7 @@ body::before {
   <div class="hero">
     <div class="hero-eyebrow">Database Infrastructure Cost Estimator</div>
     <h1>Public Cloud Database<br>Infrastructure Calculator</h1>
-    <p>Estimate your Nutanix NC2 + NDB total cost of ownership across AWS, Azure, and GCP for enterprise database workloads.</p>
+    <p>Estimate your public cloud total cost of ownership across AWS, Azure, and GCP for enterprise database workloads.</p>
   </div>
 
   <!-- Steps nav -->
@@ -1352,7 +1406,7 @@ body::before {
   <div class="section" id="step2">
 
     <div class="results-header">
-      <h2>Your Estimate on NC2<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">with Nutanix Database Service</span></h2>
+      <h2 style="background:linear-gradient(135deg,#BBA8FF 0%,#7855FA 50%,#391699 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Your Estimate on NC2<br>with Nutanix Database Service</h2>
     </div>
 
     <!-- Cloud provider selector (live) -->
@@ -1392,29 +1446,39 @@ body::before {
 
 
     <!-- Current model badge -->
-    <div style="background:var(--bg1);border:1.5px solid var(--border-hi);border-radius:var(--radius);padding:12px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-      <div id="s2-model-badge" style="font-family:var(--font-mono);font-size:12px;display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:4px;">
+    <div style="background:rgba(120,85,250,0.07);border:1.5px solid rgba(120,85,250,0.35);border-radius:var(--radius);padding:14px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div id="s2-model-badge" style="font-family:var(--font-mono);font-size:13px;display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:6px;">
         <span style="color:var(--text3);">Loading model...</span>
       </div>
-      <div class="model-change-btn" onclick="openModelPopup(selectedCloud)" style="text-decoration:none;background:var(--bg2);border:1px solid var(--border-hi);border-radius:8px;padding:6px 14px;font-size:11px;letter-spacing:.04em;">
+      <button onclick="openModelPopup(selectedCloud)" style="background:linear-gradient(135deg,#7855FA,#391699);border:none;border-radius:8px;padding:8px 18px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
         ⚙ Change model
-      </div>
+      </button>
     </div>
 
     <!-- Live config controls -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
       <div class="discount-row" style="margin-top:0;">
-        <div class="discount-label">Cloud Provider discount</div>
+        <div class="discount-label" style="display:flex;align-items:center;">
+            Enterprise Agreement Discount
+            <span class="info-tooltip">i
+              <span class="tooltip-text">Cloud providers offer negotiated discounts through enterprise agreements based on committed spend. When applicable, this discount is applied on top of the 3-year committed hardware price. Enter the percentage discount agreed in your contract — 0% if no agreement is in place.</span>
+            </span>
+          </div>
         <div class="discount-input-wrap">
           <input type="number" id="discount-pct" value="0" min="0" max="60" step="1" oninput="recalcLive()">
           <span class="discount-pct-symbol">%</span>
         </div>
       </div>
       <div class="discount-row" style="margin-top:0;">
-        <div class="discount-label">Average Physical-to-Virtual Ratio</div>
+        <div class="discount-label" style="display:flex;align-items:center;">
+            Average Physical-to-Virtual Ratio
+            <span class="info-tooltip">i
+              <span class="tooltip-text">Defines how many virtual CPUs are assigned per physical core. A 1:3 ratio means each physical core runs 3 vCPUs. Higher ratios increase density but may reduce per-VM performance. A conservative 1:3 is recommended for database workloads.</span>
+            </span>
+          </div>
         <div class="discount-input-wrap">
           <span class="discount-pct-symbol" style="margin-right:6px;">1 :</span>
-          <select id="p2v-ratio" onchange="recalcLive()" style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:15px;font-weight:600;padding:6px 28px 6px 12px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2300c9a7' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 10px center;">
+          <select id="p2v-ratio" onchange="recalcLive()" style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:15px;font-weight:600;padding:6px 28px 6px 12px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%237855FA' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 10px center;">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3" selected>3</option>
@@ -1433,7 +1497,11 @@ body::before {
         </label>
       </div>
       <div class="ft-text">
-        <div class="ft-title">Enable Fault Tolerance (N+1)</div>
+        <div class="ft-title" style="display:flex;align-items:center;gap:0;">Enable Fault Tolerance (N+1)
+            <span class="info-tooltip" style="margin-left:8px;">i
+              <span class="tooltip-text"><strong style="color:#F2F2F2;">How Nutanix N+1 works</strong><br><br>Nutanix uses a distributed storage fabric (AOS) that replicates data across nodes with RF2 (Replication Factor 2). In an N+1 cluster, one additional node is reserved as a hot standby: if any node fails, the cluster continues operating without data loss and without manual intervention.<br><br>The spare node is counted in the hardware cost but <strong style="color:#F2F2F2;">excluded from available capacity</strong> — CPU, RAM and storage utilization shown are based on the active nodes only.</span>
+            </span>
+          </div>
         <div class="ft-desc">A Fault Tolerant cluster can lose one node without any data loss. Requires one additional node reserved for recovery — counted in cost but not in available capacity.</div>
       </div>
     </div>
@@ -1471,7 +1539,7 @@ body::before {
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Memory Utilization</div>
-        <div class="kpi-value" style="color:#06b6d4;" id="kpi-ram-kpi">0%</div>
+        <div class="kpi-value" style="color:#BBA8FF;" id="kpi-ram-kpi">0%</div>
         <div class="kpi-sub" id="kpi-ram-kpi-sub">of cluster capacity</div>
       </div>
     </div>
@@ -1484,7 +1552,7 @@ body::before {
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">CPU</span>
             <div style="display:flex;align-items:baseline;gap:8px;">
-              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent);" id="kpi-cpu-pct">0%</span>
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:#7855FA;" id="kpi-cpu-pct">0%</span>
               <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);" id="kpi-cpu-detail-bar"></span>
             </div>
           </div>
@@ -1494,21 +1562,21 @@ body::before {
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">Storage</span>
             <div style="display:flex;align-items:baseline;gap:8px;">
-              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent2);" id="kpi-storage-pct">0%</span>
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:#9B7DFF;" id="kpi-storage-pct">0%</span>
               <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);" id="kpi-storage-detail-bar"></span>
             </div>
           </div>
-          <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-storage" style="background:linear-gradient(90deg,var(--accent2),#0055cc);width:0%"></div></div>
+          <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-storage" style="background:linear-gradient(90deg,#9B7DFF,#5E3DB3);width:0%"></div></div>
         </div>
         <div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);">Memory</span>
             <div style="display:flex;align-items:baseline;gap:8px;">
-              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:#06b6d4;" id="kpi-ram-pct">0%</span>
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:500;color:#BBA8FF;" id="kpi-ram-pct">0%</span>
               <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);" id="kpi-ram-detail-bar"></span>
             </div>
           </div>
-          <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-ram" style="background:linear-gradient(90deg,#06b6d4,#0078c8);width:0%"></div></div>
+          <div class="bar-wrap" style="height:8px;"><div class="bar-fill" id="bar-ram" style="background:linear-gradient(90deg,#BBA8FF,#7855FA);width:0%"></div></div>
         </div>
       </div>
     </div>
@@ -1526,10 +1594,10 @@ body::before {
     </div>
 
     <!-- PostgreSQL CE highlight -->
-    <div style="background:linear-gradient(135deg,rgba(0,201,167,0.1),rgba(0,133,255,0.07));border:1.5px solid rgba(0,201,167,0.3);border-radius:var(--radius-lg);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
+    <div style="background:linear-gradient(135deg,rgba(120,85,250,0.1),rgba(120,85,250,0.06));border:1.5px solid rgba(120,85,250,0.28);border-radius:var(--radius-lg);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
       <div style="font-size:22px;flex-shrink:0;">🐘</div>
       <div>
-        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:3px;">PostgreSQL Community Edition support included</div>
+        <div style="font-size:13px;font-weight:700;color:#F2F2F2;margin-bottom:3px;">PostgreSQL Community Edition support included</div>
         <div style="font-size:12px;color:var(--text2);line-height:1.5;">NDB subscription covers CE support for all managed PostgreSQL instances running in the cluster</div>
       </div>
     </div>
@@ -1543,7 +1611,7 @@ body::before {
         <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🔧</span><span style="font-size:12px;font-weight:700;color:var(--text);">Patching</span></div><p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Automated patch management with rollback and zero-downtime scheduling.</p></div>
         <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🧬</span><span style="font-size:12px;font-weight:700;color:var(--text);">Thin Cloning</span></div><p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Instant space-efficient clones via redirect-on-write — no storage duplication required.</p></div>
         <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🛡</span><span style="font-size:12px;font-weight:700;color:var(--text);">Data Protection & Instant Restore</span></div><p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Continuous protection with Time Machine and point-in-time recovery to any snapshot.</p></div>
-        <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">⚙️</span><span style="font-size:12px;font-weight:700;color:var(--accent2);">Self Service via API / NDB Operator</span></div><p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">REST API and Kubernetes Operator for GitOps-driven developer self-service workflows.</p></div>
+        <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">⚙️</span><span style="font-size:12px;font-weight:700;color:var(--text);">Self Service via API / NDB Operator</span></div><p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">REST API and Kubernetes Operator for GitOps-driven developer self-service workflows.</p></div>
       </div>
     </div>
 
@@ -1852,7 +1920,7 @@ function openModelPopup(cloud) {
     <div class="model-card ${i === currentIdx ? 'selected' : ''}" onclick="selectModel('${cloud}', ${i})">
       <div class="model-card-radio"></div>
       <div class="model-card-body">
-        <div class="model-card-name">${m.displayName || m.instance}${i === bestIdx ? ' <span style="font-family:var(--font-mono);font-size:9px;background:rgba(0,201,167,0.15);color:var(--accent);border-radius:4px;padding:2px 6px;margin-left:6px;">BEST TCO</span>' : ''}</div>
+        <div class="model-card-name">${m.displayName || m.instance}${i === bestIdx ? ' <span style="font-family:var(--font-mono);font-size:9px;background:rgba(120,85,250,0.15);color:var(--accent2);border-radius:4px;padding:2px 6px;margin-left:6px;">BEST TCO</span>' : ''}</div>
         <div class="model-card-instance">${m.instance}</div>
         <div class="model-card-specs">
           <div class="model-spec">
@@ -1911,14 +1979,13 @@ function updateStep2ModelBadge() {
   if (badge) {
     badge.innerHTML =
       '<span style="color:var(--text3);margin-right:6px;">Node model:</span>' +
-      '<span style="color:var(--text);font-weight:600;">' + node.displayName + '</span>' +
-      '<span style="color:var(--text3);margin:0 6px;">·</span>' +
-      '<span style="color:var(--accent2);">' + node.physicalCores + ' cores</span>' +
-      '<span style="color:var(--text3);margin:0 4px;">·</span>' +
-      '<span style="color:var(--text2);">' + node.ramGB + ' GB RAM</span>' +
-      '<span style="color:var(--text3);margin:0 3px;font-size:10px;">(' + usableRam + ' GB usable)</span>' +
-      '<span style="color:var(--text3);margin:0 4px;">·</span>' +
-      '<span style="color:var(--text2);">' + node.nvmeTB + ' TB NVMe</span>';
+      '<span style="color:#F2F2F2;font-weight:700;">' + node.displayName + '</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--accent2);font-weight:600;">' + node.physicalCores + ' cores</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--accent2);font-weight:600;">' + node.ramGB + ' GB RAM</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--accent2);font-weight:600;">' + node.nvmeTB + ' TB NVMe</span>';
   }
 
   // Update each cloud card specs with the default model for that provider
@@ -2410,10 +2477,10 @@ function downloadSummary() {
   const dbRows = r.dbs.map(db => `
     <tr style="border-bottom:1px solid #1e2535;">
       <td style="padding:14px 20px;font-size:14px;color:#e8edf5;font-weight:600;">${db.name}</td>
-      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${db.vms}</td>
-      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${db.vms * db.vcpu}</td>
-      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${fmtGB(db.vms * db.ram)}</td>
-      <td style="padding:14px 20px;font-family:'DM Mono',monospace;font-size:14px;color:#8a95a8;">${fmtGB(db.storage)}</td>
+      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${db.vms}</td>
+      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${db.vms * db.vcpu}</td>
+      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${fmtGB(db.vms * db.ram)}</td>
+      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${fmtGB(db.storage)}</td>
     </tr>`).join('');
 
   // ── NDB feature cards ──
@@ -2439,14 +2506,14 @@ function downloadSummary() {
 <head>
 <meta charset="UTF-8">
 <title>NC2 + NDB · ${r.cloud} · ${date}</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   @page { size: A4; margin: 0; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body {
     background-color: #0a0c10 !important;
     color: #e8edf5;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
@@ -2464,35 +2531,35 @@ function downloadSummary() {
 <div class="page-break" style="background-color:#0a0c10;min-height:100vh;padding:56px 64px 48px;display:flex;flex-direction:column;position:relative;overflow:hidden;">
 
   <!-- Glow orbs (print-friendly: subtle borders) -->
-  <div style="position:absolute;top:-80px;right:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,201,167,0.15) 0%,transparent 65%);pointer-events:none;"></div>
-  <div style="position:absolute;bottom:-80px;left:-60px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(0,133,255,0.12) 0%,transparent 65%);pointer-events:none;"></div>
+  <div style="position:absolute;top:-80px;right:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(120,85,250,0.15) 0%,transparent 65%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-80px;left:-60px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(57,22,153,0.12) 0%,transparent 65%);pointer-events:none;"></div>
 
   <!-- Top bar -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid #1a2030;margin-bottom:auto;">
-    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a95a8;">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a95a8;">
       NC2 + NDB · Infrastructure Estimate
     </div>
-    <div style="font-family:'DM Mono',monospace;font-size:12px;color:#545f72;border:1px solid #1e2535;padding:3px 12px;border-radius:20px;">Personal Analysis · Not for Distribution</div>
+    <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#545f72;border:1px solid #1e2535;padding:3px 12px;border-radius:20px;">Personal Analysis · Not for Distribution</div>
   </div>
 
   <!-- Hero body -->
   <div style="padding:70px 0 56px;flex:1;display:flex;flex-direction:column;justify-content:center;">
-    <div style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#00c9a7;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
-      <div style="height:1px;width:32px;background:#00c9a7;"></div>
+    <div style="font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#7855FA;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+      <div style="height:1px;width:32px;background:#7855FA;"></div>
       Public Cloud Database Infrastructure
-      <div style="height:1px;width:32px;background:#00c9a7;"></div>
+      <div style="height:1px;width:32px;background:#7855FA;"></div>
     </div>
     <h1 style="font-size:52px;font-weight:800;line-height:1.08;letter-spacing:-.025em;margin-bottom:24px;color:#e8edf5;">
       Your Estimate<br>
-      <span style="color:#00c9a7;">on Public Cloud</span><br>
+      <span style="color:#7855FA;">on Public Cloud</span><br>
       with Nutanix<br>
-      <span style="color:#0085ff;">Database Service</span>
+      <span style="color:#7855FA;">Database Service</span>
     </h1>
     <p style="font-size:16px;color:#8a95a8;line-height:1.7;max-width:480px;margin-bottom:48px;">
       This document is an independent infrastructure sizing estimate for running database workloads on Nutanix Cloud Clusters (NC2) with Nutanix Database Service (NDB). All figures are indicative and based on publicly available pricing at the time of generation.
     </p>
-    <div style="display:inline-flex;align-items:center;gap:12px;background:rgba(0,201,167,0.08);border:1.5px solid rgba(0,201,167,0.25);border-radius:10px;padding:12px 20px;font-size:15px;font-weight:600;color:#e8edf5;width:fit-content;">
-      Cloud Provider: <span style="color:#00c9a7;">${r.cloud}</span>
+    <div style="display:inline-flex;align-items:center;gap:12px;background:rgba(120,85,250,0.1);border:1.5px solid rgba(120,85,250,0.3);border-radius:10px;padding:12px 20px;font-size:15px;font-weight:600;color:#e8edf5;width:fit-content;">
+      Cloud Provider: <span style="color:#7855FA;">${r.cloud}</span>
       &nbsp;·&nbsp; ${r.nodes} NC2 Nodes
       &nbsp;·&nbsp; ${r.ftEnabled ? "N+1 Fault Tolerant" : "N — all nodes active"}
     </div>
@@ -2500,7 +2567,7 @@ function downloadSummary() {
 
   <!-- Cover footer -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid #1a2030;">
-    <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">Generated ${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">Generated ${date}</span>
     <span style="font-size:13px;color:#545f72;font-style:italic;">Personal estimate · Independent analysis</span>
   </div>
 </div>
@@ -2511,9 +2578,9 @@ function downloadSummary() {
   <!-- Page header -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
     <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">NC2 + NDB · Cost Summary</span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Cost Summary</span>
     </div>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
   </div>
 
   <!-- Section: Investment Overview -->
@@ -2523,22 +2590,22 @@ function downloadSummary() {
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
-      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">NC2 Nodes Required</div>
+      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#7855FA,#7855FA);"></div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">NC2 Nodes Required</div>
       <div style="font-size:32px;font-weight:800;color:#e8edf5;line-height:1;">${r.nodes}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;margin-top:6px;">N+1 failover cluster · RF2</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;margin-top:6px;">N+1 failover cluster · RF2</div>
     </div>
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
-      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Annual Infrastructure Cost</div>
-      <div style="font-size:28px;font-weight:800;color:#00c9a7;line-height:1;">${fmtUSD(r.totalAnnual)}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;margin-top:6px;">Hardware + NDB licensing</div>
+      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#7855FA,#7855FA);"></div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Annual Infrastructure Cost</div>
+      <div style="font-size:28px;font-weight:800;color:#7855FA;line-height:1;">${fmtUSD(r.totalAnnual)}</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;margin-top:6px;">Hardware + NDB licensing</div>
     </div>
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
-      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#00c9a7,#0085ff);"></div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">3-Year Total Investment</div>
-      <div style="font-size:28px;font-weight:800;color:#0085ff;line-height:1;">${fmtUSD(r.total3yr)}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;margin-top:6px;">3-year committed pricing</div>
+      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#7855FA,#7855FA);"></div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">3-Year Total Investment</div>
+      <div style="font-size:28px;font-weight:800;color:#7855FA;line-height:1;">${fmtUSD(r.total3yr)}</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;margin-top:6px;">3-year committed pricing</div>
     </div>
   </div>
 
@@ -2549,33 +2616,33 @@ function downloadSummary() {
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:32px;">
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">CPU Utilization</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">CPU Utilization</div>
       <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;font-weight:800;color:#00c9a7;">${r.vcpuUtil}%</span>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${r.totalVcpu} / ${r.clusterVcpu} cores</span>
+        <span style="font-size:24px;font-weight:800;color:#7855FA;">${r.vcpuUtil}%</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">${r.totalVcpu} / ${r.clusterVcpu} cores</span>
       </div>
       <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
-        <div style="width:${r.vcpuUtil}%;height:100%;background:linear-gradient(90deg,#00c9a7,#0085ff);border-radius:4px;"></div>
+        <div style="width:${r.vcpuUtil}%;height:100%;background:linear-gradient(90deg,#7855FA,#391699);border-radius:4px;"></div>
       </div>
     </div>
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Storage Utilization</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Storage Utilization</div>
       <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;font-weight:800;color:#0085ff;">${r.storageUtil}%</span>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}</span>
+        <span style="font-size:24px;font-weight:800;color:#9B7DFF;">${r.storageUtil}%</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}</span>
       </div>
       <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
-        <div style="width:${r.storageUtil}%;height:100%;background:linear-gradient(90deg,#0085ff,#00c9a7);border-radius:4px;"></div>
+        <div style="width:${r.storageUtil}%;height:100%;background:linear-gradient(90deg,#9B7DFF,#5E3DB3);border-radius:4px;"></div>
       </div>
     </div>
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Memory Utilization</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Memory Utilization</div>
       <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;font-weight:800;color:#06b6d4;">${r.ramUtil}%</span>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">${fmtGB(r.totalRam)} / ${fmtGB(r.clusterRam)}</span>
+        <span style="font-size:24px;font-weight:800;color:#BBA8FF;">${r.ramUtil}%</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">${fmtGB(r.totalRam)} / ${fmtGB(r.clusterRam)}</span>
       </div>
       <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
-        <div style="width:${r.ramUtil}%;height:100%;background:linear-gradient(90deg,#06b6d4,#0078c8);border-radius:4px;"></div>
+        <div style="width:${r.ramUtil}%;height:100%;background:linear-gradient(90deg,#BBA8FF,#7855FA);border-radius:4px;"></div>
       </div>
     </div>
   </div>
@@ -2589,11 +2656,11 @@ function downloadSummary() {
     <table style="width:100%;border-collapse:collapse;">
       <thead>
         <tr style="background:#131720;">
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Database Engine</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">VMs</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">vCPUs</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">RAM</th>
-          <th style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Storage</th>
+          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Database Engine</th>
+          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">VMs</th>
+          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">vCPUs</th>
+          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">RAM</th>
+          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Storage</th>
         </tr>
       </thead>
       <tbody>${dbRows}</tbody>
@@ -2614,13 +2681,13 @@ function downloadSummary() {
        'Memory: 10% reserved for OS and hypervisor overhead',
        'PostgreSQL Community Edition support included in NDB licensing'
       ].map(a => `<div style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#8a95a8;line-height:1.55;padding:8px 0;border-bottom:1px solid #131720;">
-        <span style="color:#0085ff;flex-shrink:0;">→</span>${a}</div>`).join('')}
+        <span style="color:#7855FA;flex-shrink:0;">→</span>${a}</div>`).join('')}
   </div>
 
   <!-- Page footer -->
   <div style="margin-top:28px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
   </div>
 </div>
 
@@ -2630,9 +2697,9 @@ function downloadSummary() {
   <!-- Page header -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
     <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">NC2 + NDB · Platform Capabilities</span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Platform Capabilities</span>
     </div>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
   </div>
 
   <!-- Section title -->
@@ -2642,10 +2709,10 @@ function downloadSummary() {
   </div>
 
   <!-- PG banner -->
-  <div style="background:linear-gradient(135deg,rgba(0,201,167,0.12),rgba(0,133,255,0.08));border:1.5px solid rgba(0,201,167,0.3);border-radius:14px;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
+  <div style="background:linear-gradient(135deg,rgba(120,85,250,0.1),rgba(57,22,153,0.08));border:1.5px solid rgba(120,85,250,0.3);border-radius:14px;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
     <div style="font-size:22px;flex-shrink:0;">🐘</div>
     <div>
-      <div style="font-size:15px;font-weight:700;color:#00c9a7;margin-bottom:5px;">PostgreSQL Community Edition support included</div>
+      <div style="font-size:15px;font-weight:700;color:#7855FA;margin-bottom:5px;">PostgreSQL Community Edition support included</div>
       <div style="font-size:14px;color:#8a95a8;line-height:1.55;">NDB subscription covers CE support for all managed PostgreSQL instances running in the cluster — no additional licensing cost compared to IaaS deployments.</div>
     </div>
   </div>
@@ -2661,12 +2728,12 @@ function downloadSummary() {
   </p>
 
   <!-- CTA -->
-  <div style="background:linear-gradient(135deg,rgba(0,201,167,0.1),rgba(0,133,255,0.1));border:1.5px solid rgba(0,201,167,0.25);border-radius:14px;padding:28px 32px;text-align:center;margin-bottom:20px;">
+  <div style="background:linear-gradient(135deg,rgba(120,85,250,0.1),rgba(57,22,153,0.08));border:1.5px solid rgba(120,85,250,0.25);border-radius:14px;padding:28px 32px;text-align:center;margin-bottom:20px;">
     <h3 style="font-size:18px;font-weight:800;color:#e8edf5;margin-bottom:10px;">Explore Nutanix Database Service</h3>
     <p style="font-size:15px;color:#8a95a8;line-height:1.65;margin-bottom:20px;max-width:460px;margin-left:auto;margin-right:auto;">
       This estimate is a starting point. NDB covers Oracle, SQL Server, PostgreSQL, MongoDB and more — with a single operational model across on-prem and public cloud. Full documentation, demo environment, and sizing guides at the link below.
     </p>
-    <a href="https://www.nutanix.com/products/database-service" style="display:inline-block;background:linear-gradient(135deg,#00c9a7,#0085ff);color:#fff;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:12px 28px;border-radius:8px;text-decoration:none;">
+    <a href="https://www.nutanix.com/products/database-service" style="display:inline-block;background:linear-gradient(135deg,#7855FA,#7855FA);color:#fff;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:12px 28px;border-radius:8px;text-decoration:none;">
       nutanix.com/products/database-service →
     </a>
   </div>
@@ -2683,15 +2750,15 @@ function downloadSummary() {
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
         <span style="color:#545f72;min-width:50px;">AWS</span>
-        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Clusters-AWS:aws-clusters-aws-xi-supported-regions-metals.html" style="color:#0085ff;text-decoration:none;word-break:break-all;" target="_blank">Supported Regions &amp; Bare-Metal Instances →</a>
+        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Clusters-AWS:aws-clusters-aws-xi-supported-regions-metals.html" style="color:#7855FA;text-decoration:none;word-break:break-all;" target="_blank">Supported Regions &amp; Bare-Metal Instances →</a>
       </div>
       <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
         <span style="color:#545f72;min-width:50px;">Azure</span>
-        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-regions-c.html" style="color:#0085ff;text-decoration:none;word-break:break-all;" target="_blank">Supported Regions &amp; Bare-Metal Instances →</a>
+        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-regions-c.html" style="color:#7855FA;text-decoration:none;word-break:break-all;" target="_blank">Supported Regions &amp; Bare-Metal Instances →</a>
       </div>
       <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
         <span style="color:#545f72;min-width:50px;">GCP</span>
-        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-bare-metal-instances-c.html" style="color:#0085ff;text-decoration:none;word-break:break-all;" target="_blank">Supported Bare-Metal Instances →</a>
+        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-bare-metal-instances-c.html" style="color:#7855FA;text-decoration:none;word-break:break-all;" target="_blank">Supported Bare-Metal Instances →</a>
       </div>
     </div>
     <p style="font-size:12px;color:#3a4455;margin-top:12px;font-style:italic;">Access to these pages requires a Nutanix portal account.</p>
@@ -2701,16 +2768,20 @@ function downloadSummary() {
   <div style="background:#0e1117;border:1px solid #1a2030;border-radius:10px;padding:14px 18px;margin-bottom:20px;">
     <p style="font-size:12px;color:#3a4455;line-height:1.6;">
       <strong style="display:block;font-size:13px;color:#8a95a8;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase;">Disclaimer</strong>
-      This document is an independent infrastructure sizing estimate prepared for informational purposes only. All figures are indicative and based on publicly available pricing at the time of generation. Actual costs may differ significantly based on your negotiated rates, region availability, workload characteristics, and specific configuration.
+      This document is a personal infrastructure sizing exercise generated by an independent tool. It is not affiliated with, endorsed by, or produced on behalf of Nutanix, Amazon Web Services, Microsoft Azure, Google Cloud Platform, or any other company, product, or service referenced herein. No commercial relationship, partnership, or authorization is implied or should be inferred.
       <br><br>
-      This document is not an official publication, quotation, or commitment from Nutanix, Amazon Web Services, Microsoft Azure, Google Cloud, or any other vendor mentioned herein. No contractual relationship is implied.
+      All cost figures are rough estimates derived from publicly available list prices at the time of generation. They do not reflect negotiated rates, volume discounts, contractual commitments, regional surcharges, support costs, egress fees, or any other variable that affects real-world pricing. Actual costs may differ materially.
+      <br><br>
+      This document carries no legal, contractual, or commercial weight of any kind. It should not be used as the basis for purchasing decisions, budget approvals, or vendor negotiations without independent verification from the relevant providers.
+      <br><br>
+      All product names, trademarks, and registered trademarks are the property of their respective owners.
     </p>
   </div>
 
   <!-- Page footer -->
   <div style="margin-top:16px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
   </div>
 </div>
 
@@ -2719,8 +2790,8 @@ function downloadSummary() {
 
   <!-- Page header -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
-    <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">NC2 + NDB · Database Licensing & Capabilities</span>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Database Licensing & Capabilities</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
   </div>
 
   <!-- ── CHAPTER 1: DATABASE LICENSING ── -->
@@ -2732,8 +2803,8 @@ function downloadSummary() {
   <!-- PostgreSQL -->
   <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:14px;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#00c9a7;">PostgreSQL</span>
-      <span style="font-family:'DM Mono',monospace;font-size:12px;background:rgba(0,201,167,0.12);color:#00c9a7;padding:2px 8px;border-radius:4px;">CE Support Included</span>
+      <span style="font-size:16px;font-weight:700;color:#7855FA;">PostgreSQL</span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#9B7DFF;padding:2px 8px;border-radius:4px;">CE Support Included</span>
     </div>
     <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
       NDB includes <strong style="color:#e8edf5;">enterprise-grade technical support for PostgreSQL Community Edition</strong> as part of the subscription — at no additional licensing cost compared to a standard IaaS deployment. This alone eliminates the need for a separate PostgreSQL support contract.
@@ -2749,8 +2820,8 @@ function downloadSummary() {
   <!-- SQL Server -->
   <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:14px;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#0085ff;">SQL Server</span>
-      <span style="font-family:'DM Mono',monospace;font-size:12px;background:rgba(0,133,255,0.12);color:#0085ff;padding:2px 8px;border-radius:4px;">Unlimited Virtualization</span>
+      <span style="font-size:16px;font-weight:700;color:#7855FA;">SQL Server</span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#9B7DFF;padding:2px 8px;border-radius:4px;">Unlimited Virtualization</span>
     </div>
     <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
       When SQL Server Enterprise Edition is licensed across <strong style="color:#e8edf5;">all physical cores of a Nutanix cluster</strong>, Microsoft's Unlimited Virtualization rights apply: the customer can run an unlimited number of SQL Server VMs on that cluster without additional per-VM or per-core licensing costs.
@@ -2763,8 +2834,8 @@ function downloadSummary() {
   <!-- Oracle -->
   <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:14px;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#ff6b35;">Oracle</span>
-      <span style="font-family:'DM Mono',monospace;font-size:12px;background:rgba(255,107,53,0.12);color:#ff6b35;padding:2px 8px;border-radius:4px;">Full Cluster Licensing</span>
+      <span style="font-size:16px;font-weight:700;color:#7855FA;">Oracle</span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#9B7DFF;padding:2px 8px;border-radius:4px;">Full Cluster Licensing</span>
     </div>
     <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
       Oracle licensing on public cloud requires that <strong style="color:#e8edf5;">all physical cores of the cluster are licensed</strong>, regardless of how many database VMs are running. On NC2 bare-metal nodes, this model applies directly — the cluster becomes a dedicated Oracle environment where all workloads can run without additional per-VM costs.
@@ -2772,9 +2843,9 @@ function downloadSummary() {
     <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
       NDB automates Oracle database provisioning, patching, cloning, and backup/restore, including support for <strong style="color:#e8edf5;">Oracle RAC (Real Application Clusters)</strong> — enabling automated provisioning of multi-node Oracle RAC environments with full lifecycle management.
     </p>
-    <div style="background:rgba(255,107,53,0.06);border:1px solid rgba(255,107,53,0.2);border-radius:8px;padding:12px 16px;">
+    <div style="background:rgba(120,85,250,0.06);border:1px solid rgba(155,125,255,0.25);border-radius:8px;padding:12px 16px;">
       <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">
-        <strong style="color:#ff6b35;">⚠ Important note on Oracle RAC in public cloud:</strong> Oracle does not officially support Oracle RAC on any public cloud infrastructure other than Oracle Cloud Infrastructure (OCI). NC2 clusters can run Oracle RAC configurations for <strong style="color:#e8edf5;">development and testing purposes</strong>, enabling teams to validate RAC architectures in the cloud before on-premises deployment, but production Oracle RAC workloads should be validated with Oracle licensing before proceeding.
+        <strong style="color:#9B7DFF;">⚠ Important note on Oracle RAC in public cloud:</strong> Oracle does not officially support Oracle RAC on any public cloud infrastructure other than Oracle Cloud Infrastructure (OCI). NC2 clusters can run Oracle RAC configurations for <strong style="color:#e8edf5;">development and testing purposes</strong>, enabling teams to validate RAC architectures in the cloud before on-premises deployment, but production Oracle RAC workloads should be validated with Oracle licensing before proceeding.
       </p>
     </div>
   </div>
@@ -2782,8 +2853,8 @@ function downloadSummary() {
   <!-- MongoDB -->
   <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#13aa52;">MongoDB</span>
-      <span style="font-family:'DM Mono',monospace;font-size:12px;background:rgba(19,170,82,0.12);color:#13aa52;padding:2px 8px;border-radius:4px;">CE & Enterprise</span>
+      <span style="font-size:16px;font-weight:700;color:#7855FA;">MongoDB</span>
+      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#7855FA;padding:2px 8px;border-radius:4px;">CE & Enterprise</span>
     </div>
     <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
       NDB manages both <strong style="color:#e8edf5;">MongoDB Community Edition and MongoDB Enterprise</strong> within the same operational framework.
@@ -2807,26 +2878,26 @@ function downloadSummary() {
 
     <!-- Shared cloud -->
     <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:18px 20px;">
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;margin-bottom:12px;text-align:center;">Shared Cloud Infrastructure</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;margin-bottom:12px;text-align:center;">Shared Cloud Infrastructure</div>
       <!-- Physical server -->
       <div style="border:1.5px dashed #2a3545;border-radius:8px;padding:10px;margin-bottom:10px;">
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#3a4455;text-align:center;margin-bottom:8px;">Physical Server</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#3a4455;text-align:center;margin-bottom:8px;">Physical Server</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:6px;">
           <div style="background:#1a2535;border:1px solid #2a3545;border-radius:4px;padding:6px;text-align:center;">
             <div style="font-size:11px;color:#545f72;">Customer A</div>
-            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
           </div>
-          <div style="background:#1a3025;border:1px solid #00c9a730;border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#00c9a7;font-weight:600;">Your DB</div>
-            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
+          <div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:4px;padding:6px;text-align:center;">
+            <div style="font-size:11px;color:#7855FA;font-weight:600;">Your DB</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
           </div>
           <div style="background:#1a2535;border:1px solid #2a3545;border-radius:4px;padding:6px;text-align:center;">
             <div style="font-size:11px;color:#545f72;">Customer C</div>
-            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
           </div>
         </div>
         <div style="background:#1a2030;border-radius:4px;padding:6px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4455;">Shared Storage Pool · Shared Network · Shared RAM</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#3a4455;">Shared Storage Pool · Shared Network · Shared RAM</div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
@@ -2846,37 +2917,37 @@ function downloadSummary() {
     </div>
 
     <!-- Dedicated NC2 -->
-    <div style="background:#0e1117;border:1.5px solid rgba(0,201,167,0.3);border-radius:14px;padding:18px 20px;">
-      <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#00c9a7;margin-bottom:12px;text-align:center;">NC2 Dedicated Bare Metal</div>
+    <div style="background:#0e1117;border:1.5px solid rgba(120,85,250,0.4);border-radius:14px;padding:18px 20px;">
+      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7855FA;margin-bottom:12px;text-align:center;">NC2 Dedicated Bare Metal</div>
       <!-- Physical server -->
-      <div style="border:1.5px solid rgba(0,201,167,0.2);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(0,201,167,0.03);">
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#00c9a760;text-align:center;margin-bottom:8px;">Your Physical Server — Exclusive</div>
+      <div style="border:1.5px solid rgba(120,85,250,0.25);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(120,85,250,0.05);">
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#7855FA60;text-align:center;margin-bottom:8px;">Your Physical Server — Exclusive</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;">
-          <div style="background:#1a3025;border:1px solid #00c9a740;border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#00c9a7;font-weight:600;">Your DB 1</div>
-            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8a95a8;margin-top:2px;">dedicated cores</div>
+          <div style="background:rgba(120,85,250,0.14);border:1px solid rgba(120,85,250,0.35);border-radius:4px;padding:6px;text-align:center;">
+            <div style="font-size:11px;color:#7855FA;font-weight:600;">Your DB 1</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">dedicated cores</div>
           </div>
-          <div style="background:#1a3025;border:1px solid #00c9a740;border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#00c9a7;font-weight:600;">Your DB 2</div>
-            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8a95a8;margin-top:2px;">dedicated cores</div>
+          <div style="background:rgba(120,85,250,0.14);border:1px solid rgba(120,85,250,0.35);border-radius:4px;padding:6px;text-align:center;">
+            <div style="font-size:11px;color:#7855FA;font-weight:600;">Your DB 2</div>
+            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">dedicated cores</div>
           </div>
         </div>
-        <div style="background:rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.15);border-radius:4px;padding:6px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#00c9a7;">Dedicated NVMe · Dedicated RAM · Nutanix AHV</div>
+        <div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:4px;padding:6px;text-align:center;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#BBA8FF;">Dedicated NVMe · Dedicated RAM · Nutanix AHV</div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#00c9a7;font-size:14px;">✓</span> No contention — consistent performance
+          <span style="color:#7855FA;font-size:14px;">✓</span> No contention — consistent performance
         </div>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#00c9a7;font-size:14px;">✓</span> Predictable sub-ms NVMe latency
+          <span style="color:#7855FA;font-size:14px;">✓</span> Consistent low-latency NVMe storage
         </div>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#00c9a7;font-size:14px;">✓</span> Full hardware performance available
+          <span style="color:#7855FA;font-size:14px;">✓</span> Full hardware performance available
         </div>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#00c9a7;font-size:14px;">✓</span> Right-sized — no over-provisioning
+          <span style="color:#7855FA;font-size:14px;">✓</span> Right-sized — no over-provisioning
         </div>
       </div>
     </div>
@@ -2897,8 +2968,8 @@ function downloadSummary() {
 
   <!-- Page footer -->
   <div style="margin-top:24px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
   </div>
 </div>
 
@@ -2907,8 +2978,8 @@ function downloadSummary() {
 
   <!-- Page header -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
-    <span style="font-family:'DM Mono',monospace;font-size:13px;color:#545f72;">NC2 + NDB · Resilience, Technology & Customer Evidence</span>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Resilience, Technology & Customer Evidence</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
   </div>
 
   <!-- ── CHAPTER 3: DORA ── -->
@@ -2922,19 +2993,19 @@ function downloadSummary() {
     </p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#00c9a7;margin-bottom:6px;">Business Continuity & Disaster Recovery</div>
+        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Business Continuity & Disaster Recovery</div>
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">NDB Time Machine provides continuous data protection with configurable RPO down to seconds. Automated failover, cross-site replication, and point-in-time recovery ensure RTO targets are met even for the largest database estates — meeting DORA's requirements for documented, tested, and measurable recovery capabilities.</p>
       </div>
       <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#00c9a7;margin-bottom:6px;">Patch Management & Vulnerability Remediation</div>
+        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Patch Management & Vulnerability Remediation</div>
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">DORA mandates timely patching of ICT systems. NDB's automated, template-driven patching reduces patching cycles from days to hours with zero-downtime scheduling, full rollback capability, and complete audit trails — providing the documented evidence regulators require for ICT vulnerability management.</p>
       </div>
       <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#00c9a7;margin-bottom:6px;">Single Pane of Glass — Hybrid Multicloud</div>
+        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Single Pane of Glass — Hybrid Multicloud</div>
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">NDB provides a unified management console across on-premises, co-location, and public cloud (AWS, Azure, GCP). DORA requires comprehensive visibility of all ICT assets and their dependencies. NDB's DB Catalog delivers a real-time inventory of every managed database instance across all environments from a single interface.</p>
       </div>
       <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#00c9a7;margin-bottom:6px;">Standardisation & Audit Readiness</div>
+        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Standardisation & Audit Readiness</div>
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">NDB's profile-based provisioning enforces consistent security configurations, OS versions, and database parameters across every instance. This template-driven approach ensures all databases are compliant at creation — dramatically reducing audit preparation time and the risk of configuration drift over the database lifecycle.</p>
       </div>
     </div>
@@ -2948,25 +3019,25 @@ function downloadSummary() {
   <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
       <div>
-        <div style="font-size:14px;font-weight:700;color:#0085ff;margin-bottom:8px;">Redirect-on-Write Snapshots</div>
+        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:8px;">Redirect-on-Write Snapshots</div>
         <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin:0;">
           NDB Time Machine uses a <strong style="color:#e8edf5;">Redirect-on-Write (ROW)</strong> mechanism to create crash-consistent database snapshots. When a snapshot is taken, the system does not copy existing data blocks — instead, any new writes are redirected to new locations on storage while the original blocks remain untouched and associated with the snapshot pointer. This means snapshot creation is <strong style="color:#e8edf5;">instantaneous and has zero I/O impact</strong> on the running database, regardless of its size.
         </p>
       </div>
       <div>
-        <div style="font-size:14px;font-weight:700;color:#0085ff;margin-bottom:8px;">Why Restore Times Are Size-Independent</div>
+        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:8px;">Why Restore Times Are Size-Independent</div>
         <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin:0;">
           Traditional restores require copying terabytes of data from backup before the database can be brought online. With NDB Time Machine, a point-in-time restore simply <strong style="color:#e8edf5;">updates the metadata pointers</strong> to reference the target snapshot's block addresses — the database becomes available immediately. A 10 TB database restores in the same time as a 100 GB one: seconds to minutes, not hours.
         </p>
       </div>
     </div>
     <div style="background:#131720;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
-      <div style="font-size:14px;font-weight:700;color:#0085ff;margin-bottom:8px;">Thin Cloning: Instant Dev/Test at Zero Storage Cost</div>
+      <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:8px;">Thin Cloning: Instant Dev/Test at Zero Storage Cost</div>
       <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin:0;">
         A thin clone is created by generating a new set of <strong style="color:#e8edf5;">metadata pointers referencing the original snapshot's data blocks</strong> — no data is duplicated at creation time. The initial clone consumes only kilobytes of metadata storage. As the clone diverges (writes to new blocks), only the changed blocks are written to new locations. This means an organisation can create tens of production-identical clones for development, testing, QA, training, and data masking — all from the same snapshot — with minimal additional storage consumption. Developers get instant access to realistic data without waiting for DBA intervention or backup restores.
       </p>
     </div>
-    <div style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(0,133,255,0.08),rgba(0,201,167,0.06));border:1px solid rgba(0,133,255,0.2);border-radius:10px;padding:14px 16px;">
+    <div style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(120,85,250,0.08),rgba(57,22,153,0.06));border:1px solid rgba(120,85,250,0.2);border-radius:10px;padding:14px 16px;">
       <div style="font-size:24px;flex-shrink:0;">⚡</div>
       <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">
         The combination of ROW snapshots, metadata-based restore, and thin cloning means NDB delivers <strong style="color:#e8edf5;">enterprise data protection with sub-minute RTOs</strong> across all supported database engines — Oracle, SQL Server, PostgreSQL, and MongoDB — without requiring expensive dedicated backup infrastructure or storage duplication.
@@ -2986,20 +3057,20 @@ function downloadSummary() {
     <!-- KPI row -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">
       <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#00c9a7;margin-bottom:4px;">136%</div>
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">ROI</div>
+        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">136%</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">ROI</div>
       </div>
       <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#00c9a7;margin-bottom:4px;">$2.0M</div>
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Net Present Value</div>
+        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">$2.0M</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Net Present Value</div>
       </div>
       <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#00c9a7;margin-bottom:4px;">&lt;6 mo</div>
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Payback Period</div>
+        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">&lt;6 mo</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Payback Period</div>
       </div>
       <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#00c9a7;margin-bottom:4px;">$3.5M</div>
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Benefits PV (3yr)</div>
+        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">$3.5M</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Benefits PV (3yr)</div>
       </div>
     </div>
     <!-- Benefits breakdown -->
@@ -3013,7 +3084,7 @@ function downloadSummary() {
         ['$85K',  'Monitoring efficiency', 'Eight DBAs spending 30 min/day reduced to one DBA spending 60 min/day for the entire database estate'],
       ].map(([val, title, desc]) => `
         <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid #131720;">
-          <span style="font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:#00c9a7;min-width:48px;flex-shrink:0;">${val}</span>
+          <span style="font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#7855FA;min-width:48px;flex-shrink:0;">${val}</span>
           <div>
             <div style="font-size:14px;font-weight:600;color:#e8edf5;margin-bottom:2px;">${title}</div>
             <div style="font-size:13px;color:#545f72;line-height:1.5;">${desc}</div>
@@ -3022,35 +3093,35 @@ function downloadSummary() {
     </div>
     <!-- Quotes -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
-      <div style="background:#131720;border-left:3px solid #00c9a7;border-radius:0 8px 8px 0;padding:12px 14px;">
+      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"The key proposition was being able to use more open-source databases and deliver them through self-service pipelines. What used to take weeks now takes minutes."</p>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">Manager, Database Engineering · Investments</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Manager, Database Engineering · Investments</span>
       </div>
-      <div style="background:#131720;border-left:3px solid #00c9a7;border-radius:0 8px 8px 0;padding:12px 14px;">
+      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"We had to provision between five and ten databases every week. Previously it took hours; it's now only minutes."</p>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">Senior Database Consultant · Banking</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Senior Database Consultant · Banking</span>
       </div>
-      <div style="background:#131720;border-left:3px solid #0085ff;border-radius:0 8px 8px 0;padding:12px 14px;">
+      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"A 10 TB PostgreSQL database restoration would have taken close to 6 hours prior to NDB. Now we can get that database restored within a little over 6 minutes."</p>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">Manager, Database Engineering · Investments</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Manager, Database Engineering · Investments</span>
       </div>
-      <div style="background:#131720;border-left:3px solid #0085ff;border-radius:0 8px 8px 0;padding:12px 14px;">
+      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
         <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"Standardisation is another key benefit of Nutanix. You have the same script on all databases, the same policy of backup, and the same policy of disaster recovery."</p>
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:#545f72;">Head of Automation · Government</span>
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Head of Automation · Government</span>
       </div>
     </div>
     <!-- CTA -->
-    <div style="text-align:center;padding:16px;background:linear-gradient(135deg,rgba(0,201,167,0.08),rgba(0,133,255,0.08));border:1px solid rgba(0,201,167,0.2);border-radius:10px;">
+    <div style="text-align:center;padding:16px;background:linear-gradient(135deg,rgba(120,85,250,0.08),rgba(57,22,153,0.08));border:1px solid rgba(120,85,250,0.2);border-radius:10px;">
       <div style="font-size:14px;font-weight:600;color:#e8edf5;margin-bottom:6px;">Download the full Forrester TEI™ study</div>
-      <a href="https://www.nutanix.com/go/forrester-tei-ndb" style="font-family:'DM Mono',monospace;font-size:13px;color:#00c9a7;text-decoration:none;">nutanix.com/go/forrester-tei-ndb →</a>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#3a4455;margin-top:4px;">Forrester Consulting · February 2026 · Commissioned by Nutanix</div>
+      <a href="https://www.nutanix.com/go/forrester-tei-ndb" style="font-family:'Montserrat',sans-serif;font-size:13px;color:#7855FA;text-decoration:none;">nutanix.com/go/forrester-tei-ndb →</a>
+      <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#3a4455;margin-top:4px;">Forrester Consulting · February 2026 · Commissioned by Nutanix</div>
     </div>
   </div>
 
   <!-- Page footer -->
   <div style="margin-top:16px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'DM Mono',monospace;font-size:12px;color:#3a4455;">${date}</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
   </div>
 </div>
 
