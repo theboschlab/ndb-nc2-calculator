@@ -828,6 +828,7 @@ body::before {
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.success { border-color: var(--accent2); }
+.toast.info { border-color: #9B7DFF; background: rgba(120,85,250,0.12); }
 .toast.error   { border-color: var(--danger); }
 
 /* ─── Spinner ─── */
@@ -999,6 +1000,7 @@ body::before {
   appearance: none;
 }
 .dc-select-wrap select:focus { border-color: var(--accent2); }
+#s2-dc-location, #dc-location { border-color: var(--accent2); }
 .dc-select-wrap select option { background: var(--bg2); color: var(--text); }
 
 /* ─── Discount / config row ─── */
@@ -1226,49 +1228,101 @@ body::before {
     </div>
 
     <!-- Datacenter location -->
-    <div class="dc-row">
+    <div class="dc-row" id="dc-row" style="opacity:0.4;pointer-events:none;transition:opacity .3s;">
       <div class="dc-label">Current datacenter location <span>*</span></div>
       <div class="dc-select-wrap">
         <select id="dc-location">
-          <option value="">— Select datacenter location —</option>
+          <option value="">— Select a cloud provider first —</option>
+        </select>
+        <!-- Per-cloud options (hidden, swapped in by JS) -->
+        <select id="dc-opts-aws" style="display:none">
           <optgroup label="EMEA">
-            <option value="EMEA — Frankfurt">Frankfurt</option>
-            <option value="EMEA — Ireland">Ireland</option>
-            <option value="EMEA — London">London</option>
-            <option value="EMEA — Milan">Milan</option>
-            <option value="EMEA — Stockholm">Stockholm</option>
-            <option value="EMEA — Spain">Spain</option>
-            <option value="EMEA — Netherlands">Netherlands (Amsterdam)</option>
-            <option value="EMEA — Belgium">Belgium</option>
-            <option value="EMEA — Germany West Central">Germany West Central</option>
-            <option value="EMEA — Paris">Paris</option>
-            <option value="EMEA — Qatar">Qatar</option>
-            <option value="EMEA — UAE">UAE</option>
-            <option value="EMEA — Israel">Israel (Tel Aviv)</option>
-            <option value="EMEA — Bahrain">Bahrain</option>
-            <option value="EMEA — South Africa">South Africa (Cape Town)</option>
-            <option value="EMEA — Other">Other EMEA</option>
+            <option value="EMEA-af-south-1">Africa (Cape Town) - af-south-1</option>
+            <option value="EMEA-eu-central-1">Europe (Frankfurt) - eu-central-1</option>
+            <option value="EMEA-eu-west-1">Europe (Ireland) - eu-west-1</option>
+            <option value="EMEA-eu-west-2">Europe (London) - eu-west-2</option>
+            <option value="EMEA-eu-south-1">Europe (Milan) - eu-south-1</option>
+            <option value="EMEA-eu-west-3">Europe (Paris) - eu-west-3</option>
+            <option value="EMEA-eu-north-1">Europe (Stockholm) - eu-north-1</option>
+            <option value="EMEA-me-south-1">Middle East (Bahrain) - me-south-1</option>
+            <option value="EMEA-me-central-1">Middle East (UAE) - me-central-1</option>
+            <option value="EMEA-other">Other EMEA</option>
           </optgroup>
-          <optgroup label="US">
-            <option value="US — Northern Virginia">US East (Northern Virginia)</option>
-            <option value="US — Ohio">US East (Ohio)</option>
-            <option value="US — Oregon">US West (Oregon)</option>
-            <option value="US — Northern California">US West (Northern California)</option>
-            <option value="US — Canada Central">Canada (Central)</option>
-            <option value="US — Canada Calgary">Canada West (Calgary)</option>
-            <option value="US — Other">Other US</option>
+          <optgroup label="AMER">
+            <option value="AMER-ca-central-1">Canada Central (Montreal) - ca-central-1</option>
+            <option value="AMER-ca-west-1">Canada West (Calgary) - ca-west-1</option>
+            <option value="AMER-sa-east-1">South America (São Paulo) - sa-east-1</option>
+            <option value="AMER-us-east-1">US East (N. Virginia) - us-east-1</option>
+            <option value="AMER-us-east-2">US East (Ohio) - us-east-2</option>
+            <option value="AMER-us-west-1">US West (N. California) - us-west-1</option>
+            <option value="AMER-us-west-2">US West (Oregon) - us-west-2</option>
+            <option value="AMER-other">Other AMER</option>
           </optgroup>
           <optgroup label="APAC">
-            <option value="APAC — Tokyo">Tokyo</option>
-            <option value="APAC — Sydney">Sydney</option>
-            <option value="APAC — Singapore">Singapore</option>
-            <option value="APAC — Seoul">Seoul</option>
-            <option value="APAC — Jakarta">Jakarta</option>
-            <option value="APAC — Mumbai">Mumbai</option>
-            <option value="APAC — Osaka">Osaka</option>
-            <option value="APAC — Hong Kong">Hong Kong</option>
-            <option value="APAC — Malaysia">Malaysia</option>
-            <option value="APAC — Other">Other APAC</option>
+            <option value="APAC-ap-east-1">Hong Kong - ap-east-1</option>
+            <option value="APAC-ap-south-2">Hyderabad - ap-south-2</option>
+            <option value="APAC-ap-southeast-3">Jakarta - ap-southeast-3</option>
+            <option value="APAC-ap-southeast-4">Melbourne - ap-southeast-4</option>
+            <option value="APAC-ap-south-1">Mumbai - ap-south-1</option>
+            <option value="APAC-ap-northeast-3">Osaka - ap-northeast-3</option>
+            <option value="APAC-ap-northeast-2">Seoul - ap-northeast-2</option>
+            <option value="APAC-ap-southeast-1">Singapore - ap-southeast-1</option>
+            <option value="APAC-ap-southeast-2">Sydney - ap-southeast-2</option>
+            <option value="APAC-ap-northeast-1">Tokyo - ap-northeast-1</option>
+            <option value="APAC-other">Other APAC</option>
+          </optgroup>
+        </select>
+        <select id="dc-opts-azure" style="display:none">
+          <optgroup label="EMEA">
+            <option value="EMEA-germanywestcentral">Germany West Central - germanywestcentral</option>
+            <option value="EMEA-qatarcentral">Qatar Central - qatarcentral</option>
+            <option value="EMEA-uaenorth">UAE North - uaenorth</option>
+            <option value="EMEA-uksouth">UK South - uksouth</option>
+            <option value="EMEA-westeurope">West Europe (Amsterdam) - westeurope</option>
+            <option value="EMEA-other">Other EMEA</option>
+          </optgroup>
+          <optgroup label="AMER">
+            <option value="AMER-canadacentral">Canada Central - canadacentral</option>
+            <option value="AMER-canadaeast">Canada East - canadaeast</option>
+            <option value="AMER-eastus2">East US 2 (Virginia) - eastus2</option>
+            <option value="AMER-northcentralus">North Central US (Illinois) - northcentralus</option>
+            <option value="AMER-other">Other AMER</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC-australiaeast">Australia East - australiaeast</option>
+            <option value="APAC-centralindia">Central India (Pune) - centralindia</option>
+            <option value="APAC-japaneast">Japan East (Tokyo) - japaneast</option>
+            <option value="APAC-southindia">South India - southindia</option>
+            <option value="APAC-southeastasia">Southeast Asia (Singapore) - southeastasia</option>
+            <option value="APAC-other">Other APAC</option>
+          </optgroup>
+        </select>
+        <select id="dc-opts-gcp" style="display:none">
+          <optgroup label="EMEA">
+            <option value="EMEA-europe-west1">Europe (Belgium) - europe-west1</option>
+            <option value="EMEA-europe-west3">Europe (Frankfurt) - europe-west3</option>
+            <option value="EMEA-europe-west2">Europe (London) - europe-west2</option>
+            <option value="EMEA-europe-southwest1">Europe (Madrid) - europe-southwest1</option>
+            <option value="EMEA-europe-west8">Europe (Milan) - europe-west8</option>
+            <option value="EMEA-europe-west4">Europe (Netherlands) - europe-west4</option>
+            <option value="EMEA-me-central1">Middle East (Qatar) - me-central1</option>
+            <option value="EMEA-other">Other EMEA</option>
+          </optgroup>
+          <optgroup label="AMER">
+            <option value="AMER-northamerica-northeast2">Canada (Toronto) - northamerica-northeast2</option>
+            <option value="AMER-southamerica-east1">South America (São Paulo) - southamerica-east1</option>
+            <option value="AMER-us-central1">US Central (Iowa) - us-central1</option>
+            <option value="AMER-us-east4">US East (N. Virginia) - us-east4</option>
+            <option value="AMER-us-east1">US East (South Carolina) - us-east1</option>
+            <option value="AMER-us-south1">US South (Texas) - us-south1</option>
+            <option value="AMER-us-west2">US West (Los Angeles) - us-west2</option>
+            <option value="AMER-other">Other AMER</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC-asia-east1">Asia East (Taiwan) - asia-east1</option>
+            <option value="APAC-australia-southeast2">Australia (Melbourne) - australia-southeast2</option>
+            <option value="APAC-asia-southeast1">Southeast Asia (Singapore) - asia-southeast1</option>
+            <option value="APAC-other">Other APAC</option>
           </optgroup>
         </select>
       </div>
@@ -1445,18 +1499,111 @@ body::before {
     </div>
 
 
+    <!-- Datacenter location (step2) -->
+    <div class="dc-row" id="s2-dc-row">
+      <div class="dc-label">Datacenter location <span>*</span></div>
+      <div class="dc-select-wrap">
+        <select id="s2-dc-location" onchange="onS2DCChange()">
+          <option value="">— Select datacenter location —</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Hidden option stores for s2 datacenter dropdown (no Other) -->
+    <select id="s2-dc-opts-aws" style="display:none">
+          <optgroup label="EMEA">
+            <option value="EMEA-af-south-1">Africa (Cape Town) - af-south-1</option>
+            <option value="EMEA-eu-central-1">Europe (Frankfurt) - eu-central-1</option>
+            <option value="EMEA-eu-west-1">Europe (Ireland) - eu-west-1</option>
+            <option value="EMEA-eu-west-2">Europe (London) - eu-west-2</option>
+            <option value="EMEA-eu-south-1">Europe (Milan) - eu-south-1</option>
+            <option value="EMEA-eu-west-3">Europe (Paris) - eu-west-3</option>
+            <option value="EMEA-eu-north-1">Europe (Stockholm) - eu-north-1</option>
+            <option value="EMEA-me-south-1">Middle East (Bahrain) - me-south-1</option>
+            <option value="EMEA-me-central-1">Middle East (UAE) - me-central-1</option>
+          </optgroup>
+          <optgroup label="AMER">
+            <option value="AMER-ca-central-1">Canada Central (Montreal) - ca-central-1</option>
+            <option value="AMER-ca-west-1">Canada West (Calgary) - ca-west-1</option>
+            <option value="AMER-sa-east-1">South America (São Paulo) - sa-east-1</option>
+            <option value="AMER-us-east-1">US East (N. Virginia) - us-east-1</option>
+            <option value="AMER-us-east-2">US East (Ohio) - us-east-2</option>
+            <option value="AMER-us-west-1">US West (N. California) - us-west-1</option>
+            <option value="AMER-us-west-2">US West (Oregon) - us-west-2</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC-ap-east-1">Hong Kong - ap-east-1</option>
+            <option value="APAC-ap-south-2">Hyderabad - ap-south-2</option>
+            <option value="APAC-ap-southeast-3">Jakarta - ap-southeast-3</option>
+            <option value="APAC-ap-southeast-4">Melbourne - ap-southeast-4</option>
+            <option value="APAC-ap-south-1">Mumbai - ap-south-1</option>
+            <option value="APAC-ap-northeast-3">Osaka - ap-northeast-3</option>
+            <option value="APAC-ap-northeast-2">Seoul - ap-northeast-2</option>
+            <option value="APAC-ap-southeast-1">Singapore - ap-southeast-1</option>
+            <option value="APAC-ap-southeast-2">Sydney - ap-southeast-2</option>
+            <option value="APAC-ap-northeast-1">Tokyo - ap-northeast-1</option>
+          </optgroup>
+    </select>
+    <select id="s2-dc-opts-azure" style="display:none">
+          <optgroup label="EMEA">
+            <option value="EMEA-germanywestcentral">Germany West Central - germanywestcentral</option>
+            <option value="EMEA-qatarcentral">Qatar Central - qatarcentral</option>
+            <option value="EMEA-uaenorth">UAE North - uaenorth</option>
+            <option value="EMEA-uksouth">UK South - uksouth</option>
+            <option value="EMEA-westeurope">West Europe (Amsterdam) - westeurope</option>
+          </optgroup>
+          <optgroup label="AMER">
+            <option value="AMER-canadacentral">Canada Central - canadacentral</option>
+            <option value="AMER-canadaeast">Canada East - canadaeast</option>
+            <option value="AMER-eastus2">East US 2 (Virginia) - eastus2</option>
+            <option value="AMER-northcentralus">North Central US (Illinois) - northcentralus</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC-australiaeast">Australia East - australiaeast</option>
+            <option value="APAC-centralindia">Central India (Pune) - centralindia</option>
+            <option value="APAC-japaneast">Japan East (Tokyo) - japaneast</option>
+            <option value="APAC-southindia">South India - southindia</option>
+            <option value="APAC-southeastasia">Southeast Asia (Singapore) - southeastasia</option>
+          </optgroup>
+    </select>
+    <select id="s2-dc-opts-gcp" style="display:none">
+          <optgroup label="EMEA">
+            <option value="EMEA-europe-west1">Europe (Belgium) - europe-west1</option>
+            <option value="EMEA-europe-west3">Europe (Frankfurt) - europe-west3</option>
+            <option value="EMEA-europe-west2">Europe (London) - europe-west2</option>
+            <option value="EMEA-europe-southwest1">Europe (Madrid) - europe-southwest1</option>
+            <option value="EMEA-europe-west8">Europe (Milan) - europe-west8</option>
+            <option value="EMEA-europe-west4">Europe (Netherlands) - europe-west4</option>
+            <option value="EMEA-me-central1">Middle East (Qatar) - me-central1</option>
+          </optgroup>
+          <optgroup label="AMER">
+            <option value="AMER-northamerica-northeast2">Canada (Toronto) - northamerica-northeast2</option>
+            <option value="AMER-southamerica-east1">South America (São Paulo) - southamerica-east1</option>
+            <option value="AMER-us-central1">US Central (Iowa) - us-central1</option>
+            <option value="AMER-us-east4">US East (N. Virginia) - us-east4</option>
+            <option value="AMER-us-east1">US East (South Carolina) - us-east1</option>
+            <option value="AMER-us-south1">US South (Texas) - us-south1</option>
+            <option value="AMER-us-west2">US West (Los Angeles) - us-west2</option>
+          </optgroup>
+          <optgroup label="APAC">
+            <option value="APAC-asia-east1">Asia East (Taiwan) - asia-east1</option>
+            <option value="APAC-australia-southeast2">Australia (Melbourne) - australia-southeast2</option>
+            <option value="APAC-asia-southeast1">Southeast Asia (Singapore) - asia-southeast1</option>
+          </optgroup>
+    </select>
+
     <!-- Current model badge -->
-    <div style="background:rgba(120,85,250,0.07);border:1.5px solid rgba(120,85,250,0.35);border-radius:var(--radius);padding:14px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div style="background:var(--bg1);border:1.5px solid var(--border-hi);border-radius:var(--radius);padding:14px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
       <div id="s2-model-badge" style="font-family:var(--font-mono);font-size:13px;display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:6px;">
         <span style="color:var(--text3);">Loading model...</span>
       </div>
-      <button onclick="openModelPopup(selectedCloud)" style="background:linear-gradient(135deg,#7855FA,#391699);border:none;border-radius:8px;padding:8px 18px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      <button id="change-model-btn" onclick="openModelPopup(selectedCloud)" style="background:linear-gradient(135deg,#7855FA,#391699);border:none;border-radius:8px;padding:8px 18px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s;" onmouseover="if(!this.disabled)this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
         ⚙ Change model
       </button>
     </div>
 
     <!-- Live config controls -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
       <div class="discount-row" style="margin-top:0;">
         <div class="discount-label" style="display:flex;align-items:center;">
             Enterprise Agreement Discount
@@ -1603,7 +1750,7 @@ body::before {
     </div>
 
     <!-- NDB Automations -->
-    <div style="background:var(--bg1);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:16px;">
+    <div style="background:var(--bg1);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:0;">
       <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">NDB Automation Capabilities</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
         <div style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:14px;">🗂</span><span style="font-size:12px;font-weight:700;color:var(--text);">DB Catalog</span></div><p style="font-size:11px;color:var(--text2);line-height:1.5;margin:0;">Centralized inventory of all database instances across engines and environments.</p></div>
@@ -1720,34 +1867,66 @@ const FALLBACK_CLOUD_DATA = {
   aws: {
     name: 'AWS',
     models: [
-      { id: 'aws-i7ie-24xl', instance: 'i7ie.metal-24xl', displayName: 'i7ie',
-        physicalCores: 48, processor: 'Intel Xeon 3.2 GHz', ramGB: 768, nvmeTB: 60,
-        storageGB: Math.round(60 * 1024 * 0.5), priceHW3YR: 137178, ndbPerCore3yr: 999, isDefault: true },
-      { id: 'aws-i7ie-48xl', instance: 'i7ie.metal-48xl', displayName: 'i7ie',
-        physicalCores: 96, processor: 'Intel Xeon 3.2 GHz', ramGB: 1536, nvmeTB: 120,
-        storageGB: Math.round(120 * 1024 * 0.5), priceHW3YR: 274356, ndbPerCore3yr: 999, isDefault: false },
-      { id: 'aws-i7i-24xl', instance: 'i7i.metal-24xl', displayName: 'i7i',
-        physicalCores: 48, processor: 'Intel Xeon 3.2 GHz', ramGB: 768, nvmeTB: 22,
-        storageGB: Math.round(22 * 1024 * 0.5), priceHW3YR: 105453, ndbPerCore3yr: 999, isDefault: false },
-      { id: 'aws-i7i-48xl', instance: 'i7i.metal-48xl', displayName: 'i7i',
-        physicalCores: 96, processor: 'Intel Xeon 3.2 GHz', ramGB: 1536, nvmeTB: 45,
-        storageGB: Math.round(45 * 1024 * 0.5), priceHW3YR: 210906, ndbPerCore3yr: 999, isDefault: false }
+      { id: 'aws-i7ie-24xl', instance: 'i7ie.metal-24xl', displayName: 'i7ie.metal-24xl',
+        physicalCores: 48, processor: 'Intel Xeon Emerald Rapids (4th Gen), 3.2 GHz',
+        ramGB: 768, nvmeTB: 60, storageGB: Math.round(60 * 1024 * 0.5),
+        priceHW3YR: 137178, ndbPerCore3yr: 999, isDefault: true,
+        regions: ['APAC-ap-southeast-3','APAC-ap-northeast-2','APAC-ap-southeast-1','APAC-ap-southeast-2','APAC-ap-northeast-1','AMER-ca-central-1','AMER-us-west-1','AMER-us-east-1','AMER-us-east-2','AMER-us-west-2','AMER-sa-east-1','EMEA-eu-west-1','EMEA-eu-central-1','EMEA-eu-west-2','EMEA-eu-south-1','EMEA-eu-west-3','EMEA-eu-north-1'] },
+      { id: 'aws-i7ie-48xl', instance: 'i7ie.metal-48xl', displayName: 'i7ie.metal-48xl',
+        physicalCores: 96, processor: 'Intel Xeon Emerald Rapids (4th Gen), 3.2 GHz',
+        ramGB: 1536, nvmeTB: 120, storageGB: Math.round(120 * 1024 * 0.5),
+        priceHW3YR: 274356, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['APAC-ap-southeast-3','APAC-ap-northeast-2','APAC-ap-southeast-1','APAC-ap-southeast-2','APAC-ap-northeast-1','AMER-ca-central-1','AMER-us-west-1','AMER-us-east-1','AMER-us-east-2','AMER-us-west-2','AMER-sa-east-1','EMEA-eu-west-1','EMEA-eu-central-1','EMEA-eu-west-2','EMEA-eu-south-1','EMEA-eu-west-3','EMEA-eu-north-1'] },
+      { id: 'aws-i7i-24xl', instance: 'i7i.metal-24xl', displayName: 'i7i.metal-24xl',
+        physicalCores: 48, processor: 'Intel Xeon Emerald Rapids (4th Gen), 3.2 GHz',
+        ramGB: 768, nvmeTB: 22.5, storageGB: Math.round(22.5 * 1024 * 0.5),
+        priceHW3YR: 105453, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['AMER-ca-west-1','AMER-us-west-1','AMER-us-east-1','AMER-us-east-2','AMER-us-west-2','AMER-sa-east-1','APAC-ap-northeast-2','APAC-ap-southeast-2','APAC-ap-northeast-1','EMEA-eu-central-1','EMEA-eu-west-2','EMEA-eu-north-1','EMEA-me-central-1'] },
+      { id: 'aws-i7i-48xl', instance: 'i7i.metal-48xl', displayName: 'i7i.metal-48xl',
+        physicalCores: 96, processor: 'Intel Xeon Emerald Rapids (4th Gen), 3.2 GHz',
+        ramGB: 1536, nvmeTB: 45, storageGB: Math.round(45 * 1024 * 0.5),
+        priceHW3YR: 210906, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['AMER-ca-west-1','AMER-us-west-1','AMER-us-east-1','AMER-us-east-2','AMER-us-west-2','AMER-sa-east-1','APAC-ap-northeast-2','APAC-ap-southeast-2','APAC-ap-northeast-1','EMEA-eu-central-1','EMEA-eu-west-2','EMEA-eu-north-1','EMEA-me-central-1'] },
+      { id: 'aws-i4i-metal', instance: 'i4i.metal', displayName: 'i4i.metal',
+        physicalCores: 64, processor: 'Intel Xeon Ice Lake (3rd Gen), 2.9 GHz',
+        ramGB: 1024, nvmeTB: 30, storageGB: Math.round(30 * 1024 * 0.5),
+        priceHW3YR: 152214, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['AMER-ca-central-1','AMER-us-west-1','AMER-us-east-1','AMER-us-east-2','AMER-us-west-2','AMER-sa-east-1','APAC-ap-east-1','APAC-ap-south-2','APAC-ap-southeast-3','APAC-ap-southeast-4','APAC-ap-northeast-2','APAC-ap-southeast-1','APAC-ap-southeast-2','APAC-ap-south-1','APAC-ap-northeast-3','APAC-ap-northeast-1','EMEA-af-south-1','EMEA-me-south-1','EMEA-eu-west-1','EMEA-eu-central-1','EMEA-eu-west-2','EMEA-eu-south-1','EMEA-eu-west-3','EMEA-eu-north-1'] }
     ]
   },
   azure: {
     name: 'Azure',
     models: [
       { id: 'azure-an36p', instance: 'AN36P', displayName: 'AN36P',
-        physicalCores: 36, processor: 'Intel Xeon 2.6 GHz', ramGB: 768, nvmeTB: 20.7,
-        storageGB: Math.round(20.7 * 1024 * 0.5), priceHW3YR: 72795, ndbPerCore3yr: 999, isDefault: true }
+        physicalCores: 36, processor: 'Intel 6240, 36 Core, 2.6 GHz',
+        ramGB: 768, nvmeTB: 20.7, storageGB: Math.round(20.7 * 1024 * 0.5),
+        priceHW3YR: 72795, ndbPerCore3yr: 999, isDefault: true,
+        regions: ['AMER-northcentralus','AMER-eastus2','APAC-australiaeast','APAC-centralindia','APAC-japaneast','APAC-southeastasia','APAC-southindia','EMEA-germanywestcentral','EMEA-qatarcentral','EMEA-uaenorth','EMEA-uksouth','EMEA-westeurope'] },
+      { id: 'azure-an64', instance: 'AN64', displayName: 'AN64',
+        physicalCores: 64, processor: 'Intel Xeon Sapphire Rapids (4th Gen), 2.8 GHz',
+        ramGB: 1024, nvmeTB: 38.4, storageGB: Math.round(38.4 * 1024 * 0.5),
+        priceHW3YR: 145309, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['AMER-canadacentral','AMER-canadaeast','AMER-northcentralus','AMER-eastus2','EMEA-germanywestcentral','EMEA-qatarcentral','EMEA-uaenorth','EMEA-uksouth'] }
     ]
   },
   gcp: {
     name: 'GCP',
     models: [
-      { id: 'gcp-z3-highmem', instance: 'z3-highmem-192-highlssd-metal', displayName: 'z3',
-        physicalCores: 96, processor: 'Intel Xeon 3.0 GHz', ramGB: 1536, nvmeTB: 72,
-        storageGB: Math.round(72 * 1024 * 0.5), priceHW3YR: 345582, ndbPerCore3yr: 999, isDefault: true }
+      { id: 'gcp-z3-highmem', instance: 'z3-highmem-192-highlssd-metal', displayName: 'z3-highmem',
+        physicalCores: 96, processor: 'Intel Sapphire Rapids 8481C, 2.2 GHz, 3.0 GHz Turbo',
+        ramGB: 1536, nvmeTB: 72, storageGB: Math.round(72 * 1024 * 0.5),
+        priceHW3YR: 387663, ndbPerCore3yr: 999, isDefault: true,
+        regions: ['AMER-us-central1','AMER-us-west2','AMER-us-east1','AMER-us-east4','AMER-northamerica-northeast2','AMER-southamerica-east1','APAC-asia-southeast1','APAC-australia-southeast2','APAC-asia-east1','EMEA-europe-west4','EMEA-europe-west1','EMEA-europe-west2','EMEA-europe-west3','EMEA-europe-west8','EMEA-me-central1'] },
+      { id: 'gcp-c4-standard', instance: 'c4-standard-288-lssd-metal', displayName: 'c4-standard',
+        physicalCores: 144, processor: 'Intel Granite Rapids, 6985P-C, 3.0 GHz, 3.9 GHz Turbo',
+        ramGB: 1080, nvmeTB: 18, storageGB: Math.round(18 * 1024 * 0.5),
+        priceHW3YR: 214967, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['AMER-us-central1','EMEA-europe-west4'] },
+      { id: 'gcp-c4-highmem', instance: 'c4-highmem-288-lssd-metal', displayName: 'c4-highmem',
+        physicalCores: 144, processor: 'Intel Granite Rapids, 6985P-C, 3.0 GHz, 3.9 GHz Turbo',
+        ramGB: 2232, nvmeTB: 18, storageGB: Math.round(18 * 1024 * 0.5),
+        priceHW3YR: 268614, ndbPerCore3yr: 999, isDefault: false,
+        regions: ['AMER-us-central1','AMER-us-east4','AMER-us-south1','APAC-asia-southeast1','EMEA-europe-west4','EMEA-europe-west8','EMEA-europe-southwest1'] }
     ]
   }
 };
@@ -1771,6 +1950,7 @@ let selectedDBs = {};
 let gdprChecks = { gdpr1: false, gdpr2: false };
 let resultsUnlocked = false;
 let calcResults = null;
+let step1Snapshot = { cloud: null, location: '', dbs: [] };
 
 // ─── Load pricing from Google Sheets ───
 function loadPricing() {
@@ -1792,6 +1972,8 @@ function loadPricing() {
       var f     = rec.fields;
       var cloud = (f['cloud'] || '').toLowerCase().trim();
       if (!newData[cloud]) return;
+      // Skip models marked as unavailable in Airtable
+      if (f['available'] === false || f['available'] === 0) return;
 
       var nvmeTB       = parseFloat(f['nvm_e_tb'])          || 0;
       var storageGB    = Math.round(nvmeTB * 1024 * 0.5);
@@ -1808,7 +1990,8 @@ function loadPricing() {
         storageGB:     storageGB,
         priceHW3YR:    parseFloat(f['price_hw_3yr'])  || 0,
         ndbPerCore3yr: ndbPerCore3yr,
-        isDefault:     !!f['is_default']
+        isDefault:     !!f['is_default'],
+        regions:       f['regions'] ? f['regions'].split(',').map(function(r){ return r.trim(); }) : []
       });
 
       NDB_PRICE_PER_CORE_3YR = ndbPerCore3yr;
@@ -1838,7 +2021,19 @@ function loadPricing() {
 function selectCloud(cloud) {
   selectedCloud = cloud;
   document.querySelectorAll('.cloud-card').forEach(c => c.classList.remove('selected'));
-  document.querySelector(`[data-cloud="${cloud}"]`).classList.add('selected');
+  document.querySelector('[data-cloud="' + cloud + '"]').classList.add('selected');
+  // Enable and populate the datacenter dropdown for this cloud
+  var dcRow = document.getElementById('dc-row');
+  var dcSel = document.getElementById('dc-location');
+  var srcSel = document.getElementById('dc-opts-' + cloud);
+  if (dcRow) { dcRow.style.opacity = '1'; dcRow.style.pointerEvents = 'auto'; }
+  if (dcSel && srcSel) {
+    // Reset and copy options from the pre-built hidden select
+    dcSel.innerHTML = '<option value="">— Select datacenter location —</option>';
+    Array.from(srcSel.children).forEach(function(og) {
+      dcSel.appendChild(og.cloneNode(true));
+    });
+  }
 }
 
 // ─── DB toggle ───
@@ -1873,6 +2068,96 @@ function goToStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ─── Helper: check if a model is available in a region ───
+function modelHasRegion(model, region) {
+  if (!model.regions || model.regions.length === 0) return true; // no region data = always available
+  return model.regions.indexOf(region) !== -1;
+}
+
+// ─── Find best model for a given cloud filtered by region ───
+// Returns { idx, cost } or null if no models in region
+function findBestModelForRegion(cloud, region, dbs) {
+  const provider = CLOUD_DATA[cloud];
+  if (!provider || !provider.models) return null;
+
+  const p2vRatio  = getP2VRatio();
+  const discount  = getDiscount();
+  const ftEnabled = isFaultTolerant();
+  const CVM_CORES = 12;
+
+  let bestIdx  = -1;
+  let bestCost = Infinity;
+  let bestNodes = Infinity;
+
+  provider.models.forEach(function(model, idx) {
+    // Skip models not available in this region
+    if (!modelHasRegion(model, region)) return;
+
+    const vcpuPerNode = (model.physicalCores - CVM_CORES) * p2vRatio;
+    const ramPerNode  = Math.floor(model.ramGB * 0.90);
+    let totalVcpu = 0, totalStorage = 0, totalRam = 0;
+    dbs.forEach(function(db) { totalVcpu += db.vms * db.vcpu; totalStorage += db.storage; totalRam += db.vms * db.ram; });
+
+    let nodes = 3, clusterVcpu = vcpuPerNode*3, clusterStorage = model.storageGB*3,
+        clusterRam = ramPerNode*3, hw3yr = model.priceHW3YR*3, clusterCores = model.physicalCores*3;
+    while ((clusterVcpu < totalVcpu || clusterStorage < totalStorage || clusterRam < totalRam) && nodes < 28) {
+      nodes++; clusterVcpu += vcpuPerNode; clusterStorage += model.storageGB;
+      clusterRam += ramPerNode; hw3yr += model.priceHW3YR; clusterCores += model.physicalCores;
+    }
+    if (ftEnabled) { nodes++; hw3yr += model.priceHW3YR; clusterCores += model.physicalCores; }
+
+    const total3yr = hw3yr * (1 - discount) + clusterCores * (NDB_PRICE_PER_CORE_3YR / 3) * 3;
+    if (total3yr < bestCost || (total3yr === bestCost && nodes < bestNodes)) {
+      bestCost = total3yr; bestNodes = nodes; bestIdx = idx;
+    }
+  });
+
+  return bestIdx >= 0 ? { idx: bestIdx, cost: bestCost } : null;
+}
+
+// ─── Smart selection: region-aware across all clouds ───
+function smartSelectCloudAndModel(dcLocation, dbs) {
+  // 1. Try selected cloud first in the selected region
+  if (selectedCloud) {
+    const result = findBestModelForRegion(selectedCloud, dcLocation, dbs);
+    if (result) {
+      selectedModels[selectedCloud] = result.idx;
+      return; // found a match — done
+    }
+  }
+
+  // 2. No match in selected cloud for this region
+  //    → find best TCO across ALL clouds & models in this region
+  let globalBestCost  = Infinity;
+  let globalBestCloud = selectedCloud; // fallback to current
+  let globalBestIdx   = 0;
+  let foundInRegion   = false;
+
+  ['aws','azure','gcp'].forEach(function(cloud) {
+    const result = findBestModelForRegion(cloud, dcLocation, dbs);
+    if (result && result.cost < globalBestCost) {
+      globalBestCost  = result.cost;
+      globalBestCloud = cloud;
+      globalBestIdx   = result.idx;
+      foundInRegion   = true;
+    }
+  });
+
+  if (foundInRegion) {
+    // Switch to best cloud for this region
+    selectedCloud = globalBestCloud;
+    selectedModels[selectedCloud] = globalBestIdx;
+    // Update step1 cloud selection UI
+    document.querySelectorAll('.cloud-card').forEach(function(c) { c.classList.remove('selected'); });
+    document.querySelectorAll('[data-cloud="' + selectedCloud + '"]').forEach(function(c) { c.classList.add('selected'); });
+    showToast('Switched to ' + CLOUD_DATA[selectedCloud].name + ' — best TCO available in your region', 'info');
+  } else {
+    // No cloud covers this region at all — fallback to global best model
+    autoSelectBestModel();
+    showToast('No baremetal in your exact region — showing best global TCO', 'info');
+  }
+}
+
 function goToStep2() {
   const dcEl = document.getElementById('dc-location');
   const dcLocation = dcEl ? dcEl.value : '';
@@ -1885,16 +2170,19 @@ function goToStep2() {
       showToast('Please fill all fields for ' + db.name, 'error'); return;
     }
   }
-  // Calculate with default config (0% discount, ratio 3, FT off)
-  // Auto-select best model for the selected cloud
-  autoSelectBestModel();
-  calcResults = calculate(dbs);
-  renderResults();
-  // Save anonymous stats
+  step1Snapshot = {
+    cloud: selectedCloud,
+    location: dcLocation,
+    dbs: dbs.map(function(db) { return Object.assign({}, db); })
+  };
+  // Smart region-aware model selection
+  smartSelectCloudAndModel(dcLocation, dbs);
   triggerSaveStats();
   goToStep(2);
   syncStep2CloudCards();
-  updateStep2ModelBadge();
+  clearStep2ModelBadge();
+  resetStep2ResultsToZero();
+  calcResults = null;
 }
 
 
@@ -1903,46 +2191,59 @@ function goToStep2() {
 let _popupCloud = null;
 
 function openModelPopup(cloud) {
+  if (!hasStep2DCSelected()) return;
   _popupCloud = cloud;
   const provider = CLOUD_DATA[cloud];
-  const models = provider.models || [provider.node];
+  const allModels = provider.models || [provider.node];
   const currentIdx = selectedModels[cloud] || 0;
 
-  document.getElementById('model-popup-title').textContent =
-    'Select ' + provider.name + ' Node Model';
+  // Get selected datacenter in step2 (if any) to filter models
+  const s2dc = document.getElementById('s2-dc-location');
+  const selectedDC = s2dc ? s2dc.value : '';
 
-  // Find best for visual hint
+  // Filter models by datacenter — if no DC selected or no regions data, show all
+  const filteredModels = allModels.reduce(function(acc, m, origIdx) {
+    var available = !selectedDC ||
+                    !m.regions ||
+                    m.regions.length === 0 ||
+                    m.regions.indexOf(selectedDC) !== -1;
+    if (available) acc.push({ model: m, origIdx: origIdx });
+    return acc;
+  }, []);
+
+  const modelsToShow = filteredModels.length > 0 ? filteredModels : allModels.map(function(m, i) { return { model: m, origIdx: i }; });
+
+  document.getElementById('model-popup-title').textContent =
+    'Select ' + provider.name + ' Node Model' +
+    (selectedDC && filteredModels.length < allModels.length
+      ? ' — ' + filteredModels.length + ' available in this region'
+      : '');
+
+  // Find best for visual hint (among filtered models)
   const dbs = getDBInputs();
-  const bestIdx = dbs.length > 0 ? findBestModel(cloud, dbs) : 0;
+  const bestResult = dbs.length > 0
+    ? (selectedDC ? findBestModelForRegion(cloud, selectedDC, dbs) : { idx: findBestModel(cloud, dbs) })
+    : null;
+  const bestOrigIdx = bestResult ? bestResult.idx : -1;
 
   const list = document.getElementById('model-popup-list');
-  list.innerHTML = models.map((m, i) => `
-    <div class="model-card ${i === currentIdx ? 'selected' : ''}" onclick="selectModel('${cloud}', ${i})">
-      <div class="model-card-radio"></div>
-      <div class="model-card-body">
-        <div class="model-card-name">${m.displayName || m.instance}${i === bestIdx ? ' <span style="font-family:var(--font-mono);font-size:9px;background:rgba(120,85,250,0.15);color:var(--accent2);border-radius:4px;padding:2px 6px;margin-left:6px;">BEST TCO</span>' : ''}</div>
-        <div class="model-card-instance">${m.instance}</div>
-        <div class="model-card-specs">
-          <div class="model-spec">
-            <span class="model-spec-label">Phys. Cores</span>
-            <span class="model-spec-value">${m.physicalCores}</span>
-          </div>
-          <div class="model-spec">
-            <span class="model-spec-label">Processor</span>
-            <span class="model-spec-value">${m.processor || '—'}</span>
-          </div>
-          <div class="model-spec">
-            <span class="model-spec-label">RAM</span>
-            <span class="model-spec-value">${m.ramGB} GB</span>
-          </div>
-          <div class="model-spec">
-            <span class="model-spec-label">Storage Raw</span>
-            <span class="model-spec-value">${m.nvmeTB} TB</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  `).join('');
+  list.innerHTML = modelsToShow.map(function(entry) {
+    var m = entry.model;
+    var i = entry.origIdx;
+    var isSelected = (i === currentIdx);
+    var isBest = (i === bestOrigIdx);
+    var bestBadge = isBest ? '<span style="font-family:var(--font-mono);font-size:9px;background:rgba(120,85,250,0.15);color:var(--accent2);border-radius:4px;padding:2px 6px;margin-left:6px;">BEST TCO</span>' : '';
+    return '<div class="model-card ' + (isSelected ? 'selected' : '') + '" onclick="selectModel(\'' + cloud + '\', ' + i + ')">'
+      + '<div class="model-card-radio"></div><div class="model-card-body">'
+      + '<div class="model-card-name">' + (m.displayName || m.instance) + bestBadge + '</div>'
+      + '<div class="model-card-instance">' + m.instance + '</div>'
+      + '<div class="model-card-specs">'
+      + '<div class="model-spec"><span class="model-spec-label">Phys. Cores</span><span class="model-spec-value">' + m.physicalCores + '</span></div>'
+      + '<div class="model-spec"><span class="model-spec-label">Processor</span><span class="model-spec-value">' + (m.processor || '—') + '</span></div>'
+      + '<div class="model-spec"><span class="model-spec-label">RAM</span><span class="model-spec-value">' + m.ramGB + ' GB</span></div>'
+      + '<div class="model-spec"><span class="model-spec-label">Storage Raw</span><span class="model-spec-value">' + m.nvmeTB + ' TB</span></div>'
+      + '</div></div></div>';
+  }).join('');
 
   document.getElementById('model-popup-overlay').classList.add('open');
 }
@@ -1969,26 +2270,61 @@ function selectModel(cloud, idx) {
 }
 
 // ─── Update model badge in step2 ───
-function updateStep2ModelBadge() {
-  const node = getActiveNode();
-  if (!node) return;
+function hasStep2DCSelected() {
+  var s2dc = document.getElementById('s2-dc-location');
+  return !!(s2dc && s2dc.value);
+}
 
-  // Update model badge with usable RAM (90%)
-  const usableRam = Math.floor(node.ramGB * 0.90);
+function setChangeModelButtonState(enabled) {
+  var btn = document.getElementById('change-model-btn');
+  if (!btn) return;
+  btn.disabled = !enabled;
+  btn.style.opacity = enabled ? '1' : '0.45';
+  btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+  btn.style.pointerEvents = enabled ? 'auto' : 'none';
+}
+
+function clearStep2ModelBadge() {
   const badge = document.getElementById('s2-model-badge');
   if (badge) {
     badge.innerHTML =
       '<span style="color:var(--text3);margin-right:6px;">Node model:</span>' +
-      '<span style="color:#F2F2F2;font-weight:700;">' + node.displayName + '</span>' +
-      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
-      '<span style="color:var(--accent2);font-weight:600;">' + node.physicalCores + ' cores</span>' +
-      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
-      '<span style="color:var(--accent2);font-weight:600;">' + node.ramGB + ' GB RAM</span>' +
-      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
-      '<span style="color:var(--accent2);font-weight:600;">' + node.nvmeTB + ' TB NVMe</span>';
+      '<span style="color:var(--text3);font-weight:600;">—</span>';
   }
+  setChangeModelButtonState(false);
+}
 
-  // Update each cloud card specs with the default model for that provider
+function resetStep2ResultsToZero() {
+  setText('kpi-annual', '$0');
+  setText('kpi-3yr', '$0');
+  setText('kpi-nodes', '0');
+  setText('kpi-nodes-sub', 'cluster configuration');
+
+  setText('kpi-util', '0%');
+  setText('kpi-util-sub', '0 / 0 cores');
+  setText('kpi-cpu-detail-bar', '0 / 0 cores');
+  setText('kpi-cpu-pct', '0%');
+
+  setText('kpi-storage-kpi', '0%');
+  setText('kpi-storage-kpi-sub', '0 GB / 0 GB');
+  setText('kpi-storage-pct', '0%');
+  setText('kpi-storage-detail-bar', '0 GB / 0 GB');
+
+  setText('kpi-ram-kpi', '0%');
+  setText('kpi-ram-kpi-sub', '0 GB / 0 GB');
+  setText('kpi-ram-pct', '0%');
+  setText('kpi-ram-detail-bar', '0 GB / 0 GB');
+
+  setWidth('bar-cpu', '0%');
+  setWidth('bar-storage', '0%');
+  setWidth('bar-ram', '0%');
+
+  const mc = document.getElementById('method-content');
+  if (mc) mc.innerHTML = '';
+}
+
+function updateStep2ModelBadge() {
+  // Update each cloud card specs with the selected model for that provider
   ['aws', 'azure', 'gcp'].forEach(function(cloud) {
     const provider = CLOUD_DATA[cloud];
     if (!provider || !provider.models) return;
@@ -2008,6 +2344,31 @@ function updateStep2ModelBadge() {
   document.querySelectorAll('#cloud-grid-step2 .cloud-card').forEach(function(card) {
     card.classList.toggle('selected', card.dataset.cloud === selectedCloud);
   });
+
+  if (!hasStep2DCSelected()) {
+    clearStep2ModelBadge();
+    return;
+  }
+
+  const node = getActiveNode();
+  if (!node) {
+    clearStep2ModelBadge();
+    return;
+  }
+
+  const badge = document.getElementById('s2-model-badge');
+  if (badge) {
+    badge.innerHTML =
+      '<span style="color:var(--text3);margin-right:6px;">Node model:</span>' +
+      '<span style="color:#F2F2F2;font-weight:700;">' + node.displayName + '</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--accent2);font-weight:600;">' + node.physicalCores + ' cores</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--accent2);font-weight:600;">' + node.ramGB + ' GB RAM</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--accent2);font-weight:600;">' + node.nvmeTB + ' TB NVMe</span>';
+  }
+  setChangeModelButtonState(true);
 }
 
 function updateCloudCardModel(cloud) {
@@ -2093,26 +2454,89 @@ function selectCloudLive(cloud) {
   // Sync all cloud cards
   document.querySelectorAll('[data-cloud]').forEach(c => c.classList.remove('selected'));
   document.querySelectorAll('[data-cloud="' + cloud + '"]').forEach(c => c.classList.add('selected'));
-  // Auto-select best model for new provider
-  autoSelectBestModel();
-  recalcLive();
+  // Repopulate datacenter dropdown for new cloud
+  populateS2DCDropdown(cloud);
+  // Keep step2 empty until the user explicitly selects a datacenter
+  clearStep2ModelBadge();
+  resetStep2ResultsToZero();
+  calcResults = null;
   updateStep2ModelBadge();
 }
 
 // ─── Sync step2 cloud cards when entering step2 ───
+function populateS2DCDropdown(cloud) {
+  var sel = document.getElementById('s2-dc-location');
+  var src = document.getElementById('s2-dc-opts-' + cloud);
+  if (!sel || !src) return;
+  sel.innerHTML = '<option value="">— Select datacenter location —</option>';
+  Array.from(src.children).forEach(function(og) {
+    sel.appendChild(og.cloneNode(true));
+  });
+  // Keep step2 unselected on purpose: user must explicitly choose the datacenter here.
+  sel.value = '';
+}
+
+function onS2DCChange() {
+  // When datacenter changes in step2, auto-select best model for that region
+  var dc = document.getElementById('s2-dc-location') ? document.getElementById('s2-dc-location').value : '';
+  if (!selectedCloud || !CLOUD_DATA[selectedCloud]) { recalcLive(); return; }
+  if (!dc) {
+    clearStep2ModelBadge();
+    resetStep2ResultsToZero();
+    calcResults = null;
+    return;
+  }
+  var allModels = CLOUD_DATA[selectedCloud].models || [];
+  if (dc && allModels.length > 0) {
+    // Find best TCO model available in the new DC
+    var dbs = getDBInputs();
+    var bestIdx = 0, bestCost = Infinity;
+    var p2v = getP2VRatio(), disc = getDiscount(), ft = isFaultTolerant(), CVM = 12;
+    allModels.forEach(function(m, idx) {
+      if (m.regions && m.regions.length > 0 && m.regions.indexOf(dc) === -1) return;
+      var vpc = (m.physicalCores - CVM) * p2v, rpc = Math.floor(m.ramGB * 0.9);
+      var tv = 0, ts = 0, tr = 0;
+      dbs.forEach(function(db){ tv += db.vms*db.vcpu; ts += db.storage; tr += db.vms*db.ram; });
+      var n=3, cv=vpc*3, cs=m.storageGB*3, cr=rpc*3, hw=m.priceHW3YR*3, cc=m.physicalCores*3;
+      while((cv<tv||cs<ts||cr<tr)&&n<28){n++;cv+=vpc;cs+=m.storageGB;cr+=rpc;hw+=m.priceHW3YR;cc+=m.physicalCores;}
+      if(ft){n++;hw+=m.priceHW3YR;cc+=m.physicalCores;}
+      var cost = hw*(1-disc) + cc*(NDB_PRICE_PER_CORE_3YR/3)*3;
+      if(cost < bestCost){bestCost=cost; bestIdx=idx;}
+    });
+    selectedModels[selectedCloud] = bestIdx;
+    updateStep2ModelBadge();
+  }
+  recalcLive();
+}
+
 function syncStep2CloudCards() {
-  document.querySelectorAll('#cloud-grid-step2 .cloud-card').forEach(c => c.classList.remove('selected'));
+  // Remove selected from ALL cloud cards in step2
+  document.querySelectorAll('#cloud-grid-step2 .cloud-card').forEach(function(c) {
+    c.classList.remove('selected');
+  });
   if (selectedCloud) {
-    const card = document.querySelector('#cloud-grid-step2 [data-cloud="' + selectedCloud + '"]');
+    var card = document.getElementById('s2-cloud-' + selectedCloud);
     if (card) card.classList.add('selected');
+    // Populate the datacenter dropdown for this cloud
+    populateS2DCDropdown(selectedCloud);
   }
 }
 
 // ─── Live recalc when discount/ratio/FT change ───
 function recalcLive() {
-  if (!calcResults) return;
+  if (!hasStep2DCSelected()) {
+    clearStep2ModelBadge();
+    resetStep2ResultsToZero();
+    calcResults = null;
+    return;
+  }
   const dbs = getDBInputs();
   calcResults = calculate(dbs);
+  if (!calcResults) {
+    resetStep2ResultsToZero();
+    return;
+  }
+  updateStep2ModelBadge();
   renderResults();
 }
 
@@ -2431,15 +2855,15 @@ function renderResults() {
   // Table
   const tbody = document.getElementById('results-table-body');
   if (tbody) {
-    tbody.innerHTML = r.dbs.map(db => `
-      <div class="table-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;">
-        <div class="td td-db">${db.name}</div>
-        <div class="td mono">${db.vms}</div>
-        <div class="td mono">${db.vms * db.vcpu}</div>
-        <div class="td mono">${fmtGB(db.vms * db.ram)}</div>
-        <div class="td mono">${fmtGB(db.storage)}</div>
-      </div>
-    `).join('');
+    tbody.innerHTML = r.dbs.map(function(db) {
+      return '<div class="table-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;">'
+        + '<div class="td td-db">' + db.name + '</div>'
+        + '<div class="td mono">' + db.vms + '</div>'
+        + '<div class="td mono">' + (db.vms * db.vcpu) + '</div>'
+        + '<div class="td mono">' + fmtGB(db.vms * db.ram) + '</div>'
+        + '<div class="td mono">' + fmtGB(db.storage) + '</div>'
+        + '</div>';
+    }).join('');
   }
 
   // Methodology
@@ -2464,6 +2888,12 @@ function fmtUSD(n) {
 function fmtGB(n) {
   return n >= 1024 ? (n/1024).toFixed(1) + ' TB' : n + ' GB';
 }
+function getSelectOptionText(selectId, value) {
+  const el = document.getElementById(selectId);
+  if (!el || !value) return '';
+  const opt = Array.from(el.options || []).find(function(o) { return o.value === value; });
+  return opt ? opt.textContent.trim() : value;
+}
 
 // ─── Download summary ───
 function downloadSummary() {
@@ -2472,16 +2902,30 @@ function downloadSummary() {
   const date = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
   const discountPct = Math.round((r.discount || 0) * 100);
   const reportName = (document.getElementById('f-reportname') ? document.getElementById('f-reportname').value.trim() : '') || 'My Estimate';
+  const step1CloudName = step1Snapshot.cloud && CLOUD_DATA[step1Snapshot.cloud]
+    ? CLOUD_DATA[step1Snapshot.cloud].name
+    : '—';
+  const step1LocationValue = step1Snapshot.location || '';
+  const step1LocationLabel = getSelectOptionText('dc-location', step1LocationValue) || step1LocationValue || '—';
+  const step2CloudName = selectedCloud && CLOUD_DATA[selectedCloud]
+    ? CLOUD_DATA[selectedCloud].name
+    : (r.cloud || '—');
+  const step2LocationValue = document.getElementById('s2-dc-location')
+    ? document.getElementById('s2-dc-location').value
+    : '';
+  const step2LocationLabel = getSelectOptionText('s2-dc-location', step2LocationValue) || step2LocationValue || '—';
+  const activeNode = getActiveNode();
+  const step2ModelLabel = activeNode ? (activeNode.displayName || activeNode.instance) : '—';
+  const reportInputDBs = (step1Snapshot.dbs && step1Snapshot.dbs.length) ? step1Snapshot.dbs : (r.dbs || []);
 
   // ── DB table rows ──
-  const dbRows = r.dbs.map(db => `
-    <tr style="border-bottom:1px solid #1e2535;">
-      <td style="padding:14px 20px;font-size:14px;color:#e8edf5;font-weight:600;">${db.name}</td>
-      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${db.vms}</td>
-      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${db.vms * db.vcpu}</td>
-      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${fmtGB(db.vms * db.ram)}</td>
-      <td style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:14px;color:#8a95a8;">${fmtGB(db.storage)}</td>
-    </tr>`).join('');
+  const dbRows = r.dbs.map(function(db) {
+    return '<tr><td>'+db.name+'</td><td>'+db.vms+'</td><td>'+(db.vms*db.vcpu)+'</td><td>'+fmtGB(db.vms*db.ram)+'</td><td>'+fmtGB(db.storage)+'</td></tr>';
+  }).join('');
+
+  const inputDbRows = reportInputDBs.map(function(db) {
+    return '<tr><td>'+db.name+'</td><td>'+db.vms+'</td><td>'+db.vcpu+'</td><td>'+fmtGB(db.ram)+'</td><td>'+fmtGB(db.storage)+'</td></tr>';
+  }).join('');
 
   // ── NDB feature cards ──
   const ndbFeatures = [
@@ -2492,643 +2936,263 @@ function downloadSummary() {
     ['🛡', 'Data Protection & Instant Restore', 'Continuous protection with Time Machine and point-in-time recovery.'],
     ['⚙️', 'Self Service via API / NDB Operator', 'REST API and Kubernetes Operator for GitOps-driven developer workflows.'],
   ];
-  const featCards = ndbFeatures.map(([icon, name, desc]) => `
-    <div style="background:#131720;border:1px solid #1e2535;border-radius:10px;padding:14px 16px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-        <span style="font-size:16px;">${icon}</span>
-        <span style="font-size:14px;font-weight:700;color:#e8edf5;">${name}</span>
-      </div>
-      <p style="font-size:13px;color:#8a95a8;line-height:1.55;margin:0;">${desc}</p>
-    </div>`).join('');
+  const featCards = ndbFeatures.map(function(f) {
+    return '<div style="background:#131720;border:1px solid #1e2535;border-radius:10px;padding:14px 16px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="font-size:16px;">'+f[0]+'</span><span style="font-size:14px;font-weight:700;color:#e8edf5;">'+f[1]+'</span></div><p style="font-size:11.5px;color:#8a95a8;line-height:1.4;margin:0;">'+f[2]+'</p></div>';
+  }).join('');
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>NC2 + NDB · ${r.cloud} · ${date}</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  @page { size: A4; margin: 0; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  html, body {
-    background-color: #0a0c10 !important;
-    color: #e8edf5;
-    font-family: 'Montserrat', sans-serif;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-  @media print {
-    html, body { background-color: #0a0c10 !important; }
-    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  }
-  .page-break { page-break-after: always; }
-</style>
-</head>
-<body style="background-color:#0a0c10;">
+  // ── build report HTML ──
+  var H = [];
+  var push = function(s){ H.push(s); };
+  var ACCENT = '#7855FA';
 
-<!-- ══════════════════ COVER ══════════════════ -->
-<div class="page-break" style="background-color:#0a0c10;min-height:100vh;padding:56px 64px 48px;display:flex;flex-direction:column;position:relative;overflow:hidden;">
+  // helpers
+  var sec = function(t){ return '<div style="display:flex;align-items:center;gap:8px;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#545f72;margin-bottom:8px;">'+t+'<span style=\'flex:1;height:1px;background:#1a2030;\'></span></div>'; };
+  var card  = function(inner, extra){ return '<div style="background:#0e1117;border:1px solid #1e2535;border-radius:9px;padding:11px 13px;'+(extra||'')+'">'+inner+'</div>'; };
+  var card2 = function(inner, extra){ return '<div style="background:#131720;border-radius:7px;padding:9px 11px;'+(extra||'')+'">'+inner+'</div>'; };
+  var kv    = function(k,v,vc){ return '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid #131720;gap:10px;"><span style="font-size:10px;color:#545f72;">'+k+'</span><span style="font-size:10px;font-weight:600;color:'+(vc||'#e8edf5')+';text-align:right;">'+v+'</span></div>'; };
+  var lbl   = function(t){ return '<div style="font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#545f72;margin-bottom:8px;">'+t+'</div>'; };
+  var bar   = function(pct,grad){ return '<div style="height:4px;background:#131720;border-radius:3px;overflow:hidden;margin-top:5px;"><div style="width:'+pct+'%;height:100%;background:'+grad+';border-radius:3px;"></div></div>'; };
+  var tag   = function(t){ return '<span style="display:inline-block;font-size:7.5px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(120,85,250,0.15);color:#7855FA;border:1px solid rgba(120,85,250,0.3);">'+t+'</span>'; };
+  var footer= function(n){ return '<div style="margin-top:auto;padding-top:7px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;font-size:7.5px;color:#3a4455;"><span>NC2 + NDB &middot; '+r.cloud+' &middot; '+date+'</span><span>'+n+' / 6</span></div>'; };
+  var row   = function(a,v,g){ return '<div style="display:flex;align-items:flex-start;gap:7px;font-size:9.5px;color:#8a95a8;line-height:1.45;padding:3px 0;border-bottom:1px solid #131720;"><span style="color:#7855FA;flex-shrink:0;">'+a+'</span>'+v+'</div>'; };
+  var quote = function(q,attr){ return card2('<p style="font-size:9.5px;color:#8a95a8;line-height:1.38;margin:0 0 3px;font-style:italic;">&ldquo;'+q+'&rdquo;</p><span style="font-size:8px;color:#545f72;">'+attr+'</span>', 'border-left:2.5px solid #7855FA;border-radius:0 6px 6px 0;'); };
 
-  <!-- Glow orbs (print-friendly: subtle borders) -->
-  <div style="position:absolute;top:-80px;right:-60px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(120,85,250,0.15) 0%,transparent 65%);pointer-events:none;"></div>
-  <div style="position:absolute;bottom:-80px;left:-60px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(57,22,153,0.12) 0%,transparent 65%);pointer-events:none;"></div>
+  var CSS = [
+    '* { box-sizing:border-box; margin:0; padding:0; }',
+    '@page { size:A4 portrait; margin:0; }',
+    '@media screen {',
+    '  html { background:#111827 !important; overflow-x:hidden; }',
+    '  body { width:210mm; transform-origin:top left; margin:0; }',
+    '  .pg { margin:0 0 4px 0; box-shadow:0 8px 40px rgba(0,0,0,0.7); }',
+    '}',
+    '@media print {',
+    '  html,body { width:210mm; background:#0a0c10 !important; margin:0; padding:0; }',
+    '  .pg { margin:0 !important; box-shadow:none !important; }',
+    '  * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }',
+    '}',
+    'html,body { font-family:Montserrat,sans-serif; color:#e8edf5; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }',
+    '.pg { width:210mm; height:297mm; padding:10mm 13mm 9mm; background:#0a0c10; overflow:hidden; page-break-after:always; break-after:page; display:flex; flex-direction:column; position:relative; }',
+    '.pg:last-child { page-break-after:auto; break-after:auto; }',
+    'table { width:100%; border-collapse:collapse; }',
+    'th { font-size:8px; letter-spacing:.08em; text-transform:uppercase; color:#545f72; padding:6px 10px; text-align:left; background:#131720; }',
+    'td { font-size:10px; color:#8a95a8; padding:5px 10px; border-bottom:1px solid #131720; }',
+    'td:first-child { color:#e8edf5; font-weight:600; }',
+    'tr:last-child td { border-bottom:none; }',
+    'a { color:#7855FA; text-decoration:none; }',
+    'strong { color:#e8edf5; }',
+  ].join(' ');
 
-  <!-- Top bar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid #1a2030;margin-bottom:auto;">
-    <div style="display:flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a95a8;">
-      NC2 + NDB · Infrastructure Estimate
-    </div>
-    <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#545f72;border:1px solid #1e2535;padding:3px 12px;border-radius:20px;">Personal Analysis · Not for Distribution</div>
-  </div>
+  push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
+  push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+  push('<title>NC2 + NDB &middot; '+r.cloud+' &middot; '+date+'</title>');
+  push('<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">');
+  push('<style>'+CSS+'</style></head><body>');
+  push('<div style="position:absolute;top:12px;right:12px;z-index:9999;"><button onclick="window.print()" style="background:linear-gradient(135deg,#7855FA,#391699);border:none;border-radius:6px;padding:5px 11px;font-family:Montserrat,sans-serif;font-size:10px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(120,85,250,0.4);">&#128438; Print / Save as PDF</button></div>');
 
-  <!-- Hero body -->
-  <div style="padding:70px 0 56px;flex:1;display:flex;flex-direction:column;justify-content:center;">
-    <div style="font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#7855FA;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
-      <div style="height:1px;width:32px;background:#7855FA;"></div>
-      Public Cloud Database Infrastructure
-      <div style="height:1px;width:32px;background:#7855FA;"></div>
-    </div>
-    <h1 style="font-size:52px;font-weight:800;line-height:1.08;letter-spacing:-.025em;margin-bottom:24px;color:#e8edf5;">
-      Your Estimate<br>
-      <span style="color:#7855FA;">on Public Cloud</span><br>
-      with Nutanix<br>
-      <span style="color:#7855FA;">Database Service</span>
-    </h1>
-    <p style="font-size:16px;color:#8a95a8;line-height:1.7;max-width:480px;margin-bottom:48px;">
-      This document is an independent infrastructure sizing estimate for running database workloads on Nutanix Cloud Clusters (NC2) with Nutanix Database Service (NDB). All figures are indicative and based on publicly available pricing at the time of generation.
-    </p>
-    <div style="display:inline-flex;align-items:center;gap:12px;background:rgba(120,85,250,0.1);border:1.5px solid rgba(120,85,250,0.3);border-radius:10px;padding:12px 20px;font-size:15px;font-weight:600;color:#e8edf5;width:fit-content;">
-      Cloud Provider: <span style="color:#7855FA;">${r.cloud}</span>
-      &nbsp;·&nbsp; ${r.nodes} NC2 Nodes
-      &nbsp;·&nbsp; ${r.ftEnabled ? "N+1 Fault Tolerant" : "N — all nodes active"}
-    </div>
-  </div>
+  // ── COVER ──
+  push('<div class="pg" style="justify-content:space-between;">');
+  push('<div style="position:absolute;top:-80px;right:-80px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(120,85,250,0.17) 0%,transparent 65%);pointer-events:none;"></div>');
+  push('<div style="display:flex;justify-content:space-between;align-items:center;">');
+  push('<span style="font-size:10px;font-weight:600;color:#8a95a8;">'+date+'</span>');
+  push('<span style="font-size:7.5px;color:#545f72;border:1px solid #1e2535;padding:2px 9px;border-radius:20px;">Personal Analysis &middot; Not for Distribution</span>');
+  push('</div>');
+  push('<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:18mm 0 14mm;">');
+  push('<div style="font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#7855FA;margin-bottom:16px;display:flex;align-items:center;gap:9px;">');
+  push('<span style="display:block;height:1px;width:24px;background:#7855FA;"></span>Public Cloud Database Infrastructure<span style="display:block;height:1px;width:24px;background:#7855FA;"></span></div>');
+  push('<h1 style="font-size:40px;font-weight:800;line-height:1.08;letter-spacing:-.02em;margin-bottom:18px;color:#e8edf5;">Your Estimate<br><span style="color:#7855FA;">on Public Cloud</span><br>with Nutanix<br><span style="color:#7855FA;">Database Service</span></h1>');
+  push('<p style="font-size:11.5px;color:#8a95a8;line-height:1.65;max-width:420px;margin-bottom:28px;">This document is an independent infrastructure sizing estimate for running database workloads on Nutanix Cloud Clusters (NC2) with Nutanix Database Service (NDB). All figures are indicative and based on publicly available pricing at the time of generation.</p>');
+  push('<div style="display:inline-flex;align-items:center;gap:9px;background:rgba(120,85,250,0.1);border:1.5px solid rgba(120,85,250,0.3);border-radius:9px;padding:9px 16px;font-size:12px;font-weight:600;color:#e8edf5;width:fit-content;">');
+  push('Cloud: <span style="color:#7855FA;">'+r.cloud+'</span> &nbsp;&middot;&nbsp; '+r.nodes+' NC2 Nodes &nbsp;&middot;&nbsp; '+(r.ftEnabled ? 'N+1 Fault Tolerant' : 'N &mdash; all nodes active')+'</div>');
+  push('</div>');
+  push(footer('1'));
+  push('</div>');
 
-  <!-- Cover footer -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid #1a2030;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">Generated ${date}</span>
-    <span style="font-size:13px;color:#545f72;font-style:italic;">Personal estimate · Independent analysis</span>
-  </div>
-</div>
+  // ── PAGE 2 — COST SUMMARY ──
+  push('<div class="pg">');
+  push(sec('Cost Summary &amp; Cluster Sizing'));
+  push('<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;">');
+  push(card(lbl('Input Configuration')+kv('Cloud provider',step1CloudName)+kv('Datacenter','<span style="font-size:9px;">'+step1LocationLabel+'</span>')+kv('DB engines',reportInputDBs.length ? [...new Set(reportInputDBs.map(function(db){return db.name;}))] .join(', ') : '&mdash;')));
+  push(card(lbl('Final Configuration')+kv('Cloud provider',step2CloudName,'#7855FA')+kv('Datacenter','<span style="font-size:9px;">'+step2LocationLabel+'</span>')+kv('Node model',step2ModelLabel,'#7855FA')));
+  push('</div>');
 
-<!-- ══════════════════ PAGE 1 — Cost Summary ══════════════════ -->
-<div class="page-break" style="background-color:#0a0c10;padding:52px 64px;">
+  push('<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:9px;">');
+  push('<div style="background:#0e1117;border:1px solid #1e2535;border-radius:9px;padding:11px 13px;position:relative;overflow:hidden;"><div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:#7855FA;"></div>'+lbl('NC2 Nodes Required')+'<div style="font-size:28px;font-weight:800;color:#e8edf5;line-height:1;">'+r.nodes+'</div><div style="font-size:8.5px;color:#3a4455;margin-top:4px;">'+(r.ftEnabled?'N+1 FT &middot; RF2':'N all active &middot; RF2')+'</div></div>');
+  push('<div style="background:#0e1117;border:1px solid #1e2535;border-radius:9px;padding:11px 13px;position:relative;overflow:hidden;"><div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:#7855FA;"></div>'+lbl('Annual Infrastructure Cost')+'<div style="font-size:24px;font-weight:800;color:#7855FA;line-height:1;">'+fmtUSD(r.totalAnnual)+'</div><div style="font-size:8.5px;color:#3a4455;margin-top:4px;">Hardware + NDB licensing</div></div>');
+  push('<div style="background:#0e1117;border:1px solid #1e2535;border-radius:9px;padding:11px 13px;position:relative;overflow:hidden;"><div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:#7855FA;"></div>'+lbl('3-Year Total Investment')+'<div style="font-size:24px;font-weight:800;color:#7855FA;line-height:1;">'+fmtUSD(r.total3yr)+'</div><div style="font-size:8.5px;color:#3a4455;margin-top:4px;">3-year committed pricing</div></div>');
+  push('</div>');
 
-  <!-- Page header -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Cost Summary</span>
-    </div>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
-  </div>
+  push('<div style="height:10px;"></div>');
+  push(sec('Cluster Utilization'));
+  push('<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:9px;">');
+  push(card(lbl('CPU')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#7855FA;">'+r.vcpuUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+r.totalVcpu+' / '+r.clusterVcpu+' cores</span></div>'+bar(r.vcpuUtil,'linear-gradient(90deg,#7855FA,#391699)')));
+  push(card(lbl('Storage')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#9B7DFF;">'+r.storageUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+fmtGB(r.totalStorage)+' / '+fmtGB(r.clusterStorage)+'</span></div>'+bar(r.storageUtil,'linear-gradient(90deg,#9B7DFF,#5E3DB3)')));
+  push(card(lbl('Memory')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#BBA8FF;">'+r.ramUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+fmtGB(r.totalRam)+' / '+fmtGB(r.clusterRam)+'</span></div>'+bar(r.ramUtil,'linear-gradient(90deg,#BBA8FF,#7855FA)')));
+  push('</div>');
 
-  <!-- Section: Investment Overview -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    Investment Overview
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
-      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#7855FA,#7855FA);"></div>
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">NC2 Nodes Required</div>
-      <div style="font-size:32px;font-weight:800;color:#e8edf5;line-height:1;">${r.nodes}</div>
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;margin-top:6px;">N+1 failover cluster · RF2</div>
-    </div>
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
-      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#7855FA,#7855FA);"></div>
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Annual Infrastructure Cost</div>
-      <div style="font-size:28px;font-weight:800;color:#7855FA;line-height:1;">${fmtUSD(r.totalAnnual)}</div>
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;margin-top:6px;">Hardware + NDB licensing</div>
-    </div>
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;position:relative;overflow:hidden;">
-      <div style="position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#7855FA,#7855FA);"></div>
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">3-Year Total Investment</div>
-      <div style="font-size:28px;font-weight:800;color:#7855FA;line-height:1;">${fmtUSD(r.total3yr)}</div>
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;margin-top:6px;">3-year committed pricing</div>
-    </div>
-  </div>
+  push('<div style="height:10px;"></div>');
+  push(sec('Database Workload'));
+  push(card('<table><thead><tr><th>Engine</th><th>VMs</th><th>vCPUs</th><th>RAM</th><th>Storage</th></tr></thead><tbody>'+dbRows+'</tbody></table>', 'padding:0;overflow:hidden;margin-bottom:9px;'));
 
-  <!-- Section: Cluster Utilization -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    Cluster Utilization
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:32px;">
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">CPU Utilization</div>
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;font-weight:800;color:#7855FA;">${r.vcpuUtil}%</span>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">${r.totalVcpu} / ${r.clusterVcpu} cores</span>
-      </div>
-      <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
-        <div style="width:${r.vcpuUtil}%;height:100%;background:linear-gradient(90deg,#7855FA,#391699);border-radius:4px;"></div>
-      </div>
-    </div>
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Storage Utilization</div>
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;font-weight:800;color:#9B7DFF;">${r.storageUtil}%</span>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">${fmtGB(r.totalStorage)} / ${fmtGB(r.clusterStorage)}</span>
-      </div>
-      <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
-        <div style="width:${r.storageUtil}%;height:100%;background:linear-gradient(90deg,#9B7DFF,#5E3DB3);border-radius:4px;"></div>
-      </div>
-    </div>
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#545f72;margin-bottom:10px;">Memory Utilization</div>
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
-        <span style="font-size:24px;font-weight:800;color:#BBA8FF;">${r.ramUtil}%</span>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">${fmtGB(r.totalRam)} / ${fmtGB(r.clusterRam)}</span>
-      </div>
-      <div style="height:6px;background:#131720;border-radius:4px;overflow:hidden;">
-        <div style="width:${r.ramUtil}%;height:100%;background:linear-gradient(90deg,#BBA8FF,#7855FA);border-radius:4px;"></div>
-      </div>
-    </div>
-  </div>
+  push('<div style="height:10px;"></div>');
+  push(sec('Sizing Assumptions'));
+  var assumptions = [
+    'Hardware: 3-year committed &middot; '+r.cloud+(discountPct>0?' &middot; '+discountPct+'% discount':' &middot; no discount'),
+    'Cluster: '+(r.ftEnabled?'N+1 FT &mdash; '+r.nodes+' nodes ('+( r.nodes-1)+' active + 1 reserved)':'N &mdash; all '+r.nodes+' nodes active'),
+    'Storage: RF2 replication &middot; '+fmtGB(r.clusterStorage)+' raw &middot; 50% usable after RF2',
+    'P2V ratio 1:'+r.p2vRatio+' &middot; 12 physical cores/node reserved for CVM &middot; 10% RAM for OS/hypervisor',
+    'PostgreSQL Community Edition support included in NDB licensing &mdash; no extra licensing cost vs IaaS',
+  ];
+  push('<div style="height:10px;"></div>');
+  push(card(assumptions.map(function(a){ return row('&rarr;',a); }).join('')));
+  push('<div style="height:10px;"></div>');
+  push('<div style="background:linear-gradient(135deg,rgba(120,85,250,0.1),rgba(57,22,153,0.07));border:1.5px solid rgba(120,85,250,0.3);border-radius:9px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;">');
+  push('<span style="font-size:18px;flex-shrink:0;">&#128024;</span>');
+  push('<div><div style="font-size:11.5px;font-weight:700;color:#7855FA;margin-bottom:3px;">PostgreSQL Community Edition support included</div>');
+  push('<div style="font-size:10px;color:#8a95a8;line-height:1.5;">NDB subscription covers CE support for all managed PostgreSQL instances &mdash; no additional licensing cost compared to IaaS deployments. This eliminates the need for a separate support contract.</div></div></div>');
+  push(footer('2'));
+  push('</div>');
 
-  <!-- Section: DB Breakdown -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    Database Breakdown
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;overflow:hidden;margin-bottom:28px;">
-    <table style="width:100%;border-collapse:collapse;">
-      <thead>
-        <tr style="background:#131720;">
-          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Database Engine</th>
-          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">VMs</th>
-          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">vCPUs</th>
-          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">RAM</th>
-          <th style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;padding:14px 20px;text-align:left;">Storage</th>
-        </tr>
-      </thead>
-      <tbody>${dbRows}</tbody>
-    </table>
-  </div>
+  // ── PAGE 3 ──
+  push('<div class="pg">');
+  push(sec('Dedicated Infrastructure vs. Shared Cloud'));
+  push(card('<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">'
+    +card2('<div style="font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#545f72;text-align:center;margin-bottom:8px;">Shared Cloud Infrastructure</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-bottom:7px;"><div style="background:#0e1117;border:1px dashed #1e2535;border-radius:5px;padding:5px;text-align:center;font-size:8.5px;color:#545f72;">Customer A<br>shared vCPU</div><div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:5px;padding:5px;text-align:center;font-size:8.5px;font-weight:700;color:#7855FA;">Your DB<br>shared vCPU</div><div style="background:#0e1117;border:1px dashed #1e2535;border-radius:5px;padding:5px;text-align:center;font-size:8.5px;color:#545f72;">Customer C<br>shared vCPU</div></div><div style="font-size:8px;color:#545f72;text-align:center;margin-bottom:6px;">Shared Storage &middot; Shared RAM &middot; Shared Network</div>'
+      +['Noisy neighbour effect','Unpredictable I/O latency','Cloud hypervisor overhead','Over-provisioning required'].map(function(x){ return '<div style="font-size:9.5px;color:#545f72;padding:2px 0;display:flex;align-items:center;gap:5px;"><span style="color:#e23d3d;">&#10007;</span>'+x+'</div>'; }).join(''))
+    +card2('<div style="font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7855FA;text-align:center;margin-bottom:8px;">NC2 Dedicated Bare Metal</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:3px;"><div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:5px;padding:5px;text-align:center;font-size:8.5px;font-weight:700;color:#7855FA;">Your DB 1<br>dedicated cores</div><div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:5px;padding:5px;text-align:center;font-size:8.5px;font-weight:700;color:#7855FA;">Your DB 2<br>dedicated cores</div></div><div style="font-size:8px;color:#545f72;text-align:center;margin-bottom:6px;">Dedicated NVMe &middot; Dedicated RAM &middot; Nutanix AHV</div>'
+      +['No contention &mdash; consistent performance','Consistent low-latency NVMe storage','Full hardware performance available','Right-sized &mdash; no over-provisioning'].map(function(x){ return '<div style="font-size:9.5px;color:#7855FA;padding:2px 0;display:flex;align-items:center;gap:5px;">&#10003; '+x+'</div>'; }).join(''))
+    +'</div><p style="font-size:10px;color:#8a95a8;line-height:1.5;">NC2 runs Nutanix directly on <strong>dedicated bare-metal nodes</strong> &mdash; the entire physical server is exclusive to your workloads. No contention, no cloud hypervisor overhead, full NVMe performance. Organisations moving to NC2 regularly find their databases were <strong>significantly over-provisioned on shared cloud</strong> &mdash; translating into fewer nodes, lower NDB licensing costs, and a materially better TCO.</p>'
+  , 'margin-bottom:9px;'));
 
-  <!-- Section: Assumptions -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
-    Sizing Assumptions
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:0;">
-    ${[
-       'Hardware: estimated 3-year committed pricing · ' + r.cloud + ' · ' + (discountPct > 0 ? discountPct + '% discount applied' : 'no discount'),
-       'Cluster: ' + (r.ftEnabled ? 'N+1 Fault Tolerant — ' + r.nodes + ' nodes (' + (r.nodes-1) + ' active + 1 reserved for recovery)' : 'N — all ' + r.nodes + ' nodes active'),
-       'Storage: RF2 replication · ' + fmtGB(r.clusterStorage) + ' raw available',
-       'Physical-to-virtual ratio 1:' + r.p2vRatio + ' · 12 cores/node reserved for CVM',
-       'Memory: 10% reserved for OS and hypervisor overhead',
-       'PostgreSQL Community Edition support included in NDB licensing'
-      ].map(a => `<div style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#8a95a8;line-height:1.55;padding:8px 0;border-bottom:1px solid #131720;">
-        <span style="color:#7855FA;flex-shrink:0;">→</span>${a}</div>`).join('')}
-  </div>
+  push('<div style="height:14px;"></div>');
+  push(sec('NC2 Supported Bare-Metal Instances'));
+  push(card('<table><thead><tr><th>Cloud</th><th>Instance</th><th>Cores</th><th>RAM</th><th>NVMe</th><th>3-yr price/node</th></tr></thead><tbody>'
+    +'<tr><td>AWS</td><td style="font-family:monospace;font-size:9px;">i7ie.metal-24xl</td><td>48</td><td>768 GB</td><td>60 TB</td><td>$137,644</td></tr>'
+    +'<tr><td>AWS</td><td style="font-family:monospace;font-size:9px;">i7ie.metal-48xl</td><td>96</td><td>1,536 GB</td><td>120 TB</td><td>$313,342</td></tr>'
+    +'<tr><td>AWS</td><td style="font-family:monospace;font-size:9px;">i7i.metal-24xl</td><td>48</td><td>768 GB</td><td>22.5 TB</td><td>$113,560</td></tr>'
+    +'<tr><td>AWS</td><td style="font-family:monospace;font-size:9px;">i7i.metal-48xl</td><td>96</td><td>1,536 GB</td><td>45 TB</td><td>$227,120</td></tr>'
+    +'<tr><td>AWS</td><td style="font-family:monospace;font-size:9px;">i4i.metal</td><td>64</td><td>1,024 GB</td><td>30 TB</td><td>$137,644</td></tr>'
+    +'<tr><td>Azure</td><td style="font-family:monospace;font-size:9px;">AN36P</td><td>36</td><td>768 GB</td><td>20.7 TB</td><td>$72,795</td></tr>'
+    +'<tr><td>Azure</td><td style="font-family:monospace;font-size:9px;">AN64</td><td>64</td><td>1,024 GB</td><td>38.4 TB</td><td>$145,309</td></tr>'
+    +'<tr><td>GCP</td><td style="font-family:monospace;font-size:9px;">z3-highmem-192</td><td>96</td><td>1,536 GB</td><td>72 TB</td><td>$387,663</td></tr>'
+    +'<tr><td>GCP</td><td style="font-family:monospace;font-size:9px;">c4-standard-288</td><td>144</td><td>1,080 GB</td><td>18 TB</td><td>$214,967</td></tr>'
+    +'<tr><td>GCP</td><td style="font-family:monospace;font-size:9px;">c4-highmem-288</td><td>144</td><td>2,232 GB</td><td>18 TB</td><td>$268,614</td></tr>'
+    +'</tbody></table>', 'padding:0;overflow:hidden;margin-bottom:6px;'));
+  push('<p style="font-size:8px;color:#3a4455;margin-bottom:6px;">All prices: 3-year reserved, eu-central-1 / germanywestcentral / europe-west3.</p>');
+  push([['AWS','https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Clusters-AWS:aws-clusters-aws-xi-supported-regions-metals.html'],
+        ['Azure','https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-regions-c.html'],
+        ['GCP','https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-bare-metal-instances-c.html'],
+  ].map(function(e){ return '<div style="display:flex;align-items:center;gap:8px;font-size:9.5px;"><span style="min-width:36px;font-weight:700;color:#8a95a8;">'+e[0]+'</span><a href="'+e[1]+'">Supported Regions &amp; Bare-Metal Instances &rarr;</a></div>'; }).join(''));
+  push(footer('3'));
+  push('</div>');
 
-  <!-- Page footer -->
-  <div style="margin-top:28px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
-  </div>
-</div>
+  // ── PAGE 4 ──
+  push('<div class="pg">');
+  push(sec('What NDB Manages for You'));
 
-<!-- ══════════════════ PAGE 2 — Capabilities ══════════════════ -->
-<div style="background-color:#0a0c10;padding:52px 64px;">
+  push('<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px;">');
+  ndbFeatures.forEach(function(f){ var icon=f[0],name=f[1],desc=f[2]; push(card2('<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span style="font-size:13px;">'+icon+'</span><span style="font-size:10.5px;font-weight:700;color:#e8edf5;">'+name+'</span></div><p style="font-size:9.5px;color:#545f72;line-height:1.4;margin:0;">'+desc+'</p>')); });
+  push('</div>');
 
-  <!-- Page header -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Platform Capabilities</span>
-    </div>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
-  </div>
+  push('<p style="font-size:10.5px;color:#8a95a8;line-height:1.58;margin-bottom:9px;">Running databases on bare-metal NC2 nodes through NDB means your team stops managing infrastructure and starts managing outcomes. Provisioning that took days becomes minutes. Patching windows become scheduled, automated events. Clones for dev and test become instant, self-service operations available to any authorised developer through the NDB portal or API.</p>');
 
-  <!-- Section title -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    What NDB Manages for You
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
+  push('<div style="height:22px;"></div>');
+push(sec('NDB Time Machine: Snapshots, Thin Cloning &amp; Instant Restore'));
+  push(card('<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:8px;">'
+    +'<div><div style="font-size:11px;font-weight:700;color:#7855FA;margin-bottom:5px;">Redirect-on-Write Snapshots</div><p style="font-size:10px;color:#8a95a8;line-height:1.5;">NDB Time Machine uses a <strong>Redirect-on-Write (ROW)</strong> mechanism &mdash; new writes are redirected to new locations while original blocks remain untouched. Snapshot creation is <strong>instantaneous with zero I/O impact</strong> regardless of database size.</p></div>'
+    +'<div><div style="font-size:11px;font-weight:700;color:#7855FA;margin-bottom:5px;">Size-Independent Restore Times</div><p style="font-size:10px;color:#8a95a8;line-height:1.5;">Traditional restores require copying terabytes before the DB comes online. NDB PITR simply <strong>updates metadata pointers</strong> &mdash; the database is available immediately. A 10 TB DB restores in the same time as a 100 GB one: seconds to minutes.</p></div>'
+    +'</div>'
+    +card2('<div style="font-size:11px;font-weight:700;color:#7855FA;margin-bottom:4px;">Thin Cloning: Instant Dev/Test at Zero Storage Cost</div><p style="font-size:10px;color:#8a95a8;line-height:1.5;margin:0;">A thin clone is created by generating metadata pointers referencing the original snapshot&rsquo;s data blocks &mdash; <strong>no data is duplicated</strong>. An organisation can create tens of production-identical clones for dev, test, QA, and data masking from the same snapshot with minimal additional storage.</p>', 'margin-bottom:8px;')
+    +'<div style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(120,85,250,0.08),rgba(57,22,153,0.06));border:1px solid rgba(120,85,250,0.2);border-radius:7px;padding:9px 12px;"><span style="font-size:18px;flex-shrink:0;">&#9889;</span><p style="font-size:10px;color:#8a95a8;line-height:1.5;margin:0;">ROW snapshots + metadata restore + thin cloning = <strong>enterprise data protection with sub-minute RTOs</strong> across Oracle, SQL Server, PostgreSQL, and MongoDB &mdash; without dedicated backup infrastructure or storage duplication.</p></div>'
+  , 'margin-bottom:9px;'));
 
-  <!-- PG banner -->
-  <div style="background:linear-gradient(135deg,rgba(120,85,250,0.1),rgba(57,22,153,0.08));border:1.5px solid rgba(120,85,250,0.3);border-radius:14px;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
-    <div style="font-size:22px;flex-shrink:0;">🐘</div>
-    <div>
-      <div style="font-size:15px;font-weight:700;color:#7855FA;margin-bottom:5px;">PostgreSQL Community Edition support included</div>
-      <div style="font-size:14px;color:#8a95a8;line-height:1.55;">NDB subscription covers CE support for all managed PostgreSQL instances running in the cluster — no additional licensing cost compared to IaaS deployments.</div>
-    </div>
-  </div>
+  push('<div style="height:14px;"></div>');
 
-  <!-- Feature grid -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;">${featCards}</div>
+  push('<div style="height:10px;"></div>');
+  push('<div style="background:linear-gradient(135deg,rgba(120,85,250,0.08),rgba(57,22,153,0.06));border:1px solid rgba(120,85,250,0.2);border-radius:9px;padding:10px 16px;text-align:center;">');
+  push('<div style="font-size:11px;font-weight:700;color:#e8edf5;margin-bottom:3px;">Explore Nutanix Database Service</div>');
+  push('<p style="font-size:9.5px;color:#8a95a8;margin-bottom:6px;">Full documentation, demo environment and sizing guides</p>');
+  push('<a href="https://www.nutanix.com/products/database-service" style="font-size:10px;font-weight:700;letter-spacing:.05em;color:#7855FA;">NUTANIX.COM/PRODUCTS/DATABASE-SERVICE &rarr;</a></div>');
+  push(footer('4'));
+  push('</div>');
 
-  <!-- Narrative -->
-  <p style="font-size:15px;color:#8a95a8;line-height:1.75;margin-bottom:24px;">
-    Running databases on bare-metal NC2 nodes through NDB means your team stops managing infrastructure and starts managing outcomes. Provisioning that took days becomes minutes. Patching windows that required manual coordination become scheduled, automated events. Clones for dev and test — once a DBA bottleneck — become instant, self-service operations available to any authorised developer through the NDB portal or API.
-    <br><br>
-    The result is a simpler operational model, predictable costs, and a database platform that scales with your workloads rather than against them.
-  </p>
+  // ── PAGE 5 ──
+  push('<div class="pg">');
+  push(sec('Database Licensing by Engine'));
+  push('<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px;">');
+  [['PostgreSQL','CE Support Included','NDB provides one-click HA provisioning (Primary + Standby with automated failover), point-in-time recovery, thin cloning, and zero-downtime patching. Also manages EDB EPAS with the same operational model.'],
+   ['SQL Server','Unlimited Virtualization','When SQL Server Enterprise is licensed across all physical cores, Unlimited Virtualization rights allow unlimited VMs. NDB automates Single Instance, FCI, and AAG architectures.'],
+   ['Oracle','Full Cluster Licensing','Oracle on public cloud requires all physical cores to be licensed. NC2 bare-metal applies directly &mdash; NDB automates provisioning, patching, cloning, and backup including Oracle RAC for dev/test.'],
+   ['MongoDB','CE &amp; Enterprise','NDB manages both CE and Enterprise. CE: Replica Set provisioning, PITR, thin cloning. Enterprise: adds Sharded Cluster architectures and MongoDB Ops Manager integration.'],
+  ].forEach(function(e){ push(card('<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;"><span style="font-size:11px;font-weight:700;color:#7855FA;">'+e[0]+'</span>'+tag(e[1])+'</div><p style="font-size:9.5px;color:#8a95a8;line-height:1.45;margin:0;">'+e[2]+'</p>')); });
+  push('</div>');
 
-  <!-- CTA -->
-  <div style="background:linear-gradient(135deg,rgba(120,85,250,0.1),rgba(57,22,153,0.08));border:1.5px solid rgba(120,85,250,0.25);border-radius:14px;padding:28px 32px;text-align:center;margin-bottom:20px;">
-    <h3 style="font-size:18px;font-weight:800;color:#e8edf5;margin-bottom:10px;">Explore Nutanix Database Service</h3>
-    <p style="font-size:15px;color:#8a95a8;line-height:1.65;margin-bottom:20px;max-width:460px;margin-left:auto;margin-right:auto;">
-      This estimate is a starting point. NDB covers Oracle, SQL Server, PostgreSQL, MongoDB and more — with a single operational model across on-prem and public cloud. Full documentation, demo environment, and sizing guides at the link below.
-    </p>
-    <a href="https://www.nutanix.com/products/database-service" style="display:inline-block;background:linear-gradient(135deg,#7855FA,#7855FA);color:#fff;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:12px 28px;border-radius:8px;text-decoration:none;">
-      nutanix.com/products/database-service →
-    </a>
-  </div>
 
-  <!-- Regional availability links -->
-  <div style="background:#0e1117;border:1px solid #1a2030;border-radius:10px;padding:20px 24px;margin-bottom:16px;">
-    <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
-      NC2 Regional Availability & Supported Hardware
-      <div style="flex:1;height:1px;background:#1a2030;"></div>
-    </div>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.65;margin-bottom:14px;">
-      NC2 bare-metal node availability varies by cloud provider and region.
-    </p>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
-        <span style="color:#545f72;min-width:50px;">AWS</span>
-        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Clusters-AWS:aws-clusters-aws-xi-supported-regions-metals.html" style="color:#7855FA;text-decoration:none;word-break:break-all;" target="_blank">Supported Regions &amp; Bare-Metal Instances →</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
-        <span style="color:#545f72;min-width:50px;">Azure</span>
-        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-regions-c.html" style="color:#7855FA;text-decoration:none;word-break:break-all;" target="_blank">Supported Regions &amp; Bare-Metal Instances →</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
-        <span style="color:#545f72;min-width:50px;">GCP</span>
-        <a href="https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-bare-metal-instances-c.html" style="color:#7855FA;text-decoration:none;word-break:break-all;" target="_blank">Supported Bare-Metal Instances →</a>
-      </div>
-    </div>
-    <p style="font-size:12px;color:#3a4455;margin-top:12px;font-style:italic;">Access to these pages requires a Nutanix portal account.</p>
-  </div>
 
-  <!-- Disclaimer -->
-  <div style="background:#0e1117;border:1px solid #1a2030;border-radius:10px;padding:14px 18px;margin-bottom:20px;">
-    <p style="font-size:12px;color:#3a4455;line-height:1.6;">
-      <strong style="display:block;font-size:13px;color:#8a95a8;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase;">Disclaimer</strong>
-      This document is a personal infrastructure sizing exercise generated by an independent tool. It is not affiliated with, endorsed by, or produced on behalf of Nutanix, Amazon Web Services, Microsoft Azure, Google Cloud Platform, or any other company, product, or service referenced herein. No commercial relationship, partnership, or authorization is implied or should be inferred.
-      <br><br>
-      All cost figures are rough estimates derived from publicly available list prices at the time of generation. They do not reflect negotiated rates, volume discounts, contractual commitments, regional surcharges, support costs, egress fees, or any other variable that affects real-world pricing. Actual costs may differ materially.
-      <br><br>
-      This document carries no legal, contractual, or commercial weight of any kind. It should not be used as the basis for purchasing decisions, budget approvals, or vendor negotiations without independent verification from the relevant providers.
-      <br><br>
-      All product names, trademarks, and registered trademarks are the property of their respective owners.
-    </p>
-  </div>
+  push('<div style="height:22px;"></div>');
+  push(sec('DORA Compliance: BC/DR, Patching &amp; Unified Management'));
+  push(card('<p style="font-size:10px;color:#8a95a8;line-height:1.5;margin-bottom:8px;">The <strong>Digital Operational Resilience Act (DORA)</strong> imposes strict requirements on financial entities regarding ICT risk management, business continuity, and incident response. NDB on NC2 addresses several DORA pillars directly:</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">'
+    +[['Business Continuity & DR','NDB Time Machine provides continuous data protection with configurable RPO down to seconds. Automated failover, cross-site replication, and PITR ensure RTO targets are met &mdash; meeting DORA requirements for documented, tested, and measurable recovery capabilities.'],
+      ['Patch Management','DORA mandates timely patching of ICT systems. NDB reduces cycles from days to hours with zero-downtime scheduling, full rollback, and complete audit trails &mdash; providing the documented evidence regulators require.'],
+      ['Single Pane of Glass','NDB provides a unified management console across on-premises, co-location, and public cloud. DORA requires comprehensive ICT asset visibility &mdash; NDB\'s DB Catalog delivers real-time inventory of every managed database across all environments.'],
+      ['Standardisation & Audit','Profile-based provisioning enforces consistent security configurations, OS versions, and database parameters across every instance &mdash; reducing audit preparation time and risk of configuration drift.'],
+    ].map(function(e){ return card2('<div style="font-size:10.5px;font-weight:700;color:#7855FA;margin-bottom:4px;">'+e[0]+'</div><p style="font-size:9.5px;color:#8a95a8;line-height:1.45;margin:0;">'+e[1]+'</p>'); }).join('')+'</div>'
+  ));
+  push(footer('5'));
+  push('</div>');
 
-  <!-- Page footer -->
-  <div style="margin-top:16px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
-  </div>
-</div>
+  // ── PAGE 6 ──
+  push('<div class="pg">');
+  push(sec('Customer Evidence: Forrester Total Economic Impact&trade; of NDB'));
+  push(card('<p style="font-size:10px;color:#8a95a8;line-height:1.5;margin-bottom:10px;">In February 2026, Forrester Consulting published an independent <strong>Total Economic Impact&trade; (TEI)</strong> study commissioned by Nutanix, interviewing six decision-makers across five organisations in retail, hospitality, banking, investments, and government. The composite organisation is a regional bank with $50 billion in assets and 250 databases.</p>'
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px;">'
+    +[['136%','ROI'],['$2.0M','Net Present Value'],['<6 mo','Payback Period'],['$3.5M','Benefits PV (3yr)']].map(function(e){ return card2('<div style="font-size:20px;font-weight:800;color:#7855FA;margin-bottom:2px;text-align:center;">'+e[0]+'</div><div style="font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:#545f72;text-align:center;">'+e[1]+'</div>'); }).join('')
+    +'</div>'
+    +'<div style="margin-bottom:10px;">'
+    +[['$1.4M','Provisioning time savings','10h of IT staff time and 2 weeks of developer wait time saved per request across ~400 provisioning events over 3 years'],
+      ['$1.1M','Database licensing cost reduction','NDB optimises core utilisation, enabling organisations to reduce underlying database licence costs by reducing cores licensed'],
+      ['$442K','Cloning &amp; refresh automation','5h DBA time and 40h developer wait time saved per event across 60 cloning and 12 refresh events per year'],
+      ['$343K','Automated patching','Over 95% task time reduction &mdash; patching 250 databases quarterly drops from 90 min/db to 5 min with NDB automation'],
+      ['$322K','Backup &amp; restore optimisation','60&ndash;80% compression of backup/restore times; a 10 TB PostgreSQL restore reduced from ~6 hours to under 7 minutes'],
+      ['$85K','Monitoring efficiency','Eight DBAs at 30 min/day reduced to one DBA at 60 min/day for the entire database estate'],
+    ].map(function(e){ return '<div style="display:flex;align-items:flex-start;gap:9px;padding:4px 0;border-bottom:1px solid #131720;"><span style="font-size:11px;font-weight:700;color:#7855FA;min-width:40px;flex-shrink:0;">'+e[0]+'</span><div><div style="font-size:10.5px;font-weight:600;color:#e8edf5;margin-bottom:1px;">'+e[1]+'</div><div style="font-size:9.5px;color:#545f72;line-height:1.35;">'+e[2]+'</div></div></div>'; }).join('')
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;">'
+    +[['The key proposition was being able to use more open-source databases through self-service pipelines. What used to take weeks now takes minutes.','Manager, Database Engineering &middot; Investments'],
+      ['We had to provision between five and ten databases every week. Previously it took hours; it\'s now only minutes.','Senior Database Consultant &middot; Banking'],
+      ['A 10 TB PostgreSQL restoration would have taken close to 6 hours prior to NDB. Now we can get it done within a little over 6 minutes.','Manager, Database Engineering &middot; Investments'],
+      ['Standardisation is another key benefit of Nutanix. You have the same script on all databases, the same policy of backup and disaster recovery.','Head of Automation &middot; Government'],
+    ].map(function(e){ return quote(e[0],e[1]); }).join('')
+    +'</div>'
+    +'<div style="text-align:center;padding:8px;background:linear-gradient(135deg,rgba(120,85,250,0.07),rgba(57,22,153,0.06));border:1px solid rgba(120,85,250,0.18);border-radius:7px;"><div style="font-size:10.5px;font-weight:700;color:#e8edf5;margin-bottom:3px;">Download the full Forrester TEI&trade; study</div><a href="https://www.nutanix.com/go/forrester-tei-ndb" style="font-size:9.5px;color:#7855FA;">nutanix.com/go/forrester-tei-ndb &rarr;</a><div style="font-size:8px;color:#3a4455;margin-top:2px;">Forrester Consulting &middot; February 2026 &middot; Commissioned by Nutanix</div></div>'
+  , 'margin-bottom:9px;'));
 
-<!-- ══════════════════ PAGE 3 — Database Licensing & Advanced Capabilities ══════════════════ -->
-<div class="page-break" style="background-color:#0a0c10;padding:52px 64px;">
+    push('<div style="height:22px;"></div>');
+  push('<div style="background:#0e1117;border:1px solid #1e2535;border-radius:7px;padding:8px 12px;">');
+  push('<div style="font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#545f72;margin-bottom:5px;">Disclaimer</div>');
+  push('<p style="font-size:8.5px;color:#3a4455;line-height:1.45;">This document is a personal infrastructure sizing exercise generated by an independent tool. It is not affiliated with, endorsed by, or produced on behalf of Nutanix, Amazon Web Services, Microsoft Azure, Google Cloud Platform, or any other company referenced herein. All cost figures are rough estimates derived from publicly available list prices at the time of generation and do not reflect negotiated rates, volume discounts, support costs, egress fees, or any other variable that affects real-world pricing. Actual costs may differ materially.</p>');
+  push('</div>');
+  push(footer('6'));
+  push('</div>');
 
-  <!-- Page header -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Database Licensing & Capabilities</span>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
-  </div>
+  push('<script>');
+  push('(function(){');
+  push('  function scale(){');
+  push('    var vw = window.innerWidth;');
+  push('    var pageW = 794;'); // 210mm at 96dpi
+  push('    var ratio = vw / pageW;');
+  push('    document.body.style.transform = "scale("+ratio+")";');
+  push('    document.body.style.transformOrigin = "top left";');
+  push('    document.body.style.width = pageW + "px";');
+  push('    document.documentElement.style.height = (document.body.scrollHeight * ratio) + "px";');
+  push('  }');
+  push('  scale();');
+  push('  window.addEventListener("resize", scale);');
+  push('})();');
+  push('<\/script>');
+  push('</body></html>');
+  var html = H.join('');
 
-  <!-- ── CHAPTER 1: DATABASE LICENSING ── -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
-    Database Licensing & NDB Capabilities by Engine
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-
-  <!-- PostgreSQL -->
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:14px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#7855FA;">PostgreSQL</span>
-      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#9B7DFF;padding:2px 8px;border-radius:4px;">CE Support Included</span>
-    </div>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      NDB includes <strong style="color:#e8edf5;">enterprise-grade technical support for PostgreSQL Community Edition</strong> as part of the subscription — at no additional licensing cost compared to a standard IaaS deployment. This alone eliminates the need for a separate PostgreSQL support contract.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      Beyond support, NDB brings full lifecycle automation to PostgreSQL CE: <strong style="color:#e8edf5;">one-click provisioning of High Availability clusters</strong> (Primary + Standby with automated failover), point-in-time recovery via Time Machine, thin cloning for instant dev/test environments, and automated patching with zero-downtime scheduling.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;">
-      For organizations requiring EDB EPAS (EnterpriseDB Postgres Advanced Server), NDB manages both CE and EPAS with the same operational model — provisioning, patching, cloning, and monitoring — giving teams full flexibility to run open-source and enterprise Postgres side by side on the same cluster.
-    </p>
-  </div>
-
-  <!-- SQL Server -->
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:14px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#7855FA;">SQL Server</span>
-      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#9B7DFF;padding:2px 8px;border-radius:4px;">Unlimited Virtualization</span>
-    </div>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      When SQL Server Enterprise Edition is licensed across <strong style="color:#e8edf5;">all physical cores of a Nutanix cluster</strong>, Microsoft's Unlimited Virtualization rights apply: the customer can run an unlimited number of SQL Server VMs on that cluster without additional per-VM or per-core licensing costs.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;">
-      NDB fully automates SQL Server lifecycle management on this architecture: provisioning of Single Instance, Failover Cluster Instances (FCI), and Always On Availability Groups (AAG), with automated patching, cloning for dev/test, and centralized monitoring across all instances — turning the licensing investment into maximum operational efficiency.
-    </p>
-  </div>
-
-  <!-- Oracle -->
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:14px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#7855FA;">Oracle</span>
-      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#9B7DFF;padding:2px 8px;border-radius:4px;">Full Cluster Licensing</span>
-    </div>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      Oracle licensing on public cloud requires that <strong style="color:#e8edf5;">all physical cores of the cluster are licensed</strong>, regardless of how many database VMs are running. On NC2 bare-metal nodes, this model applies directly — the cluster becomes a dedicated Oracle environment where all workloads can run without additional per-VM costs.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      NDB automates Oracle database provisioning, patching, cloning, and backup/restore, including support for <strong style="color:#e8edf5;">Oracle RAC (Real Application Clusters)</strong> — enabling automated provisioning of multi-node Oracle RAC environments with full lifecycle management.
-    </p>
-    <div style="background:rgba(120,85,250,0.06);border:1px solid rgba(155,125,255,0.25);border-radius:8px;padding:12px 16px;">
-      <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">
-        <strong style="color:#9B7DFF;">⚠ Important note on Oracle RAC in public cloud:</strong> Oracle does not officially support Oracle RAC on any public cloud infrastructure other than Oracle Cloud Infrastructure (OCI). NC2 clusters can run Oracle RAC configurations for <strong style="color:#e8edf5;">development and testing purposes</strong>, enabling teams to validate RAC architectures in the cloud before on-premises deployment, but production Oracle RAC workloads should be validated with Oracle licensing before proceeding.
-      </p>
-    </div>
-  </div>
-
-  <!-- MongoDB -->
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:16px;font-weight:700;color:#7855FA;">MongoDB</span>
-      <span style="font-family:'Montserrat',sans-serif;font-size:12px;background:rgba(120,85,250,0.12);color:#7855FA;padding:2px 8px;border-radius:4px;">CE & Enterprise</span>
-    </div>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      NDB manages both <strong style="color:#e8edf5;">MongoDB Community Edition and MongoDB Enterprise</strong> within the same operational framework.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:8px;">
-      <strong style="color:#e8edf5;">MongoDB CE capabilities via NDB:</strong> automated Replica Set provisioning and management, Point-in-Time Recovery (PITR) via Time Machine snapshots, thin cloning for instant dev/test environments from production data, and automated patching across all replica members.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;">
-      <strong style="color:#e8edf5;">MongoDB Enterprise capabilities via NDB:</strong> in addition to all CE features, NDB automates the provisioning and management of complex <strong style="color:#e8edf5;">Sharded Cluster architectures</strong> (Config Servers, Mongos routers, Shard Replica Sets), integration with <strong style="color:#e8edf5;">MongoDB Ops Manager</strong> for advanced monitoring and automation pipelines, and PITR with consistent cross-shard snapshots — enabling enterprise-grade data protection across horizontally scaled deployments.
-    </p>
-  </div>
-
-  <!-- ── CHAPTER 2: DEDICATED vs SHARED ── -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    Dedicated Infrastructure vs. Shared Cloud: The Performance Advantage
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-
-  <!-- Diagram: Shared vs Dedicated -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
-
-    <!-- Shared cloud -->
-    <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:18px 20px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#545f72;margin-bottom:12px;text-align:center;">Shared Cloud Infrastructure</div>
-      <!-- Physical server -->
-      <div style="border:1.5px dashed #2a3545;border-radius:8px;padding:10px;margin-bottom:10px;">
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#3a4455;text-align:center;margin-bottom:8px;">Physical Server</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:6px;">
-          <div style="background:#1a2535;border:1px solid #2a3545;border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#545f72;">Customer A</div>
-            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
-          </div>
-          <div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#7855FA;font-weight:600;">Your DB</div>
-            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
-          </div>
-          <div style="background:#1a2535;border:1px solid #2a3545;border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#545f72;">Customer C</div>
-            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">shared vCPU</div>
-          </div>
-        </div>
-        <div style="background:#1a2030;border-radius:4px;padding:6px;text-align:center;">
-          <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#3a4455;">Shared Storage Pool · Shared Network · Shared RAM</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#545f72;">
-          <span style="color:#ff4d6a;font-size:14px;">✗</span> Noisy neighbour effect
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#545f72;">
-          <span style="color:#ff4d6a;font-size:14px;">✗</span> Unpredictable I/O latency
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#545f72;">
-          <span style="color:#ff4d6a;font-size:14px;">✗</span> Cloud hypervisor overhead
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#545f72;">
-          <span style="color:#ffaa00;font-size:14px;">↑</span> Over-provisioning required
-        </div>
-      </div>
-    </div>
-
-    <!-- Dedicated NC2 -->
-    <div style="background:#0e1117;border:1.5px solid rgba(120,85,250,0.4);border-radius:14px;padding:18px 20px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7855FA;margin-bottom:12px;text-align:center;">NC2 Dedicated Bare Metal</div>
-      <!-- Physical server -->
-      <div style="border:1.5px solid rgba(120,85,250,0.25);border-radius:8px;padding:10px;margin-bottom:10px;background:rgba(120,85,250,0.05);">
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#7855FA60;text-align:center;margin-bottom:8px;">Your Physical Server — Exclusive</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;">
-          <div style="background:rgba(120,85,250,0.14);border:1px solid rgba(120,85,250,0.35);border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#7855FA;font-weight:600;">Your DB 1</div>
-            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">dedicated cores</div>
-          </div>
-          <div style="background:rgba(120,85,250,0.14);border:1px solid rgba(120,85,250,0.35);border-radius:4px;padding:6px;text-align:center;">
-            <div style="font-size:11px;color:#7855FA;font-weight:600;">Your DB 2</div>
-            <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#8a95a8;margin-top:2px;">dedicated cores</div>
-          </div>
-        </div>
-        <div style="background:rgba(120,85,250,0.12);border:1px solid rgba(120,85,250,0.3);border-radius:4px;padding:6px;text-align:center;">
-          <div style="font-family:'Montserrat',sans-serif;font-size:10px;color:#BBA8FF;">Dedicated NVMe · Dedicated RAM · Nutanix AHV</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#7855FA;font-size:14px;">✓</span> No contention — consistent performance
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#7855FA;font-size:14px;">✓</span> Consistent low-latency NVMe storage
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#7855FA;font-size:14px;">✓</span> Full hardware performance available
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8a95a8;">
-          <span style="color:#7855FA;font-size:14px;">✓</span> Right-sized — no over-provisioning
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Explanation text -->
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:18px 24px;margin-bottom:8px;">
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      Public cloud database services typically run on <strong style="color:#e8edf5;">shared multi-tenant infrastructure</strong> — compute, memory, and I/O are divided among multiple customers on the same physical host. This introduces unpredictable latency, I/O contention at peak, and the well-known <strong style="color:#e8edf5;">"noisy neighbour"</strong> effect that forces teams to over-provision resources to maintain SLAs.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:10px;">
-      NC2 runs Nutanix directly on <strong style="color:#e8edf5;">dedicated bare-metal nodes</strong> — the entire physical server is exclusive to your workloads. No resource contention, no cloud hypervisor overhead, full NVMe I/O performance. The result is consistently higher throughput and genuinely predictable latency — not occasional bursts, but sustained performance your SLAs can rely on.
-    </p>
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:0;">
-      This has a direct impact on TCO: organisations moving to NC2 regularly find their databases were <strong style="color:#e8edf5;">significantly over-provisioned on shared cloud</strong> to compensate for inconsistent performance. On dedicated bare metal, the same workload runs efficiently with fewer resources — translating into fewer nodes, lower NDB licensing costs, and a materially better TCO than a simple like-for-like migration would suggest.
-    </p>
-  </div>
-
-  <!-- Page footer -->
-  <div style="margin-top:24px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
-  </div>
-</div>
-
-<!-- ══════════════════ PAGE 4 — DORA · Time Machine · Customer Voice ══════════════════ -->
-<div style="background-color:#0a0c10;padding:52px 64px;">
-
-  <!-- Page header -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #1a2030;margin-bottom:36px;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:13px;color:#545f72;">NC2 + NDB · Resilience, Technology & Customer Evidence</span>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;text-transform:uppercase;letter-spacing:.06em;">${r.cloud} · ${date}</span>
-  </div>
-
-  <!-- ── CHAPTER 3: DORA ── -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    DORA Compliance: BC/DR, Patching & Unified Management
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:14px;">
-      The <strong style="color:#e8edf5;">Digital Operational Resilience Act (DORA)</strong> imposes strict requirements on financial entities regarding ICT risk management, business continuity, incident response, and third-party oversight. NDB on NC2 addresses several DORA pillars directly:
-    </p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Business Continuity & Disaster Recovery</div>
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">NDB Time Machine provides continuous data protection with configurable RPO down to seconds. Automated failover, cross-site replication, and point-in-time recovery ensure RTO targets are met even for the largest database estates — meeting DORA's requirements for documented, tested, and measurable recovery capabilities.</p>
-      </div>
-      <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Patch Management & Vulnerability Remediation</div>
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">DORA mandates timely patching of ICT systems. NDB's automated, template-driven patching reduces patching cycles from days to hours with zero-downtime scheduling, full rollback capability, and complete audit trails — providing the documented evidence regulators require for ICT vulnerability management.</p>
-      </div>
-      <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Single Pane of Glass — Hybrid Multicloud</div>
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">NDB provides a unified management console across on-premises, co-location, and public cloud (AWS, Azure, GCP). DORA requires comprehensive visibility of all ICT assets and their dependencies. NDB's DB Catalog delivers a real-time inventory of every managed database instance across all environments from a single interface.</p>
-      </div>
-      <div style="background:#131720;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:6px;">Standardisation & Audit Readiness</div>
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">NDB's profile-based provisioning enforces consistent security configurations, OS versions, and database parameters across every instance. This template-driven approach ensures all databases are compliant at creation — dramatically reducing audit preparation time and the risk of configuration drift over the database lifecycle.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── CHAPTER 4: TIME MACHINE & THIN CLONING ── -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    NDB Time Machine: Snapshots, Thin Cloning & Instant Restore
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-      <div>
-        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:8px;">Redirect-on-Write Snapshots</div>
-        <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin:0;">
-          NDB Time Machine uses a <strong style="color:#e8edf5;">Redirect-on-Write (ROW)</strong> mechanism to create crash-consistent database snapshots. When a snapshot is taken, the system does not copy existing data blocks — instead, any new writes are redirected to new locations on storage while the original blocks remain untouched and associated with the snapshot pointer. This means snapshot creation is <strong style="color:#e8edf5;">instantaneous and has zero I/O impact</strong> on the running database, regardless of its size.
-        </p>
-      </div>
-      <div>
-        <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:8px;">Why Restore Times Are Size-Independent</div>
-        <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin:0;">
-          Traditional restores require copying terabytes of data from backup before the database can be brought online. With NDB Time Machine, a point-in-time restore simply <strong style="color:#e8edf5;">updates the metadata pointers</strong> to reference the target snapshot's block addresses — the database becomes available immediately. A 10 TB database restores in the same time as a 100 GB one: seconds to minutes, not hours.
-        </p>
-      </div>
-    </div>
-    <div style="background:#131720;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
-      <div style="font-size:14px;font-weight:700;color:#7855FA;margin-bottom:8px;">Thin Cloning: Instant Dev/Test at Zero Storage Cost</div>
-      <p style="font-size:13px;color:#8a95a8;line-height:1.65;margin:0;">
-        A thin clone is created by generating a new set of <strong style="color:#e8edf5;">metadata pointers referencing the original snapshot's data blocks</strong> — no data is duplicated at creation time. The initial clone consumes only kilobytes of metadata storage. As the clone diverges (writes to new blocks), only the changed blocks are written to new locations. This means an organisation can create tens of production-identical clones for development, testing, QA, training, and data masking — all from the same snapshot — with minimal additional storage consumption. Developers get instant access to realistic data without waiting for DBA intervention or backup restores.
-      </p>
-    </div>
-    <div style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(120,85,250,0.08),rgba(57,22,153,0.06));border:1px solid rgba(120,85,250,0.2);border-radius:10px;padding:14px 16px;">
-      <div style="font-size:24px;flex-shrink:0;">⚡</div>
-      <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0;">
-        The combination of ROW snapshots, metadata-based restore, and thin cloning means NDB delivers <strong style="color:#e8edf5;">enterprise data protection with sub-minute RTOs</strong> across all supported database engines — Oracle, SQL Server, PostgreSQL, and MongoDB — without requiring expensive dedicated backup infrastructure or storage duplication.
-      </p>
-    </div>
-  </div>
-
-  <!-- ── CHAPTER 5: FORRESTER TEI ── -->
-  <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#545f72;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-    Customer Evidence: Forrester Total Economic Impact™ of NDB
-    <div style="flex:1;height:1px;background:#1a2030;"></div>
-  </div>
-  <div style="background:#0e1117;border:1.5px solid #1a2030;border-radius:14px;padding:20px 24px;margin-bottom:16px;">
-    <p style="font-size:14px;color:#8a95a8;line-height:1.7;margin-bottom:16px;">
-      In February 2026, Forrester Consulting published an independent <strong style="color:#e8edf5;">Total Economic Impact™ (TEI)</strong> study commissioned by Nutanix, interviewing six decision-makers across five organisations in retail, hospitality, banking, investments, and government. The composite organisation modelled is a regional bank with $50 billion in assets and 250 databases.
-    </p>
-    <!-- KPI row -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">
-      <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">136%</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">ROI</div>
-      </div>
-      <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">$2.0M</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Net Present Value</div>
-      </div>
-      <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">&lt;6 mo</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Payback Period</div>
-      </div>
-      <div style="background:#131720;border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:24px;font-weight:800;color:#7855FA;margin-bottom:4px;">$3.5M</div>
-        <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;text-transform:uppercase;letter-spacing:.06em;">Benefits PV (3yr)</div>
-      </div>
-    </div>
-    <!-- Benefits breakdown -->
-    <div style="margin-bottom:14px;">
-      ${[
-        ['$1.4M', 'Provisioning time savings', 'From weeks to hours — 10h of IT staff time and 2 weeks of developer wait time saved per request across ~400 provisioning events over 3 years'],
-        ['$1.1M', 'Database licensing cost reduction', 'NDB optimises core utilisation, enabling organisations to reduce underlying database licence costs by reducing the number of cores licensed'],
-        ['$442K', 'Cloning & refresh automation', '5h of DBA time and 40h of developer wait time saved per event across 60 cloning and 12 refresh events per year'],
-        ['$343K', 'Automated patching', 'Over 95% task time reduction — patching 250 databases quarterly drops from 90 min/database to 5 min with NDB automation'],
-        ['$322K', 'Backup & restore optimisation', '60–80% compression of backup/restore times; a 10 TB PostgreSQL restore reduced from ~6 hours to under 7 minutes'],
-        ['$85K',  'Monitoring efficiency', 'Eight DBAs spending 30 min/day reduced to one DBA spending 60 min/day for the entire database estate'],
-      ].map(([val, title, desc]) => `
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid #131720;">
-          <span style="font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#7855FA;min-width:48px;flex-shrink:0;">${val}</span>
-          <div>
-            <div style="font-size:14px;font-weight:600;color:#e8edf5;margin-bottom:2px;">${title}</div>
-            <div style="font-size:13px;color:#545f72;line-height:1.5;">${desc}</div>
-          </div>
-        </div>`).join('')}
-    </div>
-    <!-- Quotes -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
-      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"The key proposition was being able to use more open-source databases and deliver them through self-service pipelines. What used to take weeks now takes minutes."</p>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Manager, Database Engineering · Investments</span>
-      </div>
-      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"We had to provision between five and ten databases every week. Previously it took hours; it's now only minutes."</p>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Senior Database Consultant · Banking</span>
-      </div>
-      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"A 10 TB PostgreSQL database restoration would have taken close to 6 hours prior to NDB. Now we can get that database restored within a little over 6 minutes."</p>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Manager, Database Engineering · Investments</span>
-      </div>
-      <div style="background:#131720;border-left:3px solid #7855FA;border-radius:0 8px 8px 0;padding:12px 14px;">
-        <p style="font-size:13px;color:#8a95a8;line-height:1.6;margin:0 0 6px 0;font-style:italic;">"Standardisation is another key benefit of Nutanix. You have the same script on all databases, the same policy of backup, and the same policy of disaster recovery."</p>
-        <span style="font-family:'Montserrat',sans-serif;font-size:11px;color:#545f72;">Head of Automation · Government</span>
-      </div>
-    </div>
-    <!-- CTA -->
-    <div style="text-align:center;padding:16px;background:linear-gradient(135deg,rgba(120,85,250,0.08),rgba(57,22,153,0.08));border:1px solid rgba(120,85,250,0.2);border-radius:10px;">
-      <div style="font-size:14px;font-weight:600;color:#e8edf5;margin-bottom:6px;">Download the full Forrester TEI™ study</div>
-      <a href="https://www.nutanix.com/go/forrester-tei-ndb" style="font-family:'Montserrat',sans-serif;font-size:13px;color:#7855FA;text-decoration:none;">nutanix.com/go/forrester-tei-ndb →</a>
-      <div style="font-family:'Montserrat',sans-serif;font-size:11px;color:#3a4455;margin-top:4px;">Forrester Consulting · February 2026 · Commissioned by Nutanix</div>
-    </div>
-  </div>
-
-  <!-- Page footer -->
-  <div style="margin-top:16px;padding-top:14px;border-top:1px solid #1a2030;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">NC2 + NDB · Personal Estimate</span>
-    <span style="font-family:'Montserrat',sans-serif;font-size:12px;color:#3a4455;">${date}</span>
-  </div>
-</div>
-
-</body>
-</html>`;
-
-  const w = window.open('', '_blank');
+    const w = window.open('', '_blank');
   if (!w) { showToast('Please allow popups for this site', 'error'); return; }
   w.document.write(html);
   w.document.close();
