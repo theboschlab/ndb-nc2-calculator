@@ -2301,8 +2301,8 @@ function resetStep2ResultsToZero() {
   setText('kpi-nodes-sub', 'cluster configuration');
 
   setText('kpi-util', '0%');
-  setText('kpi-util-sub', '0 / 0 cores');
-  setText('kpi-cpu-detail-bar', '0 / 0 cores');
+  setText('kpi-util-sub', '0 / 0 physical cores');
+  setText('kpi-cpu-detail-bar', '0 / 0 physical cores');
   setText('kpi-cpu-pct', '0%');
 
   setText('kpi-storage-kpi', '0%');
@@ -2773,6 +2773,9 @@ function calculate(dbs) {
   const totalAnnual = hwAnnual + ndbAnnual;
   const total3yr    = hw3yr_net + (ndbAnnual * 3);
 
+  // Physical cores: totalVcpu / p2vRatio = physical cores requested
+  const totalPhysCores   = Math.round(totalVcpu / p2vRatio);
+  const clusterPhysCores = (node.physicalCores - CVM_CORES) * (nodes - (ftEnabled ? 1 : 0));
   const vcpuUtil    = Math.min(100, Math.round((totalVcpu    / clusterVcpu)    * 100));
   const storageUtil = Math.min(100, Math.round((totalStorage / clusterStorage) * 100));
   const ramUtil     = Math.min(100, Math.round((totalRam     / clusterRam)     * 100));
@@ -2782,6 +2785,7 @@ function calculate(dbs) {
     cloudModel: node.instance,
     nodes, clusterVcpu, clusterStorage, clusterRam,
     totalVcpu, totalStorage, totalRam,
+    totalPhysCores, clusterPhysCores,
     vcpuUtil, storageUtil, ramUtil,
     hwAnnual, ndbAnnual, totalAnnual, total3yr, totalVMs,
     discount, hw3yr_net, clusterCores, p2vRatio, ftEnabled,
@@ -2832,8 +2836,8 @@ function renderResults() {
 
   // CPU tiles
   setText('kpi-util',            r.vcpuUtil + '%', true);
-  setText('kpi-util-sub',        r.totalVcpu + ' / ' + r.clusterVcpu + ' cores');
-  setText('kpi-cpu-detail-bar',  r.totalVcpu + ' / ' + r.clusterVcpu + ' cores');
+  setText('kpi-util-sub',        r.totalPhysCores + ' / ' + r.clusterPhysCores + ' physical cores');
+  setText('kpi-cpu-detail-bar',  r.totalPhysCores + ' / ' + r.clusterPhysCores + ' physical cores');
   setText('kpi-cpu-pct',         r.vcpuUtil + '%', true);
 
   // Storage tiles
@@ -3024,7 +3028,7 @@ function downloadSummary() {
   push('<div style="height:10px;"></div>');
   push(sec('Cluster Utilization'));
   push('<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:9px;">');
-  push(card(lbl('CPU')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#7855FA;">'+r.vcpuUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+r.totalVcpu+' / '+r.clusterVcpu+' cores</span></div>'+bar(r.vcpuUtil,'linear-gradient(90deg,#7855FA,#391699)')));
+  push(card(lbl('CPU')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#7855FA;">'+r.vcpuUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+r.totalPhysCores+' / '+r.clusterPhysCores+' phys. cores</span></div>'+bar(r.vcpuUtil,'linear-gradient(90deg,#7855FA,#391699)')));
   push(card(lbl('Storage')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#9B7DFF;">'+r.storageUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+fmtGB(r.totalStorage)+' / '+fmtGB(r.clusterStorage)+'</span></div>'+bar(r.storageUtil,'linear-gradient(90deg,#9B7DFF,#5E3DB3)')));
   push(card(lbl('Memory')+'<div style="display:flex;align-items:baseline;gap:7px;"><span style="font-size:20px;font-weight:800;color:#BBA8FF;">'+r.ramUtil+'%</span><span style="font-size:8.5px;color:#545f72;">'+fmtGB(r.totalRam)+' / '+fmtGB(r.clusterRam)+'</span></div>'+bar(r.ramUtil,'linear-gradient(90deg,#BBA8FF,#7855FA)')));
   push('</div>');
